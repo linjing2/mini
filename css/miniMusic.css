@@ -1,0 +1,344 @@
+#mainWindow{
+	margin: 50px auto;
+	width: 1000px;
+	height: 700px;
+	background-color: #272822;
+	border-radius: 30px;
+	box-shadow:8px 8px 10px grey;
+    user-select: none;
+}
+#leftBox{
+	margin: 0;
+	float: left;
+	width: 200px;
+	height: 700px;
+	background-color: #171717;
+	border-top-left-radius: 30px;
+	border-bottom-left-radius: 30px;
+}
+#login{
+	margin-left: 10px;
+	margin-top: 10px;
+	width: 180px;
+	height: 40px;
+	border-radius: 20px;
+	background-color: #272822;
+}
+#headIcon{
+	float: left;
+	width: 40px;
+	height: 40px;
+	border-radius: 20px;
+	background-image: url(../img/QQ_headIcon.jpg);
+	background-size: contain;
+}
+#headIconName{
+	float: left;
+	margin-left: 20px;
+	text-align: center;
+	line-height: 40px;
+	font-size: 20px;
+	color: yellow;
+    cursor: default;
+}
+.leftLabel{
+	height: 15px;
+	margin-left: 30px;
+	margin-top: 40px;
+	line-height: 15px;
+	color: white;
+    cursor: default;
+}
+#musicHouse{
+	height: 30px;
+	width: 150px;
+	margin-left: 10px;
+	margin-top: 10px;
+	font-size: 15px;
+	line-height: 30px;
+	color: white;
+	border-radius: 10px;
+	cursor: pointer;
+}
+#musicHouse:hover{
+	background-color: #7E57C2;
+}
+#musicHouse:active{
+    background-color: #C5B5F0;
+}
+#video{
+	height: 30px;
+	width: 150px;
+	margin-left: 10px;
+	margin-top: 10px;
+	font-size: 15px;
+	line-height: 30px;
+	color: white;
+	border-radius: 10px;
+	cursor: pointer;
+}
+#video:hover{
+	background-color: #7E57C2;
+}
+#video:active{
+    background-color: #C5B5F0;
+}
+#radio{
+	height: 30px;
+	width: 150px;
+	margin-left: 10px;
+	margin-top: 10px;
+	font-size: 15px;
+	line-height: 30px;
+	color: white;
+	border-radius: 10px;
+	cursor: pointer;
+}
+#radio:hover{
+	background-color: #7E57C2;
+}
+#radio:active{
+    background-color: #C5B5F0;
+}
+#like{
+	height: 30px;
+	width: 150px;
+	margin-left: 10px;
+	margin-top: 10px;
+	font-size: 15px;
+	line-height: 30px;
+	color: white;
+	border-radius: 10px;
+	cursor: pointer;
+}
+#like:hover{
+	background-color: #7E57C2;
+}
+#like:active{
+    background-color: #C5B5F0;
+}
+#local{
+	height: 30px;
+	width: 150px;
+	margin-left: 10px;
+	margin-top: 10px;
+	font-size: 15px;
+	line-height: 30px;
+	color: white;
+	border-radius: 10px;
+	cursor: pointer;
+}
+#local:hover{
+	background-color: #7E57C2;
+}
+#local:active{
+    background-color: #C5B5F0;
+}
+#history{
+	height: 30px;
+	width: 150px;
+	margin-left: 10px;
+	margin-top: 10px;
+	font-size: 15px;
+	line-height: 30px;
+	color: white;
+	border-radius: 10px;
+	cursor: pointer;
+}
+#history:hover{
+	background-color: #7E57C2;
+}
+#history:active{
+    background-color: #C5B5F0;
+}
+#recentList{
+	height: 30px;
+	width: 150px;
+	margin-left: 10px;
+	margin-top: 10px;
+	font-size: 15px;
+	line-height: 30px;
+	color: white;
+	border-radius: 10px;
+	cursor: pointer;
+}
+#recentList:hover{
+	background-color: #7E57C2;
+}
+#recentList:active{
+    background-color: #C5B5F0;
+}
+#creatList{
+	border: 0px;
+	color: white;
+    cursor: default;
+}
+#markList{
+	border: 0px;
+	color: white;
+    cursor: default;
+}
+.songList{
+	height: 30px;
+	line-height: 30px;
+	color: white;
+	border-radius: 10px;
+    cursor: pointer;
+}
+.songList:hover{
+	background-color: #7E57C2;
+}
+.songList:active{
+    background-color: #C5B5F0;
+}
+#middleBox{
+	float: left;
+	width: 760px;
+	height: 700px;
+}
+#back_forward{
+	float: left;
+	margin-left: 20px;
+	margin-top: 20px;
+	height: 20px;
+	width: 60px;
+}
+#back{
+	float: left;
+	width: 30px;
+	height: 20px;
+	background-image: url("../img/back.ico");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 20px;
+}
+#back:hover{
+	background-color: #7E57C2;
+	border-radius: 10px;
+    cursor: pointer;
+}
+#back:active{
+	background-color: #C5B5F0;
+	border-radius: 10px;
+}
+#forward{
+	margin-left: 0px;
+	float: left;
+	width: 30px;
+	height: 20px;
+	background-image: url("../img/forward.ico");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 20px;
+}
+#forward:hover{
+	background-color: #7E57C2;
+	border-radius: 10px;
+    cursor: pointer;
+}
+#forward:active{
+	background-color: #C5B5F0;
+	border-radius: 10px;
+}
+#searchBox{
+	float: left;
+	width: 400px;
+	margin-left: 20px;
+	margin-top: 15px;
+
+}
+#inputSearch{
+	background-color: #272822;
+	color: white;
+	border-color: #7E57C2;
+}
+#clear:hover{
+	background-color: #7E57C2;
+}
+#showArea{
+	margin-top: 60px;
+	width: 760px;
+	height: 640px;
+}
+#rightBox{
+	float: left;
+	width: 40px;
+	height: 700px;
+	border-top-right-radius: 30px;
+	border-bottom-right-radius: 30px;
+}
+#close{
+	margin-left: 10px;
+	margin-top: 10px;
+	width: 20px;
+	height: 20px;
+	border-radius: 15px;
+	background-color: red;
+}
+#close:hover{
+	background-color: transparent;
+	background-image: url("../img/close.ico");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 15px;
+    cursor: pointer;
+}
+#close:active{
+	background-color: #7E57C2;
+}
+#minimize{
+	margin-left: 10px;
+	margin-top: 5px;
+	width: 20px;
+	height: 20px;
+	border-radius: 15px;
+	background-color: orange;
+}
+#minimize:hover{
+	background-color: transparent;
+	background-image: url("../img/minimize.ico");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 15px;
+    cursor: pointer;
+}
+#minimize:active{
+	background-color: #7E57C2;
+}
+#mode{
+	margin-left: 10px;
+	margin-top: 5px;
+	width: 20px;
+	height: 20px;
+	border-radius: 15px;
+	background-image: url("../img/dark.ico");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 15px;
+    background-color: transparent;
+}
+#mode:hover{
+    background-color: #7E57C2;
+	cursor: pointer;
+}
+#mode:active{
+    background-color: #C5B5F0;
+}
+#setting{
+	margin-left: 10px;
+	margin-top: 5px;
+	width: 20px;
+	height: 20px;
+	border-radius: 15px;
+	background-image: url("../img/setting.ico");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 20px;
+}
+#setting:hover{
+	background-color: green;
+	cursor: pointer;
+}
+#setting:active{
+	background-color: #C5B5F0;
+}
