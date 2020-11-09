@@ -39,7 +39,17 @@ export default {
     return {
       markImgUrl: require("@/assets/mark.svg"),
       markedImgUrl: require("@/assets/marked.svg"),
+      scrollerPosition: 0
     }
+  },
+  beforeRouteLeave(to, from, next) {
+    //记下离开时滑块位置
+    this.scrollerPosition = document.querySelector('.search-list-box').scrollTop
+    next()
+  },
+  activated() {
+    //激活后恢复滑块位置
+    document.querySelector('.search-list-box').scrollTop = this.scrollerPosition
   },
   methods: {
     playThisSong(item, index) {

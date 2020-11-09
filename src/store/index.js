@@ -30,7 +30,9 @@ export default new Vuex.Store({
     searchText: '',
     currentPage: 1,
     loadMoreText: '加载更多',
-    canLoadMore: true
+    canLoadMore: true,
+    lyricTextArr: [],
+    currentTime: null
   },
   mutations: {
 
@@ -99,6 +101,10 @@ export default new Vuex.Store({
       state.haveStarted = haveStarted
     },
 
+    sendCurrentTime(state, currentTime) {
+      state.currentTime = currentTime
+    },
+
     sendMarkedSong(state, item) {
       //添加第一个mark的歌曲
       if (state.markedList.length === 0) {
@@ -112,7 +118,7 @@ export default new Vuex.Store({
             state.markedList.splice(i, 1)
             haveSameItem = true
 
-            //当在喜欢页面点击mark时，处理逻辑非常复杂，初步处理下
+            //当在喜欢页面点击mark时，处理逻辑有点复杂，初步处理下
             if (state.isMarkedPageActive) {
               state.currentList = state.markedList
 
@@ -218,16 +224,48 @@ export default new Vuex.Store({
         url: 'song',
         params: {
           songmid: state.currentList[state.currentListIndex].songmid,
-          guid: '126548448'
+          guid: '126548448',
+          lyric: 1
         },
       }).then(res => {
+        //获取歌曲播放链接
         state.currentSongUrl = res.data.data.musicUrl
         if (state.currentSongUrl == "https://ws.stream.qqmusic.qq.com/") {
-          Message.error('无法获取音乐资源，可能为付费音乐或其他原因')
+          Message.error({
+            message: '无法获取音乐资源，可能为付费音乐或其他原因',
+            showClose: true
+          })
+          this.commit('albumRotatePaused')
         }
+
+        //处理歌词
+        var lyricText = res.data.data.lyric
+        var lyricTextArr = lyricText.split('\n')
+
+        //去掉前面五个没用的歌词
+        lyricTextArr.splice(0, 5)  
+
+        //清除上一首的歌词
+        state.lyricTextArr = []
+
+        //将歌词与时间分离
+        lyricTextArr.forEach( eachLine => {
+          var t = eachLine.substring(eachLine.indexOf("[") + 1, eachLine.indexOf("]"))
+          var lyricTextLineObj = {
+            time: (t.split(":")[0] * 60 + parseFloat(t.split(":")[1])).toFixed(2),
+            text: eachLine.substring(eachLine.indexOf("]") + 1, eachLine.length)
+          }
+
+          state.lyricTextArr.push(lyricTextLineObj)
+        })
+        console.log(state.lyricTextArr)
       }).catch(err => {
         console.log(err)
       })
+    },
+
+    handleLyric(state) {
+
     },
 
     playPreviousSong(state) {

@@ -1,6 +1,13 @@
 {
   "name": "mini-music",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "一个简单、美观的音乐播放器",
+  "homepage": "https://gitee.com/cgper/miniMusic",
+  "author": {
+    "name": "CGPer",
+    "email": "1833608478@qq.com"
+  },
+  "license": "MulanPSL2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

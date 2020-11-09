@@ -37,10 +37,20 @@ export default {
     return {
       markImgUrl: require("@/assets/mark.svg"),
       markedImgUrl: require("@/assets/marked.svg"),
+      scrollerPosition: 0
     };
   },
   created() {
     this.$store.commit('handleTop100List')
+  },
+  beforeRouteLeave(to, from, next) {
+    //记下离开时滑块位置
+    this.scrollerPosition = document.querySelector('.top-100-item-box').scrollTop
+    next()
+  },
+  activated() {
+    //激活后恢复滑块位置
+    document.querySelector('.top-100-item-box').scrollTop = this.scrollerPosition
   },
   methods: {
     playThisSong(item, index) {

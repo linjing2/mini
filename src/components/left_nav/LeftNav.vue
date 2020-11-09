@@ -18,6 +18,10 @@
       <img class="marked-icon" src="@/assets/marked.svg">
       <div class="marked-text">喜欢</div>
     </router-link>
+    <router-link to="/LyricPage" class="lyric">
+      <img class="lyric-icon" src="@/assets/lyric.svg">
+      <div class="lyric-text">歌词</div>
+    </router-link>
     <div class="playing-box">
       <img
         :src="getAlbumImgUrl"
@@ -207,6 +211,40 @@ export default {
   line-height: 30px;
 }
 
+.lyric {
+  width: 160px;
+  height: 30px;
+  display: block;
+  margin-left: 20px;
+  margin-top: 20px;
+  text-align: center;
+  line-height: 30px;
+  font-size: 16px;
+  text-decoration: none;
+  border-radius: 10px;
+  background-color: rgba(255,255,255,0.2);
+}
+
+.lyric:hover {
+  background-color: var(--highlight-color);
+}
+
+.lyric-icon {
+  width: 20px;
+  height: 20px;
+  float: left;
+  margin-left: 20px;
+  margin-top: 5px;
+}
+
+.lyric-text {
+  float: left;
+  height: 30px;
+  color: black;
+  margin-left: 5px;
+  line-height: 30px;
+}
+
 .router-link-active {
   background-color: var(--highlight-color);
 }
@@ -214,7 +252,7 @@ export default {
 .playing-box {
   width: 180px;
   height: 220px;
-  margin-top: 240px;
+  margin-top: 190px;
   margin-left: 10px;
 }
 

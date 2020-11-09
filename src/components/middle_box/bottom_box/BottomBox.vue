@@ -5,7 +5,7 @@
         <div
           class="progressed"
           :style="{
-            width: duration == null ? 0 : (currentTime / duration) * 760 + 'px',
+            width: duration == null ? 0 : (currentTime / duration) * 748 + 'px',
           }"
         ></div>
       </div>
@@ -13,7 +13,7 @@
         class="slider-dot"
         :style="{
           'margin-left':
-            duration == null ? 0 : (currentTime / duration) * 760 + 'px',
+            duration == null ? 0 : (currentTime / duration) * 748 + 'px',
         }"
         @mousedown="songDotDown"
       >
@@ -188,14 +188,20 @@ export default {
     getDuration() {
       this.duration = this.audio.duration;
       this.playStateImgUrl = this.playingImgUrl;
+
+      //将上一首的播放速率延续到下一首
+      this.audio.playbackRate = this.playSpeed
+
       //检测app是否是刚启动，防止刚启动专辑图片就开始旋转
       this.$store.commit('sendHaveStarted', true)
+      
       //app已启动，播放歌曲专辑图片开始转动
       this.$store.commit('albumRotateRunning')
     },
 
     getCurrentTime() {
       this.currentTime = this.audio.currentTime;
+      this.$store.commit('sendCurrentTime', this.currentTime)
     },
 
     changeCurrentTime(value) {
@@ -363,24 +369,24 @@ export default {
     songDotMove(e) {
       if (this.isSongDotMovable) {
         //由于e.offset有抖动，所以改用e.x(即相对于整个页面坐标)
-        //所以修正值(比如下面的345)需要自己慢慢试探得出
-        this.songDotX = e.x - 345;
+        //所以修正值(比如下面的225)与整个app定位有关，需要自己慢慢试探得出
+        this.songDotX = e.x - 225;
         if (this.songDotX < 0) {
           //防止滑块滑出界
           this.songDotX = 0;
         }
-        if (this.songDotX > 760) {
+        if (this.songDotX > 748) {
           //防止滑块滑出界
-          this.songDotX = 760;
+          this.songDotX = 748;
         }
-        this.audio.currentTime = (this.songDotX / 760) * this.duration;
+        this.audio.currentTime = (this.songDotX / 748) * this.duration;
         this.audio.addEventListener("timeupdate", this.getCurrentTime);
       }
     },
 
     setSongDot(e) {
-      this.songDotX = e.x - 345;
-      this.audio.currentTime = (this.songDotX / 760) * this.duration;
+      this.songDotX = e.x - 225;
+      this.audio.currentTime = (this.songDotX / 748) * this.duration;
       this.audio.play();
     },
 
@@ -390,7 +396,7 @@ export default {
 
     volumeDotMove(e) {
       if (this.isVolumeDotMovable) {
-        this.volumeDotX = e.x - 988;
+        this.volumeDotX = e.x - 849;
         if (this.volumeDotX < 0) {
           this.volumeDotX = 0;
         }
@@ -402,12 +408,12 @@ export default {
     },
 
     setVolumeDot(e) {
-      this.volumeDotX = e.x - 988;
+      this.volumeDotX = e.x - 849;
       if(this.volumeDotX < 0 ) {
         this.volumeDotX = 0
       }
-      if(this.volumeDotX > 100 ) {
-        this.volumeDotX = 100
+      if(this.volumeDotX > 120 ) {
+        this.volumeDotX = 120
       }
       this.audio.volume = this.volumeDotX / 120;
       
@@ -459,7 +465,7 @@ export default {
 }
 
 .progress-box {
-  width: 100%;
+  width: 748px;
   height: 12px;
   margin-top: 10px;
   position: relative;
@@ -745,6 +751,7 @@ export default {
   width: 180px;
   height: 50px;
   float: right;
+  margin-right: 12px;
 }
 
 .volume-box img {

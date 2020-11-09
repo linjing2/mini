@@ -44,13 +44,14 @@ export default {
         this.bgStyle = {
           'background-image': 'url(' + this.albumImgUrl + ')'
         }
-      },1500)
+      },1000)
       
       return this.bgStyle
     }
   },
   mounted() {
     this.$store.commit('initData')
+    this.$router.push('Top100Page')
   }
 }
 </script>
@@ -66,12 +67,13 @@ export default {
   width: 1000px;
   height: 800px;
   position: relative;
-  margin: 0 auto;
-  margin-top: 20px;
+  margin-left: 15px;
+  margin-top: 15px;
   border-radius: 20px;
   -webkit-user-select: none;
   box-shadow: 0 0 10px 5px gray;
   overflow: hidden;
+  background-color: white;
 }
 
 .app-background {
