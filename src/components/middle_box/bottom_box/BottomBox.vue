@@ -1,11 +1,11 @@
 <template>
   <div class="bottom-box">
-    <div class="progress-box" @mousemove="songDotMove" @click="setSongDot">
+    <div class="progress-box" @click="setSongDot" ref="progressBox">
       <div class="progress-bar">
         <div
           class="progressed"
           :style="{
-            width: duration == null ? 0 : (currentTime / duration) * 748 + 'px',
+            width: duration == null ? 0 : (currentTime / duration) * 760 + 'px',
           }"
         ></div>
       </div>
@@ -13,9 +13,11 @@
         class="slider-dot"
         :style="{
           'margin-left':
-            duration == null ? 0 : (currentTime / duration) * 748 + 'px',
+            (duration == null ? (-6) : ((currentTime / duration) * 760 - 6)
+            ) + 'px',
         }"
         @mousedown="songDotDown"
+        @mousemove="songDotMove"
       >
         <div class="breath-dot"></div>
       </div>
@@ -88,8 +90,8 @@
       </div>
       <div
         class="volume-adjust-box"
-        @mousemove="volumeDotMove"
         @click="setVolumeDot"
+        ref="volumeAdjustBox"
       >
         <div class="volume-adjust-bar">
           <div
@@ -99,8 +101,9 @@
         </div>
         <div
           class="slider-dot"
-          :style="{ 'margin-left': volumeDotX + 'px' }"
+          :style="{ 'margin-left': (volumeDotX - 6) + 'px' }"
           @mousedown="volumeDotDown"
+          @mousemove="volumeDotMove"
         >
           <div class="breath-dot"></div>
         </div>
@@ -124,7 +127,6 @@ export default {
       isVolumeDotMovable: false,
       songDotX: null,
       volumeDotX: 24,
-      lastVolumeDotX: null,
       playStateImgUrl: require("@/assets/paused.svg"),
       playingImgUrl: require("@/assets/playing.svg"),
       pausedImgUrl: require("@/assets/paused.svg"),
@@ -368,35 +370,34 @@ export default {
 
     songDotMove(e) {
       if (this.isSongDotMovable) {
-        //由于e.offset有抖动，所以改用e.x(即相对于整个页面坐标)
-        //所以修正值(比如下面的225)与整个app定位有关，需要自己慢慢试探得出
-        this.songDotX = e.x - 225;
+        this.songDotX = e.x - this.$refs.progressBox.getBoundingClientRect().left
         if (this.songDotX < 0) {
           //防止滑块滑出界
           this.songDotX = 0;
         }
-        if (this.songDotX > 748) {
+        if (this.songDotX > 760) {
           //防止滑块滑出界
-          this.songDotX = 748;
+          this.songDotX = 760;
         }
-        this.audio.currentTime = (this.songDotX / 748) * this.duration;
+        this.audio.currentTime = (this.songDotX / 760) * this.duration;
         this.audio.addEventListener("timeupdate", this.getCurrentTime);
       }
     },
 
     setSongDot(e) {
-      this.songDotX = e.x - 225;
-      this.audio.currentTime = (this.songDotX / 748) * this.duration;
+      this.songDotX = e.x - this.$refs.progressBox.getBoundingClientRect().left
+      this.audio.currentTime = (this.songDotX / 760) * this.duration;
       this.audio.play();
     },
 
-    volumeDotDown() {
+    volumeDotDown(e) {
       this.isVolumeDotMovable = true;
     },
 
     volumeDotMove(e) {
       if (this.isVolumeDotMovable) {
-        this.volumeDotX = e.x - 849;
+        //音量坐标等于移动后坐标减去volume-adjust-box左侧的坐标
+        this.volumeDotX = e.x - this.$refs.volumeAdjustBox.getBoundingClientRect().left
         if (this.volumeDotX < 0) {
           this.volumeDotX = 0;
         }
@@ -408,7 +409,7 @@ export default {
     },
 
     setVolumeDot(e) {
-      this.volumeDotX = e.x - 849;
+      this.volumeDotX = e.x - this.$refs.volumeAdjustBox.getBoundingClientRect().left;
       if(this.volumeDotX < 0 ) {
         this.volumeDotX = 0
       }
@@ -416,15 +417,15 @@ export default {
         this.volumeDotX = 120
       }
       this.audio.volume = this.volumeDotX / 120;
-      
-      //保存音量到本地
-      localStorage.setItem('volumeDotX', this.volumeDotX.toString())
     },
 
     mouseUp() {
       this.isSongDotMovable = false;
       this.isVolumeDotMovable = false;
       this.audio.volume = this.volumeDotX / 120;
+
+      //保存音量到本地
+      localStorage.setItem('volumeDotX', this.volumeDotX.toString())
     },
 
     mute() {
@@ -465,7 +466,7 @@ export default {
 }
 
 .progress-box {
-  width: 748px;
+  width: 100%;
   height: 12px;
   margin-top: 10px;
   position: relative;
@@ -751,7 +752,6 @@ export default {
   width: 180px;
   height: 50px;
   float: right;
-  margin-right: 12px;
 }
 
 .volume-box img {

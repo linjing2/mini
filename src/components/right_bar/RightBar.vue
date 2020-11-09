@@ -22,7 +22,14 @@
         <div class="programDescription">
           <div class="descriptionHeader">声明：</div>
           <div class="descriptionBody">
-            此项目仅用于代码学习和技术交流，不提供任何音乐下载或vip付费服务。其数据来源于网络，本项目几乎与你打开浏览器在线听音乐无异，仅仅只是节省了你打开网站搜索的时间而已。请尊重音乐平台和创作者的版权，切勿做出任何损害音乐平台和创作者利益的行为。如若此项目无意侵犯了你的利益，请及时联系作者（1833608478@qq.com）,保证立即删除源代码。
+            此项目仅用于代码学习和技术交流，不提供任何音乐下载或vip付费服务。请尊重音乐平台和创作者的版权，切勿做出任何损害音乐平台和创作者利益的行为。如若此项目无意侵犯了你的利益，请及时联系作者（1833608478@qq.com）删除源代码。
+            提示：此app为无边框应用，右侧宽40px的区域为拖动区
+          </div>
+        </div>
+        <div class="programDescription">
+          <div class="descriptionHeader">提示：</div>
+          <div class="descriptionBody">
+            此app为无边框应用，右侧宽40px的区域为拖动区，按住左键进行窗口拖动。
           </div>
         </div>
         <div class="thanks">
@@ -171,10 +178,9 @@ export default {
 
 .about-page {
   width: 700px;
-  height: 340px;
   position: absolute;
   left: -800px;
-  top: 250px;
+  top: 200px;
   z-index: 5;
   border-radius: 20px;
   background-color: white;
@@ -243,6 +249,7 @@ export default {
 .thanks {
   border: 1px solid #c5b5f0;
   padding: 8px;
+  margin-bottom: 20px;
   border-radius: 10px;
   margin-top: 10px;
   font-size: 16px;
