@@ -13,7 +13,7 @@ Windows：[mini-music-Setup-1.0.0.exe](https://gitee.com/cgper/miniMusic/attach_
 
 Mac:[mini-music-1.0.0.dmg](https://gitee.com/cgper/miniMusic/attach_files/516069/download/mini-music-1.0.0.dmg)
 
-Linux:[mini-music_1.0.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/516318/download/mini-music_1.0.0_amd64.deb)
+Linux:[mini-music_1.0.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/516396/download/mini-music_1.0.0_amd64.deb)
 
 ### Web版
 在线体验：[点击在线体验](http://cgper.gitee.io/mini-music-webpage)
