@@ -66,7 +66,11 @@ app.on('activate', () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', () => {
+  setTimeout(() => {
+    createWindow() //解决Linux下背景无法透明问题
+  },100)
+})
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
