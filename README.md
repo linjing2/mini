@@ -11,7 +11,7 @@
 ### 安装包
 Windows：[mini-music-Setup-1.0.0.exe](https://gitee.com/cgper/miniMusic/attach_files/515999/download/mini-music%20Setup%201.0.0.exe)
 
-Mac:[mini-music-1.0.0.dmg](https://gitee.com/cgper/miniMusic/attach_files/516069/download/mini-music-1.0.0.dmg)
+Mac:[mini-music-1.0.0.dmg](https://gitee.com/cgper/miniMusic/attach_files/516527/download/mini-music-1.0.0.dmg)
 
 Linux:[mini-music_1.0.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/516396/download/mini-music_1.0.0_amd64.deb)
 
