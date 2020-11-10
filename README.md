@@ -19,15 +19,11 @@ Linux:[mini-music_1.0.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_file
 在线体验：[点击在线体验](http://cgper.gitee.io/mini-music-webpage)
 
 ### 截图
-#### Windows,Mac版
+#### desktop版
 ![发现](https://images.gitee.com/uploads/images/2020/1109/173555_cf3c6edf_2020534.png "发现.png")
 ![搜索](https://images.gitee.com/uploads/images/2020/1109/173626_ea6c763c_2020534.png "搜索.png")
 ![喜欢](https://images.gitee.com/uploads/images/2020/1109/173652_296e0304_2020534.png "喜欢.png")
 ![歌词](https://images.gitee.com/uploads/images/2020/1109/173705_b533eb64_2020534.png "歌词.png")
-#### Linux版
-![Linux版](https://images.gitee.com/uploads/images/2020/1110/180357_883c75a0_2020534.png "截图录屏_选择区域_20201110180046.png")
-
-为什么Linux主窗口没圆角，由于electron在Linux下的缺陷请查看electron相关文档。
 #### web版
 ![web版](https://images.gitee.com/uploads/images/2020/1109/174013_13efee9c_2020534.png "web版.png")
 
@@ -47,7 +43,6 @@ Linux:[mini-music_1.0.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_file
 > npm run electron:serve
 ##### 打包（你使用哪个系统平台就会打包对应平台的安装包）
 > npm run electron:build
-#### 注意：Linux请使用[Linux版源码](https://gitee.com/cgper/miniMusic/attach_files/516334/download/mini-music-linux.zip)
 #### web版
 web版和desktop版有着细微差别，请前往[迷你音乐web版](https://gitee.com/cgper/mini-music-webpage)
 
