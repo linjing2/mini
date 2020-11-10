@@ -19,7 +19,6 @@
   },
   "main": "background.js",
   "dependencies": {
-    "@suen/music-api": "^1.1.15",
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
