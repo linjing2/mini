@@ -23,7 +23,6 @@
           <div class="descriptionHeader">声明：</div>
           <div class="descriptionBody">
             此项目仅用于代码学习和技术交流，不提供任何音乐下载或vip付费服务。请尊重音乐平台和创作者的版权，切勿做出任何损害音乐平台和创作者利益的行为。如若此项目无意侵犯了你的利益，请及时联系作者（1833608478@qq.com）删除源代码。
-            提示：此app为无边框应用，右侧宽40px的区域为拖动区
           </div>
         </div>
         <div class="programDescription">
