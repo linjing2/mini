@@ -6,14 +6,14 @@
 ### 版权
 此项目仅用于代码学习和技术交流，不提供任何音乐下载或vip付费服务。请尊重音乐平台和创作者的版权，切勿做出任何损害音乐平台和创作者利益的行为。如若此项目无意侵犯了你的利益，请及时联系作者（1833608478@qq.com）,立即删除源代码。
 
-所有歌曲数据均来源于网络，本项目几乎与你打开浏览器在线听音乐无异，仅仅只是节省了你打开网站搜索的时间而已。这里特别感谢lunhui1994提供的数据接口[node-music-api](https://github.com/lunhui1994/node-music-api)。
+所有歌曲数据均来源于网络，本项目几乎与你打开浏览器在线听音乐无异，仅仅只是节省了你打开网站搜索的时间而已。这里特别感谢lunhui1994提供的数据接口[node-music-api](https://github.com/lunhui1994/node-music-api)。顺便提醒，数据接口随时可能失效，请提前做好心理准备。
 
 ### 安装包
-Windows：[mini-music-Setup-1.0.0.exe](https://gitee.com/cgper/miniMusic/attach_files/516686/download/mini-music%20Setup%201.0.0.exe)
+Windows：    [mini-music-Setup-1.0.0.exe](https://gitee.com/cgper/miniMusic/attach_files/516686/download/mini-music%20Setup%201.0.0.exe)
 
-Mac:[mini-music-1.0.0.dmg](https://gitee.com/cgper/miniMusic/attach_files/516527/download/mini-music-1.0.0.dmg)
+Mac:         [mini-music-1.0.0.dmg](https://gitee.com/cgper/miniMusic/attach_files/516527/download/mini-music-1.0.0.dmg)
 
-Linux:[mini-music_1.0.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/516538/download/mini-music_1.0.0_amd64.deb)
+Linux:       [mini-music_1.0.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/516538/download/mini-music_1.0.0_amd64.deb)
 
 ### Web版
 在线体验：[点击在线体验](http://cgper.gitee.io/mini-music-webpage)
@@ -28,7 +28,7 @@ Linux:[mini-music_1.0.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_file
 ![web版](https://images.gitee.com/uploads/images/2020/1109/174013_13efee9c_2020534.png "web版.png")
 
 ### 隐私
-为了防止用户退出应用后丢失历史数据，本应用会记录你的一些使用习惯（包括历史搜索、mark的歌曲、音量大小）。但所有数据均会保存到本地浏览器（或app)的localStorage中储存，不会发送到网络而造成隐私泄漏。这也意味着web版音乐播放器在你更换浏览器后就不会再有你的使用数据。
+为了防止用户退出应用后丢失历史数据，本应用会记录你的一些使用习惯（包括历史搜索、mark的歌曲、音量大小）。但所有数据均会保存到本地浏览器（或app)的localStorage中储存，不会发送到网络而造成隐私泄漏。这也意味着音乐播放器在你更换浏览器（或卸载app）后就不会再有你的使用数据。
 
 ### 注意
 此app为无边框应用，拖动窗口需在右侧40px宽的rightbar拖动区按住左键以拖动窗口，下图红色区：
