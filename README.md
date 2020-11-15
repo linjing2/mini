@@ -30,7 +30,7 @@ Linux:       [mini-music_1.0.0_amd64.deb](https://gitee.com/cgper/miniMusic/atta
 ### 隐私
 为了防止用户退出应用后丢失历史数据，本应用会记录你的一些使用习惯（包括历史搜索、mark的歌曲、音量大小）。但所有数据均会保存到本地浏览器（或app)的localStorage中储存，不会发送到网络而造成隐私泄漏。这也意味着音乐播放器在你更换浏览器（或卸载app）后就不会再有你的使用数据。
 
-### 注意
+### 提示
 此app为无边框应用，拖动窗口需在右侧40px宽的rightbar拖动区按住左键以拖动窗口，下图红色区：
 ![拖动区](https://images.gitee.com/uploads/images/2020/1109/195202_4bfc9ec9_2020534.png "rightbar.png")
 
@@ -45,6 +45,20 @@ Linux:       [mini-music_1.0.0_amd64.deb](https://gitee.com/cgper/miniMusic/atta
 > npm run electron:build
 #### web版
 web版和desktop版有着细微差别，请前往[迷你音乐web版](https://gitee.com/cgper/mini-music-webpage)
+
+### 更新
+#### 相比上一版的变化：
+- 修复搜索页面新搜索后没自动回到顶端
+- 修复播放模式弹窗未对齐
+- 修复搜索框中的字体太靠近边框
+
+- 新增一键回顶
+- 按需引入element组件，减少打包体积
+- 新增键盘控制
+
+| 空格键   | up键  | down键 | left键 | right键 |
+|-------|------|-------|-------|--------|
+| 暂停/播放 | 增加音量 | 减小音量  | 上一首   | 下一首    |
 
 ### 致谢
 [Vue.js](https://cn.vuejs.org/)
