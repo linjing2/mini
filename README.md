@@ -9,11 +9,11 @@
 所有歌曲数据均来源于网络，本项目几乎与你打开浏览器在线听音乐无异，仅仅只是节省了你打开网站搜索的时间而已。这里特别感谢lunhui1994提供的数据接口[node-music-api](https://github.com/lunhui1994/node-music-api)。顺便提醒，数据接口随时可能失效，请提前做好心理准备。
 
 ### 安装包
-Windows：    [mini-music-Setup-1.1.0.exe](https://gitee.com/cgper/miniMusic/attach_files/520331/download/mini-music%20Setup%201.1.0.exe)
+Windows：    [mini-music-Setup-1.0.0.exe](https://gitee.com/cgper/miniMusic/attach_files/516686/download/mini-music%20Setup%201.0.0.exe)
 
 Mac:         [mini-music-1.0.0.dmg](https://gitee.com/cgper/miniMusic/attach_files/516527/download/mini-music-1.0.0.dmg)
 
-Linux:       [mini-music_1.1.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/520386/download/mini-music_1.1.0_amd64.deb)
+Linux:       [mini-music_1.0.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/516538/download/mini-music_1.0.0_amd64.deb)
 
 ### Web版
 在线体验：[点击在线体验](http://cgper.gitee.io/mini-music-webpage)
