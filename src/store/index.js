@@ -27,6 +27,7 @@ export default new Vuex.Store({
     markedListIndex: null,
     isMarkedPageActive: false,
     haveSearched: false,
+    haveNewSearch: false,
     searchText: '',
     currentPage: 1,
     loadMoreText: '加载更多',
@@ -36,7 +37,7 @@ export default new Vuex.Store({
   },
   mutations: {
 
-    initData(state) {
+    getHistoryData(state) {
       if (localStorage.hasOwnProperty('markedList')) {
         state.markedList = JSON.parse(localStorage.getItem('markedList'))
       }
@@ -131,8 +132,8 @@ export default new Vuex.Store({
                 state.currentListIndex = 0
                 state.markedListIndex = 0
               }
-              if (state.currentList.length != 0) {
-                this.commit('requestSongUrl')
+              if (state.currentList.length !== 0) {
+                this.commit('getSongUrlAndLyric')
               }
             }
             break
@@ -170,6 +171,8 @@ export default new Vuex.Store({
 
     handleSearchSong(state, searchText) {
       state.searchText = searchText
+      state.searchListIndex = null
+      state.haveNewSearch = true
       getSearchList(state.searchText, 1)
         .then(res => {
           console.log(res)
@@ -216,10 +219,10 @@ export default new Vuex.Store({
       if (state.isMarkedPageActive) {
         state.markedListIndex = state.currentListIndex
       }
-      this.commit('requestSongUrl')
+      this.commit('getSongUrlAndLyric')
     },
 
-    requestSongUrl(state) {
+    getSongUrlAndLyric(state) {
       request({
         url: 'song',
         params: {
@@ -258,14 +261,9 @@ export default new Vuex.Store({
 
           state.lyricTextArr.push(lyricTextLineObj)
         })
-        console.log(state.lyricTextArr)
       }).catch(err => {
         console.log(err)
       })
-    },
-
-    handleLyric(state) {
-
     },
 
     playPreviousSong(state) {
@@ -290,14 +288,14 @@ export default new Vuex.Store({
       }
       state.currentListIndex -= 1
       if (state.currentListIndex >= 0) {
-        this.commit('requestSongUrl')
+        this.commit('getSongUrlAndLyric')
       } else {
         state.currentListIndex = 0
       }
     },
 
     playCurrentSong() {
-      this.commit('requestSongUrl')
+      this.commit('getSongUrlAndLyric')
     },
 
     playNextSong(state) {
@@ -322,12 +320,12 @@ export default new Vuex.Store({
       }
       state.currentListIndex += 1
       if (state.currentListIndex < state.currentList.length) {
-        this.commit('requestSongUrl')
+        this.commit('getSongUrlAndLyric')
       } else {
         //当播放列表index超出，如果是列表循环模式，则将index置零，从头开始播放
         if (state.playMode == "listCycleMode") {
           state.currentListIndex = 0
-          this.commit('requestSongUrl')
+          this.commit('getSongUrlAndLyric')
         } else {
           //如果不是列表循环模式，则index停留在最后
           state.currentListIndex = state.currentList.length - 1

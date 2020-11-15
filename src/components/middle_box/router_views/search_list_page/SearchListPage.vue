@@ -1,55 +1,79 @@
 <template>
-  <div class="search-list-page">
-    <div class="search-list-title">
-      <div></div>
-      <div>歌名</div>
-      <div>歌手</div>
-      <div>专辑</div>
+<div class="search-list-page">
+  <div class="search-list-title">
+    <div></div>
+    <div>歌名</div>
+    <div>歌手</div>
+    <div>专辑</div>
+  </div>
+  <div class="search-list-box" ref="searchListBoxDom">
+    <div class="search-list-backtop" @click="backTop" v-show="isShowBackTop">
+      <img src="@/assets/backtop.svg" width="30px">
     </div>
-    <div class="search-list-box">
-      <div
-        class="search-list-item"
-        v-for="(item, index) in this.$store.state.searchList"
-        :key="index"
-        
-        :style="{
+    <div class="search-list-item" v-for="(item, index) in searchList" :key="index" :style="{
           'background-color':
-            $store.state.searchListIndex == index
+            searchListIndex === index
               ? 'var(--highlight-color)'
               : '',
-          'border-radius': $store.state.searchListIndex == index ? '10px' : '0',
-        }"
-      >
-        <div class="mark-img">
-          <img :src="setMarkImgUrl(item)" @click="markSong(item, index)" width="18px" />
-        </div>
-        <div class="search-list-song-name" @click="playThisSong(item, index)">{{ item.songname }}</div>
-        <div class="search-list-singer-name" @click="playThisSong(item, index)">{{ item.singer.name }}</div>
-        <div class="search-list-album-name" @click="playThisSong(item, index)">{{ item.albumname }}</div>
+          'border-radius': searchListIndex === index ? '10px' : '0',
+        }">
+      <div class="mark-img">
+        <img :src="setMarkImgUrl(item)" @click="markSong(item, index)" width="18px" />
       </div>
-      <div class="load-more" @click="loadMore" v-show="$store.state.haveSearched">{{$store.state.loadMoreText}}</div>
+      <div class="search-list-song-name" @click="playThisSong(item, index)">{{ item.songname }}</div>
+      <div class="search-list-singer-name" @click="playThisSong(item, index)">{{ item.singer.name }}</div>
+      <div class="search-list-album-name" @click="playThisSong(item, index)">{{ item.albumname }}</div>
     </div>
+    <div class="load-more" @click="loadMore" v-show="haveSearched">{{loadMoreText}}</div>
   </div>
+</div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: "search-list-page",
   data() {
     return {
       markImgUrl: require("@/assets/mark.svg"),
       markedImgUrl: require("@/assets/marked.svg"),
-      scrollerPosition: 0
+      scrollerPosition: 0,
+      isShowBackTop: false
     }
+  },
+  computed: {
+    ...mapState({
+      searchList: state => state.searchList,
+      searchListIndex: state => state.searchListIndex,
+      markedList: state => state.markedList,
+      haveSearched: state => state.haveSearched,
+      loadMoreText: state => state.loadMoreText,
+    }),
+  },
+  mounted() {
+    //添加监听scrollToTop事件，使新的搜索发生后立即回到顶端
+    this.$EventBus.$on("scrollToTop", () => {
+      this.$refs.searchListBoxDom.scrollTop = 0
+    })
+
+    //当滑块滑动到一定距离再出现
+    this.$refs.searchListBoxDom.addEventListener('scroll', (e) => {
+      if(this.$refs.searchListBoxDom.scrollTop > 600) {
+        this.isShowBackTop = true
+      } else {
+        this.isShowBackTop = false
+      }
+    })
   },
   beforeRouteLeave(to, from, next) {
     //记下离开时滑块位置
-    this.scrollerPosition = document.querySelector('.search-list-box').scrollTop
+    this.scrollerPosition = this.$refs.searchListBoxDom.scrollTop
     next()
   },
   activated() {
     //激活后恢复滑块位置
-    document.querySelector('.search-list-box').scrollTop = this.scrollerPosition
+    this.$refs.searchListBoxDom.scrollTop = this.scrollerPosition
   },
   methods: {
     playThisSong(item, index) {
@@ -66,12 +90,16 @@ export default {
     setMarkImgUrl(item) {
       //将已mark的歌曲逐一与搜索列表对比，如有mark中的歌曲，则红心点亮
       var haveMatchedId = false
-      for(let i=0; i<this.$store.state.markedList.length; i++) {
-        if(item.songmid === this.$store.state.markedList[i].songmid) {
+      for (let i = 0; i < this.markedList.length; i++) {
+        if (item.songmid === this.markedList[i].songmid) {
           haveMatchedId = true
         }
       }
       return haveMatchedId === true ? this.markedImgUrl : this.markImgUrl
+    },
+
+    backTop() {
+      this.$refs.searchListBoxDom.scrollTop = 0
     },
 
     loadMore() {
@@ -115,6 +143,25 @@ export default {
   width: 100%;
   height: 660px;
   overflow-x: hidden;
+}
+
+.search-list-backtop {
+  width: 30px;
+  height: 30px;
+  margin-left: 710px;
+  margin-top: 580px;
+  position: fixed;
+  border-radius: 10px;
+  background-color: rgba(255,255,255,0.1);
+}
+
+.search-list-backtop:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+}
+
+.search-list-backtop:active {
+  transform: scale(1.2);
 }
 
 .search-list-item {
@@ -169,7 +216,7 @@ export default {
   line-height: 40px;
   text-align: center;
   border-radius: 10px;
-  background-color: rgba(255,255,255,0.2);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .load-more:hover {

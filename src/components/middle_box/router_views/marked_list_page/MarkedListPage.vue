@@ -9,15 +9,15 @@
     <div class="marked-list-box">
       <div
         class="marked-list-item"
-        v-for="(item, index) in this.$store.state.markedList"
+        v-for="(item, index) in markedList"
         :key="index"
         
         :style="{
           'background-color':
-            $store.state.markedListIndex == index
+            markedListIndex === index
               ? 'var(--highlight-color)'
               : '',
-          'border-radius': $store.state.markedListIndex == index ? '10px' : '0',
+          'border-radius': markedListIndex === index ? '10px' : '0',
         }"
       >
         <div class="mark-img">
@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "marked-list-page",
   data() {
@@ -39,6 +41,12 @@ export default {
       markedImgUrl: require("@/assets/marked.svg"),
       scrollerPosition: 0
     }
+  },
+  computed: {
+    ...mapState({
+      markedList: (state) => state.markedList,
+      markedListIndex: (state) => state.markedListIndex,
+    }),
   },
   beforeRouteLeave(to, from, next) {
     //记下离开时滑块位置
@@ -57,7 +65,7 @@ export default {
       this.$store.commit("playCurrentSong");
     },
 
-    markSong(item, index) {
+    markSong(item) {
       this.$store.commit('sendMarkedSong', item)
     },
   },
