@@ -12,7 +12,7 @@
         v-for="(item, index) in markedList"
         :key="index"
         :style="
-          currentListIndex === null
+          currentList.length === 0
             ? ''
             : currentList[currentListIndex].songmid === item.songmid
             ? playingSongStyle
@@ -50,7 +50,6 @@ export default {
       currentList: (state) => state.currentList,
       currentListIndex: (state) => state.currentListIndex,
       markedList: (state) => state.markedList,
-      markedListIndex: (state) => state.markedListIndex,
     }),
   },
   beforeRouteLeave(to, from, next) {
@@ -64,9 +63,12 @@ export default {
   },
   methods: {
     playThisSong(item, index) {
-      var markedListIndex = index;
-      this.$store.commit("sendMarkedPageActive");
-      this.$store.commit("sendMarkedListIndex", markedListIndex);
+      var payload = {
+        index: index,
+        activatedPage: 'markedListPage'
+      }
+
+      this.$store.commit("sendCurrentIndex", payload)
       this.$store.commit("playCurrentSong");
     },
 

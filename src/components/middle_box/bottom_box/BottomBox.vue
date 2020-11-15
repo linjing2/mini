@@ -56,19 +56,19 @@
         width="20px"
       />
       <div class="mode-options-box" v-show="isShowModeOptions">
-        <div class="mode-option" @click="listForwardMode">
+        <div class="mode-option" @click="changePlayMode('listForwardMode')">
           <img src="@/assets/list-forward.svg" />
           <div class="mode-option-text">顺序播放</div>
         </div>
-        <div class="mode-option" @click="singleCycleMode">
+        <div class="mode-option" @click="changePlayMode('singleCycleMode')">
           <img src="@/assets/single-cycle.svg" />
           <div class="mode-option-text">单曲循环</div>
         </div>
-        <div class="mode-option" @click="listCycleMode">
+        <div class="mode-option" @click="changePlayMode('listCycleMode')">
           <img src="@/assets/list-cycle.svg" />
           <div class="mode-option-text">列表循环</div>
         </div>
-        <div class="mode-option" @click="randomMode">
+        <div class="mode-option" @click="changePlayMode('randomMode')">
           <img src="@/assets/random.svg" />
           <div class="mode-option-text">随机播放</div>
         </div>
@@ -204,21 +204,25 @@ export default {
           }
         }
       } else {
-        isCurrentListEmpty = true
+        isCurrentListEmpty = true;
       }
-      return isCurrentListEmpty ? this.markImgUrl : (haveMatchedId === true ? this.markedImgUrl : this.markImgUrl);
+      return isCurrentListEmpty
+        ? this.markImgUrl
+        : haveMatchedId === true
+        ? this.markedImgUrl
+        : this.markImgUrl;
     },
   },
   watch: {
-    //由于按键监听会影响搜索输入，所以搜索时一定要移除按键监听
-    //搜索结束再添加监听
-    isSearchInputOnFocus: function() {
-      if(this.isSearchInputOnFocus === true) {
-        document.removeEventListener("keydown", this.keyDown)
+    //由于按键监听会干扰搜索输入，所以这里监测用户是否正在搜索输入
+    //搜索时一定要移除按键监听,搜索结束再添加监听
+    isSearchInputOnFocus: function () {
+      if (this.isSearchInputOnFocus === true) {
+        document.removeEventListener("keydown", this.keyDown);
       } else {
         document.addEventListener("keydown", this.keyDown);
       }
-    }
+    },
   },
   mounted() {
     //获取历史音量值
@@ -226,7 +230,7 @@ export default {
       this.volumeDotX = parseInt(localStorage.getItem("volumeDotX"));
     }
 
-    //初始化
+    //初始化audio
     var audio = document.querySelector("#audio");
     this.audio = audio;
     this.audio.volume = this.volumeDotX / 120;
@@ -245,7 +249,6 @@ export default {
     },
 
     addKeyboardEventListener() {
-      // document.querySelector(".bottom-box").addEventListener("keydown", this.keyDown);
       document.addEventListener("keydown", this.keyDown);
     },
 
@@ -342,24 +345,22 @@ export default {
       }, 200);
     },
 
-    listForwardMode() {
-      this.$store.commit("sendListForwardMode");
-      this.modeStateImgUrl = this.listForwardImgUrl;
-    },
-
-    singleCycleMode() {
-      this.$store.commit("sendSingleCycleMode");
-      this.modeStateImgUrl = this.singleCycleImgUrl;
-    },
-
-    listCycleMode() {
-      this.$store.commit("sendListCycleMode");
-      this.modeStateImgUrl = this.listCycleImgUrl;
-    },
-
-    randomMode() {
-      this.$store.commit("sendRandomMode");
-      this.modeStateImgUrl = this.randomImgUrl;
+    changePlayMode(mode) {
+      this.$store.commit("sendPlayMode", mode);
+      switch (mode) {
+        case "listForwardMode":
+          this.modeStateImgUrl = this.listForwardImgUrl;
+          break;
+        case "singleCycleMode":
+          this.modeStateImgUrl = this.singleCycleImgUrl;
+          break;
+        case "listCycleMode":
+          this.modeStateImgUrl = this.listCycleImgUrl;
+          break;
+        case "randomMode":
+          this.modeStateImgUrl = this.randomImgUrl;
+          break;
+      }
     },
 
     hideModeOptions() {
@@ -406,6 +407,10 @@ export default {
           this.playStateImgUrl = this.pausedImgUrl;
           this.$store.commit("albumRotatePaused");
         }
+      } else {
+        this.audio.pause();
+        this.playStateImgUrl = this.pausedImgUrl;
+        this.$store.commit("albumRotatePaused");
       }
     },
 

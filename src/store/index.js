@@ -10,24 +10,17 @@ import getTop100List from '@/network/getTop100List.js'
 
 export default new Vuex.Store({
   state: {
-    searchList: [],
-    searchListIndex: null,
-    isSearchPageActive: false,
-    top100List: [],
-    top100ListIndex: null,
-    isTop100PageActive: false,
     currentList: [],
-    currentListItem: null,
     currentListIndex: null,
+    searchList: [],
+    top100List: [],
+    markedList: [],
+    isPlayingMarkedListSong: false,
     currentSongUrl: '',
     playMode: 'listForwardMode',
     haveStarted: false,
     albumImgStyle: {},
-    markedList: [],
-    markedListIndex: null,
-    isMarkedPageActive: false,
     haveSearched: false,
-    haveNewSearch: false,
     searchText: '',
     currentPage: 1,
     loadMoreText: '加载更多',
@@ -44,59 +37,28 @@ export default new Vuex.Store({
       }
     },
 
-    sendSearchListIndex(state, searchListIdex) {
-      state.searchListIndex = searchListIdex
-      state.currentListIndex = searchListIdex
-      state.currentList = state.searchList
-      state.currentListItem = state.currentList[state.currentListIndex]
+    sendCurrentIndex(state, payload) {
+      state.currentListIndex = payload.index
+      switch (payload.activatedPage) {
+        case 'searchListPage':
+          state.currentList = state.searchList
+          state.isPlayingMarkedListSong = false
+          break
+
+        case 'top100Page':
+          state.currentList = state.top100List
+          state.isPlayingMarkedListSong = false
+          break
+
+        case 'markedListPage':
+          state.currentList = state.markedList
+          state.isPlayingMarkedListSong = true
+          break
+      }
     },
 
-    sendTop100ListIndex(state, top100ListIndex) {
-      state.top100ListIndex = top100ListIndex
-      state.currentListIndex = top100ListIndex
-      state.currentList = state.top100List
-      state.currentListItem = state.currentList[state.currentListIndex]
-    },
-
-    sendMarkedListIndex(state, markedListIndex) {
-      state.markedListIndex = markedListIndex
-      state.currentListIndex = markedListIndex
-      state.currentList = state.markedList
-      state.currentListItem = state.currentList[state.currentListIndex]
-    },
-
-    sendSearchPageActive(state) {
-      state.isSearchPageActive = true
-      state.isTop100PageActive = false
-      state.isMarkedPageActive = false
-    },
-
-    sendTop100PageActive(state) {
-      state.isTop100PageActive = true
-      state.isSearchPageActive = false
-      state.isMarkedPageActive = false
-    },
-
-    sendMarkedPageActive(state) {
-      state.isMarkedPageActive = true
-      state.isSearchPageActive = false
-      state.isTop100PageActive = false
-    },
-
-    sendListForwardMode(state) {
-      state.playMode = 'listForwardMode'
-    },
-
-    sendSingleCycleMode(state) {
-      state.playMode = 'singleCycleMode'
-    },
-
-    sendListCycleMode(state) {
-      state.playMode = 'listCycleMode'
-    },
-
-    sendRandomMode(state) {
-      state.playMode = 'randomMode'
+    sendPlayMode(state, mode) {
+      state.playMode = mode
     },
 
     sendHaveStarted(state, haveStarted) {
@@ -125,17 +87,14 @@ export default new Vuex.Store({
             haveSameItem = true
 
             //当在喜欢页面点击mark时，处理逻辑有点复杂，初步处理下
-            if (state.isMarkedPageActive) {
-              state.currentList = state.markedList
+            if (state.isPlayingMarkedListSong === true) {
 
               //取消当前mark歌曲后，自动播放上一首
               state.currentListIndex -= 1
-              state.markedListIndex -= 1
 
               //最上面的歌曲取消mark后，停在第一首
               if (state.currentListIndex < 0) {
                 state.currentListIndex = 0
-                state.markedListIndex = 0
               }
               if (state.currentList.length !== 0) {
                 this.commit('getSongUrlAndLyric')
@@ -167,21 +126,21 @@ export default new Vuex.Store({
     },
 
     handleTop100List(state) {
-      getTop100List().then( res => {
+      getTop100List().then(res => {
         state.top100List = res.data.data.list
-      }).catch( err => {
+      }).catch(err => {
         console.log(err)
       })
     },
 
     handleSearchSong(state, searchText) {
       state.searchText = searchText
-      state.searchListIndex = null
-      state.haveNewSearch = true
       getSearchList(state.searchText, 1)
         .then(res => {
           console.log(res)
           state.searchList = res.data.data.list;
+
+          //搜索后再显示loadMore
           state.haveSearched = true
         })
         .catch(err => {
@@ -195,7 +154,11 @@ export default new Vuex.Store({
         getSearchList(state.searchText, state.currentPage)
           .then(res => {
             console.log(res.data.data.list)
+
+            //得到下一页的搜索结果
             var moreSearchList = res.data.data.list
+
+            //每页请求50首歌曲，如请求结果不足50首则说明没有更多歌曲了
             if (moreSearchList.length < 50) {
               state.loadMoreText = "已到达底线，再也加载不出来了"
               state.searchList.push(...res.data.data.list)
@@ -214,16 +177,6 @@ export default new Vuex.Store({
     handleRandomMode(state) {
       var randomIndex = Math.floor(Math.random() * state.currentList.length)
       state.currentListIndex = randomIndex
-      //在各个播放列表随机播放，下一首自动将光标移到将要播放的歌曲上
-      if (state.isSearchPageActive) {
-        state.searchListIndex = state.currentListIndex
-      }
-      if (state.isTop100PageActive) {
-        state.top100ListIndex = state.currentListIndex
-      }
-      if (state.isMarkedPageActive) {
-        state.markedListIndex = state.currentListIndex
-      }
       this.commit('getSongUrlAndLyric')
     },
 
@@ -251,13 +204,13 @@ export default new Vuex.Store({
         var lyricTextArr = lyricText.split('\n')
 
         //去掉前面五个没用的歌词
-        lyricTextArr.splice(0, 5)  
+        lyricTextArr.splice(0, 5)
 
         //清除上一首的歌词
         state.lyricTextArr = []
 
         //将歌词与时间分离
-        lyricTextArr.forEach( eachLine => {
+        lyricTextArr.forEach(eachLine => {
           var t = eachLine.substring(eachLine.indexOf("[") + 1, eachLine.indexOf("]"))
           var lyricTextLineObj = {
             time: (t.split(":")[0] * 60 + parseFloat(t.split(":")[1])).toFixed(2),
@@ -273,24 +226,6 @@ export default new Vuex.Store({
 
     playPreviousSong(state) {
       //各个列表上一首到头则index重新置零
-      if (state.isSearchPageActive) {
-        state.searchListIndex -= 1
-        if (state.searchListIndex < 0) {
-          state.searchListIndex = 0
-        }
-      }
-      if (state.isTop100PageActive) {
-        state.top100ListIndex -= 1
-        if (state.top100ListIndex < 0) {
-          state.top100ListIndex = 0
-        }
-      }
-      if (state.isMarkedPageActive) {
-        state.markedListIndex -= 1
-        if (state.markedListIndex < 0) {
-          state.markedListIndex = 0
-        }
-      }
       state.currentListIndex -= 1
       if (state.currentListIndex >= 0) {
         this.commit('getSongUrlAndLyric')
@@ -305,30 +240,12 @@ export default new Vuex.Store({
 
     playNextSong(state) {
       //各个列表下一首到头了，则将index停留在最后一位
-      if (state.isSearchPageActive) {
-        state.searchListIndex += 1
-        if (state.searchListIndex > state.searchList.length - 1) {
-          state.searchListIndex = state.searchList.length - 1
-        }
-      }
-      if (state.isTop100PageActive) {
-        state.top100ListIndex += 1
-        if (state.top100ListIndex > state.top100List.length - 1) {
-          state.top100ListIndex = state.top100List.length - 1
-        }
-      }
-      if (state.isMarkedPageActive) {
-        state.markedListIndex += 1
-        if (state.markedListIndex > state.markedList.length - 1) {
-          state.markedListIndex = state.markedList.length - 1
-        }
-      }
       state.currentListIndex += 1
       if (state.currentListIndex < state.currentList.length) {
         this.commit('getSongUrlAndLyric')
       } else {
         //当播放列表index超出，如果是列表循环模式，则将index置零，从头开始播放
-        if (state.playMode == "listCycleMode") {
+        if (state.playMode === "listCycleMode") {
           state.currentListIndex = 0
           this.commit('getSongUrlAndLyric')
         } else {

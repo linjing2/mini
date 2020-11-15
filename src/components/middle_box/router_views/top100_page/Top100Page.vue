@@ -10,7 +10,7 @@
         v-for="(item, index) in top100List"
         :key="index"
         :style="
-          currentListIndex === null
+          currentList.length === 0
             ? ''
             : currentList[currentListIndex].songmid === item.songmid
             ? playingSongStyle
@@ -58,7 +58,6 @@ export default {
       currentList: (state) => state.currentList,
       currentListIndex: (state) => state.currentListIndex,
       top100List: state => state.top100List,
-      top100ListIndex: state => state.top100ListIndex,
       markedList: state => state.markedList,
     }),
   },
@@ -85,9 +84,12 @@ export default {
   },
   methods: {
     playThisSong(item, index) {
-      var top100ListIndex = index;
-      this.$store.commit("sendTop100PageActive");
-      this.$store.commit("sendTop100ListIndex", top100ListIndex);
+      var payload = {
+        index: index,
+        activatedPage: 'top100Page'
+      }
+
+      this.$store.commit("sendCurrentIndex", payload)
       this.$store.commit("playCurrentSong");
     },
 

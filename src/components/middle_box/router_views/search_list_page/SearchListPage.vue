@@ -15,7 +15,7 @@
         v-for="(item, index) in searchList"
         :key="index"
         :style="
-          currentListIndex === null
+          currentList.length === 0
             ? ''
             : currentList[currentListIndex].songmid === item.songmid
             ? playingSongStyle
@@ -68,7 +68,6 @@ export default {
       currentList: (state) => state.currentList,
       currentListIndex: (state) => state.currentListIndex,
       searchList: (state) => state.searchList,
-      searchListIndex: (state) => state.searchListIndex,
       markedList: (state) => state.markedList,
       haveSearched: (state) => state.haveSearched,
       loadMoreText: (state) => state.loadMoreText,
@@ -100,9 +99,12 @@ export default {
   },
   methods: {
     playThisSong(item, index) {
-      var searchListIndex = index;
-      this.$store.commit("sendSearchPageActive");
-      this.$store.commit("sendSearchListIndex", searchListIndex);
+      var payload = {
+        index: index,
+        activatedPage: 'searchListPage'
+      }
+
+      this.$store.commit("sendCurrentIndex", payload)
       this.$store.commit("playCurrentSong");
     },
 
