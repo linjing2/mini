@@ -9,9 +9,13 @@
         class="top-100-item"
         v-for="(item, index) in top100List"
         :key="index"
-        :style="{
-          transform: top100ListIndex === index ? 'scale(1.1)' : '',
-        }"
+        :style="
+          currentListIndex === null
+            ? ''
+            : currentList[currentListIndex].songmid === item.songmid
+            ? playingSongStyle
+            : ''
+        "
       >
         <img
           class="top-100-mark-img"
@@ -43,11 +47,16 @@ export default {
       markImgUrl: require("@/assets/mark.svg"),
       markedImgUrl: require("@/assets/marked.svg"),
       scrollerPosition: 0,
-      isShowBackTop: false
+      isShowBackTop: false,
+      playingSongStyle: {
+        "transform": "scale(1.1)",
+      },
     };
   },
   computed: {
     ...mapState({
+      currentList: (state) => state.currentList,
+      currentListIndex: (state) => state.currentListIndex,
       top100List: state => state.top100List,
       top100ListIndex: state => state.top100ListIndex,
       markedList: state => state.markedList,

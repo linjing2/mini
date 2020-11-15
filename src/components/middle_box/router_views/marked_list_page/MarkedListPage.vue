@@ -11,14 +11,13 @@
         class="marked-list-item"
         v-for="(item, index) in markedList"
         :key="index"
-        
-        :style="{
-          'background-color':
-            markedListIndex === index
-              ? 'var(--highlight-color)'
-              : '',
-          'border-radius': markedListIndex === index ? '10px' : '0',
-        }"
+        :style="
+          currentListIndex === null
+            ? ''
+            : currentList[currentListIndex].songmid === item.songmid
+            ? playingSongStyle
+            : ''
+        "
       >
         <div class="mark-img">
           <img :src="markedImgUrl" @click="markSong(item, index)" width="18px" />
@@ -39,11 +38,17 @@ export default {
   data() {
     return {
       markedImgUrl: require("@/assets/marked.svg"),
-      scrollerPosition: 0
+      scrollerPosition: 0,
+      playingSongStyle: {
+        "background-color": "var(--highlight-color)",
+        "border-radius": "10px",
+      },
     }
   },
   computed: {
     ...mapState({
+      currentList: (state) => state.currentList,
+      currentListIndex: (state) => state.currentListIndex,
       markedList: (state) => state.markedList,
       markedListIndex: (state) => state.markedListIndex,
     }),

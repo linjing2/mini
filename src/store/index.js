@@ -33,7 +33,8 @@ export default new Vuex.Store({
     loadMoreText: '加载更多',
     canLoadMore: true,
     lyricTextArr: [],
-    currentTime: null
+    currentTime: null,
+    isSearchInputOnFocus: false
   },
   mutations: {
 
@@ -104,6 +105,10 @@ export default new Vuex.Store({
 
     sendCurrentTime(state, currentTime) {
       state.currentTime = currentTime
+    },
+
+    sendSearchInputOnFocus(state, isSearchInputOnFocus) {
+      state.isSearchInputOnFocus = isSearchInputOnFocus
     },
 
     sendMarkedSong(state, item) {

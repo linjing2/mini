@@ -4,7 +4,7 @@
     <img @click="goBack" src="@/assets/back.svg" width="20px" />
     <img @click="goForward" src="@/assets/forward.svg" width="20px" />
   </div>
-  <input type="text" class="search-input" v-model.trim="searchText" @change="searchSong" placeholder="搜索音乐" @focus="isShowSearchHistory = true" @blur="hideSearchHistory" @input="isShowSearchHistory = true" />
+  <input type="text" class="search-input" v-model.trim="searchText" @change="searchSong" placeholder="搜索音乐" @focus="showSearchHistory" @blur="hideSearchHistory" @input="isShowSearchHistory = true" />
   <div class="search-history-box" v-show="isShowSearchHistory">
     <div class="search-history-item" v-for="(item, index) in searchHistoryArr" :key="index">
       <div class="search-history-block">
@@ -114,7 +114,13 @@ export default {
       this.isShowSearchHistory = false;
     },
 
+    showSearchHistory() {
+      this.isShowSearchHistory = true
+      this.$store.commit("sendSearchInputOnFocus", true)
+    },
+
     hideSearchHistory() {
+      this.$store.commit("sendSearchInputOnFocus", false)
       //延时隐藏历史搜索，不然点击历史搜索无法输入
       setTimeout(() => {
 

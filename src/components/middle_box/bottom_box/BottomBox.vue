@@ -1,5 +1,5 @@
 <template>
-  <div class="bottom-box" @keyup.space="pause">
+  <div class="bottom-box">
     <div class="progress-box" @click="setSongDot" ref="progressBox">
       <div class="progress-bar">
         <div
@@ -166,6 +166,7 @@ export default {
       currentSongUrl: (state) => state.currentSongUrl,
       markedList: (state) => state.markedList,
       playMode: (state) => state.playMode,
+      isSearchInputOnFocus: (state) => state.isSearchInputOnFocus,
     }),
 
     showTime() {
@@ -208,6 +209,17 @@ export default {
       return isCurrentListEmpty ? this.markImgUrl : (haveMatchedId === true ? this.markedImgUrl : this.markImgUrl);
     },
   },
+  watch: {
+    //由于按键监听会影响搜索输入，所以搜索时一定要移除按键监听
+    //搜索结束再添加监听
+    isSearchInputOnFocus: function() {
+      if(this.isSearchInputOnFocus === true) {
+        document.removeEventListener("keydown", this.keyDown)
+      } else {
+        document.addEventListener("keydown", this.keyDown);
+      }
+    }
+  },
   mounted() {
     //获取历史音量值
     if (localStorage.hasOwnProperty("volumeDotX")) {
@@ -233,6 +245,7 @@ export default {
     },
 
     addKeyboardEventListener() {
+      // document.querySelector(".bottom-box").addEventListener("keydown", this.keyDown);
       document.addEventListener("keydown", this.keyDown);
     },
 
