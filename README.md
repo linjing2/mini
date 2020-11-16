@@ -9,7 +9,7 @@
 所有歌曲数据均来源于网络，本项目几乎与你打开浏览器在线听音乐无异，仅仅只是节省了你打开网站搜索的时间而已。这里特别感谢lunhui1994提供的数据接口[node-music-api](https://github.com/lunhui1994/node-music-api)。顺便提醒，数据接口随时可能失效，请提前做好心理准备。
 
 ### 安装包
-Windows：    [mini-music-Setup-1.0.0.exe](https://gitee.com/cgper/miniMusic/attach_files/516686/download/mini-music%20Setup%201.0.0.exe)
+Windows：    [mini-music-Setup-1.1.0.exe](https://gitee.com/cgper/miniMusic/attach_files/521017/download/mini-music%20Setup%201.1.0.exe)
 
 Mac:         [mini-music-1.0.0.dmg](https://gitee.com/cgper/miniMusic/attach_files/516527/download/mini-music-1.0.0.dmg)
 
@@ -51,13 +51,14 @@ web版和desktop版有着细微差别，请前往[迷你音乐web版](https://gi
 - 修复搜索页面新搜索后没自动回到顶端
 - 修复播放模式弹窗未对齐
 - 修复搜索框中的字体太靠近边框
+- 修复当前光标与当前播放歌曲不对应问题
 
 - 新增一键回顶
 - 按需引入element组件，减少打包体积
 - 优化凌乱的代码，使代码看起来更“优雅”
 - 新增键盘控制
 
-| 空格键   | up键  | down键 | left键 | right键 |
+| 空格键   | ↑键  | ↓键 | ←键 | →键 |
 |-------|------|-------|-------|--------|
 | 暂停/播放 | 增加音量 | 减小音量  | 上一首   | 下一首    |
 
