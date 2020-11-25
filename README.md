@@ -15,11 +15,11 @@ Mac:         [mini-music-1.1.0.dmg](https://gitee.com/cgper/miniMusic/attach_fil
 
 Linux:       [mini-music_1.1.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/521623/download/mini-music_1.1.0_amd64.deb)
 
+Andriod：    [mini-music-1.1.0.apk](https://gitee.com/cgper/mini-music-mobile/attach_files/530445/download/mini-music-1.1.0.apk)
+
 andriod 扫码下载：
 
 ![](https://images.gitee.com/uploads/images/2020/1125/162724_4ad751f3_2020534.png "屏幕截图.png")
-
-[链接下载：mini-music-1.1.0.apk](https://gitee.com/cgper/mini-music-mobile/attach_files/530445/download/mini-music-1.1.0.apk)
 
 ### Web版
 在线体验：[点击在线体验](http://cgper.gitee.io/mini-music-webpage)
