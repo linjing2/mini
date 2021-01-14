@@ -3,11 +3,13 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import 'normalize.css/normalize.css'
-import { Message} from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+import message from "@/common/message"
+import popbox from "@/common/popbox"
 
-Vue.component(Message.name, Message);
+import 'normalize.css/normalize.css'
+
+Vue.use(message)
+Vue.use(popbox)
 
 Vue.config.productionTip = false
 

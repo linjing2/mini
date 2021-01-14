@@ -3,27 +3,32 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-const SearchListPage = () => import('@/components/middle_box/router_views/search_list_page/SearchListPage')
-const Top100Page = () => import('@/components/middle_box/router_views/top100_page/Top100Page')
-const MarkedListPage = () => import('@/components/middle_box/router_views/marked_list_page/MarkedListPage')
+const SearchPage = () => import('@/components/middle_box/router_views/search_page/SearchPage')
+const DiscoverPage = () => import('@/components/middle_box/router_views/discover_page/DiscoverPage')
+const LikedPage = () => import('@/components/middle_box/router_views/liked_page/LikedPage')
 const LyricPage = () => import('@/components/middle_box/router_views/lyric_page/LyricPage')
+const MarkPage = () => import('@/components/middle_box/router_views/mark_page/MarkPage')
 
 const routes = [
   {
-    path: '/Top100Page',
-    component: Top100Page,
+    path: '/DiscoverPage',
+    component: DiscoverPage,
   },
   {
-    path: '/SearchListPage',
-    component: SearchListPage
+    path: '/SearchPage',
+    component: SearchPage
   },
   {
-    path: '/MarkedListPage',
-    component: MarkedListPage
+    path: '/LikedPage',
+    component: LikedPage
   },
   {
     path: '/LyricPage',
     component: LyricPage
+  },
+  {
+    path: '/MarkPage',
+    component: MarkPage
   }
 ]
 

@@ -1,114 +1,168 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import { Message } from 'element-ui';
 Vue.use(Vuex)
 
 import { request } from "@/network/request.js";
 import getSearchList from '@/network/getSearchList.js'
-import getTop100List from '@/network/getTop100List.js'
+import getDiscoverList from '@/network/getDiscoverList.js'
 
 export default new Vuex.Store({
   state: {
-    currentList: [],
-    currentListIndex: null,
-    searchList: [],
-    top100List: [],
-    markedList: [],
-    isPlayingMarkedListSong: false,
-    currentSongUrl: '',
-    playMode: 'listForwardMode',
-    haveStarted: false,
-    albumImgStyle: {},
-    haveSearched: false,
-    searchText: '',
-    currentPage: 1,
-    loadMoreText: '加载更多',
-    canLoadMore: true,
-    lyricTextArr: [],
-    currentTime: null,
-    isSearchInputOnFocus: false
+    currentList: [],   //当前歌单
+    currentListIndex: null, //当前歌曲
+    currentSongUrl: '',  //当前歌曲播放链接
+    searchList: [],  //搜索歌单
+    discoverList: [],  //发现歌单
+    likedList: [],  //喜欢歌单
+    markList:[],
+    markListIndex: 0,
+    playMode: 'listForwardMode',  //播放模式
+    albumImgStyle: {},  //控制专辑图片旋转
+    searchText: '',  //用户搜索内容
+    currentPage: 1,  //搜索请求页数(一页50包含50首歌曲)
+    loadMoreText: '加载更多',  //加载更多按钮显示的文本
+    canLoadMore: true,  //指示是否已没有更多数据可加载
+    lyric: [],  //歌词
+    currentTime: null,  //当前歌曲正在播放的时刻
+    isInputFocus: false,  //用户是否正在输入，用于决定是否移除快捷键监听
+    isSearchPageBlur: false,  //搜索页面是否模糊
+    isSearchPageLoading: false,  //搜索页面是否显示正在加载
+    isDiscoverPageLoading: false , //发现页面是否显示正在加载
+    selectedSong: {},    //被选中的歌曲，用于暂存需要收藏的歌曲
+    dialog: "",          //需要显示对话框组件的名称
+    isShowDialog: false, //是否显示对话框
+    removeMarkListIndex: null  //暂存需要删除的歌单的index
   },
   mutations: {
 
     getHistoryData(state) {
-      if (localStorage.hasOwnProperty('markedList')) {
-        state.markedList = JSON.parse(localStorage.getItem('markedList'))
+      if (localStorage.hasOwnProperty('likedList')) {
+        state.likedList = JSON.parse(localStorage.getItem('likedList'))
+      }
+
+      if (localStorage.hasOwnProperty('markList')) {
+        state.markList = JSON.parse(localStorage.getItem('markList'))
       }
     },
 
     sendCurrentIndex(state, payload) {
       state.currentListIndex = payload.index
-      switch (payload.activatedPage) {
-        case 'searchListPage':
-          state.currentList = state.searchList
-          state.isPlayingMarkedListSong = false
-          break
 
-        case 'top100Page':
-          state.currentList = state.top100List
-          state.isPlayingMarkedListSong = false
-          break
+      //将点击歌曲所在的歌单复制一份给当前歌单
+      //不要直接两者相等，不然两歌单可能会相互干扰
+      state.currentList = []
+      state.currentList.push(...payload.list)
+    },
 
-        case 'markedListPage':
-          state.currentList = state.markedList
-          state.isPlayingMarkedListSong = true
-          break
-      }
+    sendMarkListIndex(state, markListIndex) {
+      state.markListIndex = markListIndex
     },
 
     sendPlayMode(state, mode) {
       state.playMode = mode
     },
 
-    sendHaveStarted(state, haveStarted) {
-      state.haveStarted = haveStarted
-    },
-
     sendCurrentTime(state, currentTime) {
       state.currentTime = currentTime
     },
 
-    sendSearchInputOnFocus(state, isSearchInputOnFocus) {
-      state.isSearchInputOnFocus = isSearchInputOnFocus
+    sendInputFocus(state, isInputFocus) {
+      state.isInputFocus = isInputFocus
     },
 
-    sendMarkedSong(state, item) {
-      //添加第一个mark的歌曲
-      if (state.markedList.length === 0) {
-        state.markedList.push(item)
+    sendSelectedSong(state, selectedSong) {
+      state.selectedSong = selectedSong
+    },
+
+    sendRemoveMarkListIndex(state, removeMarkListIndex) {
+      console.log(state.removeMarkListIndex)
+      state.removeMarkListIndex = removeMarkListIndex
+    },
+
+    showDialog(state, dialog) {
+      state.dialog = dialog
+      state.isShowDialog = true
+      console.log(state.dialog)
+    },
+
+    hideDialog(state) {
+      state.isShowDialog = false
+    },
+
+    //新建歌单
+    addSongList(state, inputText) {
+      let newSongList = {
+        name: inputText,
+        list: []
+      }
+      state.markList.push(newSongList)
+
+      localStorage.setItem('markList', JSON.stringify(state.markList))
+
+    },
+
+    //删除歌单
+    removeSongList(state) {
+      state.markList.splice(state.removeMarkListIndex, 1)
+      Vue.prototype.$message.showMessage({
+        type: 'success',
+        message: '歌单已被删除'
+      })
+
+      localStorage.setItem('markList', JSON.stringify(state.markList))
+
+    },
+
+    addMarkSong(state, markListIndex) {
+      state.markList[markListIndex].list.unshift(state.selectedSong)
+      Vue.prototype.$message.showMessage({
+        type: "success",
+        message: "收藏成功，歌曲已加入歌单",
+      });
+
+      localStorage.setItem('markList', JSON.stringify(state.markList))
+
+    },
+
+    //收藏歌曲只能从收藏页面移除
+    removeMarkSong(state, songIndex) {
+      state.markList[state.markListIndex].list.splice(songIndex, 1)
+      Vue.prototype.$message.showMessage({
+        type: 'success',
+        message: '已将此歌曲从收藏列表移除'
+      })
+
+      localStorage.setItem('markList', JSON.stringify(state.markList))
+
+    },
+
+    sendLikedSong(state, item) {
+
+      let isThisSongLiked = false
+      let likedSongIndex = null
+
+      //检测当前歌曲是否已在喜欢的列表中
+      state.likedList.forEach((likedItem, index) => {
+        if (likedItem.songmid === item.songmid) {
+          isThisSongLiked = true
+          likedSongIndex = index
+        }
+      })
+
+      if (isThisSongLiked === false) {
+
+        //喜欢列表没有此歌曲，则加入喜欢列表
+        state.likedList.unshift(item)
+
       } else {
 
-        //如果有重复的mark歌曲，即取消mark，相同的mark歌曲均删除
-        var haveSameItem = false
-        for (let i = 0; i < state.markedList.length; i++) {
-          if (state.markedList[i].songmid === item.songmid) {
-            state.markedList.splice(i, 1)
-            haveSameItem = true
+        //喜欢列表已有此歌曲，则将此歌曲从喜欢列表移除
+        state.likedList.splice(likedSongIndex, 1)
 
-            //当在喜欢页面点击mark时，处理逻辑有点复杂，初步处理下
-            if (state.isPlayingMarkedListSong === true) {
-
-              //取消当前mark歌曲后，自动播放上一首
-              state.currentListIndex -= 1
-
-              //最上面的歌曲取消mark后，停在第一首
-              if (state.currentListIndex < 0) {
-                state.currentListIndex = 0
-              }
-              if (state.currentList.length !== 0) {
-                this.commit('getSongUrlAndLyric')
-              }
-            }
-            break
-          }
-        }
-        //如果没有重复的歌曲，则加入新的mark歌曲
-        if (haveSameItem === false) {
-          state.markedList.unshift(item)
-        }
       }
-      localStorage.setItem('markedList', JSON.stringify(state.markedList))
+
+      localStorage.setItem('likedList', JSON.stringify(state.likedList))
     },
 
     //修改专辑图片样式，使专辑图片开始转动
@@ -125,57 +179,99 @@ export default new Vuex.Store({
       }
     },
 
-    handleTop100List(state) {
-      getTop100List().then(res => {
-        state.top100List = res.data.data.list
+    handleDiscoverList(state) {
+
+      //显示加载动画
+      state.isDiscoverPageLoading = true
+
+      getDiscoverList().then(res => {
+        console.log(res)
+        state.discoverList = res.data.data.list
+        state.isDiscoverPageLoading = false
       }).catch(err => {
         console.log(err)
+        Vue.prototype.$message.showMessage({
+          type: 'error',
+          message: "请求数据出错：" + err
+        })
+        state.isDiscoverPageLoading = false
       })
     },
 
     handleSearchSong(state, searchText) {
       state.searchText = searchText
+
+      //搜索时搜索页面模糊并显示加载动画
+      state.isSearchPageBlur = true
+      state.isSearchPageLoading = true
+
       getSearchList(state.searchText, 1)
         .then(res => {
-          console.log(res)
-          state.searchList = res.data.data.list;
+
+          let searchList = res.data.data.list
+
+          //有一些无id歌曲，将其剔除掉。因为没id根本无法得到歌曲资源
+          state.searchList = searchList.filter(item => item.songmid.length === 14)
+
+          console.log(state.searchList)
 
           //搜索后再显示loadMore
           state.haveSearched = true
+
+          //搜索完成隐藏搜索页面模糊和显示加载动画
+          state.isSearchPageBlur = false
+          state.isSearchPageLoading = false
         })
         .catch(err => {
           console.log(err)
+          Vue.prototype.$message.showMessage({
+            type: 'error',
+            message: "请求数据出错：" + err
+          })
+          state.isSearchPageBlur = false
+          state.isSearchPageLoading = false
         })
     },
 
     handleLoadMore(state) {
+      state.loadMoreText = "加载中..."
       if (state.canLoadMore) {
         state.currentPage += 1
         getSearchList(state.searchText, state.currentPage)
           .then(res => {
-            console.log(res.data.data.list)
-
             //得到下一页的搜索结果
-            var moreSearchList = res.data.data.list
+            let moreSearchList = res.data.data.list
 
-            //每页请求50首歌曲，如请求结果不足50首则说明没有更多歌曲了
-            if (moreSearchList.length < 50) {
+            //如请求结果为0，则说明没有更多歌曲了
+            if (moreSearchList.length === 0) {
               state.loadMoreText = "已到达底线，再也加载不出来了"
-              state.searchList.push(...res.data.data.list)
               state.canLoadMore = false
             } else {
-              state.searchList.push(...res.data.data.list)
+              moreSearchList.forEach(item => {
+
+                //有一些无id歌曲，将其剔除掉。因为没id根本无法得到歌曲资源
+                if (item.songmid.length === 14) {
+                  state.searchList.push(item)
+                }
+              })
+              state.loadMoreText = "加载更多"
+              console.log(state.searchList)
             }
           })
           .catch(err => {
+            state.loadMoreText = "加载更多"
             console.log(err)
+            Vue.prototype.$message.showMessage({
+              type: 'error',
+              message: "请求数据出错：" + err
+            })
           })
       }
     },
 
     //处理随机播放模式下的下一首
     handleRandomMode(state) {
-      var randomIndex = Math.floor(Math.random() * state.currentList.length)
+      let randomIndex = Math.floor(Math.random() * state.currentList.length)
       state.currentListIndex = randomIndex
       this.commit('getSongUrlAndLyric')
     },
@@ -189,9 +285,11 @@ export default new Vuex.Store({
           lyric: 1
         },
       }).then(res => {
+
         //获取歌曲播放链接
+        console.log(res)
         state.currentSongUrl = res.data.data.musicUrl
-        if (state.currentSongUrl == "https://ws.stream.qqmusic.qq.com/") {
+        if (state.currentSongUrl === "https://ws.stream.qqmusic.qq.com/") {
           Message.error({
             message: '无法获取音乐资源，可能为付费音乐或其他原因',
             showClose: true
@@ -200,27 +298,34 @@ export default new Vuex.Store({
         }
 
         //处理歌词
-        var lyricText = res.data.data.lyric
-        var lyricTextArr = lyricText.split('\n')
+        let lyric = res.data.data.lyric
+
+        //歌词按行切开变成数组
+        lyric = lyric.split('\n')
 
         //去掉前面五个没用的歌词
-        lyricTextArr.splice(0, 5)
+        lyric.splice(0, 5)
 
         //清除上一首的歌词
-        state.lyricTextArr = []
+        state.lyric = []
 
         //将歌词与时间分离
-        lyricTextArr.forEach(eachLine => {
-          var t = eachLine.substring(eachLine.indexOf("[") + 1, eachLine.indexOf("]"))
-          var lyricTextLineObj = {
-            time: (t.split(":")[0] * 60 + parseFloat(t.split(":")[1])).toFixed(2),
+        lyric.forEach(eachLine => {
+          let t = eachLine.substring(eachLine.indexOf("[") + 1, eachLine.indexOf("]"))
+          let lyricTextLineObj = {
+            time: (parseInt(t.split(":")[0]) * 60 + parseFloat(t.split(":")[1])).toFixed(2),
             text: eachLine.substring(eachLine.indexOf("]") + 1, eachLine.length)
           }
 
-          state.lyricTextArr.push(lyricTextLineObj)
+          state.lyric.push(lyricTextLineObj)
         })
       }).catch(err => {
         console.log(err)
+        Vue.prototype.$message.showMessage({
+          type: 'error',
+          message: "请求数据出错：" + err
+        })
+        this.commit('albumRotatePaused')
       })
     },
 
