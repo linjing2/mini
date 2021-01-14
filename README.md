@@ -9,11 +9,17 @@
 所有歌曲数据均来源于网络，本项目几乎与你打开浏览器在线听音乐无异，仅仅只是节省了你打开网站搜索的时间而已。这里特别感谢lunhui1994提供的数据接口[node-music-api](https://github.com/lunhui1994/node-music-api)。顺便提醒，数据接口随时可能失效，请提前做好心理准备。
 
 ### 安装包
-Windows：    [mini-music-Setup-1.1.0.exe](https://gitee.com/cgper/miniMusic/attach_files/521017/download/mini-music%20Setup%201.1.0.exe)
+Windows：    [mini-music-Setup-1.1.0.exe](https://gitee.com/cgper/miniMusic/attach_files/521316/download/mini-music%20Setup%201.1.0.exe)
 
-Mac:         [mini-music-1.0.0.dmg](https://gitee.com/cgper/miniMusic/attach_files/516527/download/mini-music-1.0.0.dmg)
+Mac:         [mini-music-1.1.0.dmg](https://gitee.com/cgper/miniMusic/attach_files/521613/download/mini-music-1.1.0.dmg)
 
-Linux:       [mini-music_1.0.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/516538/download/mini-music_1.0.0_amd64.deb)
+Linux:       [mini-music_1.1.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/521623/download/mini-music_1.1.0_amd64.deb)
+
+Andriod：    [mini-music-1.1.0.apk](https://gitee.com/cgper/mini-music-mobile/attach_files/530445/download/mini-music-1.1.0.apk)
+
+andriod 扫码下载：
+
+![](https://images.gitee.com/uploads/images/2020/1125/162724_4ad751f3_2020534.png "屏幕截图.png")
 
 ### Web版
 在线体验：[点击在线体验](http://cgper.gitee.io/mini-music-webpage)
@@ -24,6 +30,8 @@ Linux:       [mini-music_1.0.0_amd64.deb](https://gitee.com/cgper/miniMusic/atta
 ![搜索](https://images.gitee.com/uploads/images/2020/1109/173626_ea6c763c_2020534.png "搜索.png")
 ![喜欢](https://images.gitee.com/uploads/images/2020/1109/173652_296e0304_2020534.png "喜欢.png")
 ![歌词](https://images.gitee.com/uploads/images/2020/1109/173705_b533eb64_2020534.png "歌词.png")
+#### 移动版
+![](https://images.gitee.com/uploads/images/2020/1125/161948_c0653461_2020534.png "截图.png")
 #### web版
 ![web版](https://images.gitee.com/uploads/images/2020/1109/174013_13efee9c_2020534.png "web版.png")
 
@@ -43,6 +51,8 @@ Linux:       [mini-music_1.0.0_amd64.deb](https://gitee.com/cgper/miniMusic/atta
 > npm run electron:serve
 ##### 打包（你使用哪个系统平台就会打包对应平台的安装包）
 > npm run electron:build
+#### 移动版
+移动版和desktop版有着些许差别，请前往[迷你音乐移动版](https://gitee.com/cgper/mini-music-mobile)
 #### web版
 web版和desktop版有着细微差别，请前往[迷你音乐web版](https://gitee.com/cgper/mini-music-webpage)
 
