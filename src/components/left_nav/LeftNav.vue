@@ -45,26 +45,43 @@
             :key="item.name"
             @click="clickList(index)"
             :class="{ active: activeListIndex === index }"
+            @mouseover="hoverIndex = index"
+            @mouseleave="hoverIndex = null"
           >
             <div class="nav-mark-song-text">
               {{ item.name }}
             </div>
-            <div class="nav-delete-box" @click="removeSongList(index)">
-              <img src="@/assets/delete.svg" />
+            <div class="nav-edit-box" v-if="hoverIndex === index">
+              <div class="nav-rename-box" @click="showRenameInput(index)">
+                <img src="@/assets/edit.svg" />
+              </div>
+              <div class="nav-delete-box" @click="removeSongList(index)">
+                <img src="@/assets/delete.svg" />
+              </div>
+            </div>
+            <div class="nav-rename-input-box" v-if="renameIndex === index">
+              <input
+                type="text"
+                id="nav-rename-input"
+                @focus="inputFocus"
+                @blur="hideRenameInput"
+                @change="renameInputChange(index)"
+                v-model="renameInputText"
+              />
             </div>
           </div>
           <div class="nav-mark-add-item">
-            <div class="nav-mark-input-box" v-if="isShowInput">
+            <div class="nav-mark-input-box" v-if="isShowAddInput">
               <input
                 type="text"
                 id="nav-mark-input"
                 @focus="inputFocus"
-                @blur="hideInput"
-                @change="inputChange"
-                v-model="inputText"
+                @blur="hideAddInput"
+                @change="addInputChange"
+                v-model="addInputText"
               />
             </div>
-            <div class="nav-mark-add-box" v-else @click="showInput">
+            <div class="nav-mark-add-box" v-else @click="showAddInput">
               <div class="nav-mark-add-icon">
                 <img src="@/assets/add.svg" />
               </div>
@@ -99,9 +116,12 @@ export default {
       markBoxStyle: {},
       arrowStytle: {},
       isShowMarkBox: false,
-      isShowInput: false,
-      inputText: "",
+      isShowAddInput: false,
+      renameIndex: null,
+      addInputText: "",
+      renameInputText: "",
       activeListIndex: null,
+      hoverIndex: null,
     };
   },
   computed: {
@@ -189,41 +209,70 @@ export default {
       this.$store.commit("sendInputFocus", true);
     },
 
-    showInput() {
-      this.isShowInput = true;
+    showAddInput() {
+      this.isShowAddInput = true;
+
       this.$store.commit("sendInputFocus", true);
       setTimeout(() => {
         document.getElementById("nav-mark-input").focus();
       }, 50);
     },
 
-    hideInput() {
-      this.isShowInput = false;
+    showRenameInput(index) {
+      this.renameIndex = index;
+      let oldName = this.markList[index].name;
+      this.renameInputText = oldName;
+
+      this.$store.commit("sendInputFocus", true);
+      setTimeout(() => {
+        document.getElementById("nav-rename-input").focus();
+      }, 50);
+    },
+
+    hideAddInput(whichInput) {
+      this.isShowAddInput = false;
       this.$store.commit("sendInputFocus", false);
       document.getElementById("markListDiv").focus();
     },
 
-    inputChange() {
+    hideRenameInput() {
+      this.renameIndex = null;
+      this.$store.commit("sendInputFocus", false);
+      document.getElementById("markListDiv").focus();
+    },
+
+    addInputChange() {
       let haveSameListName = false;
 
       this.markList.forEach((item) => {
-        if (item.name === this.inputText) {
+        if (item.name === this.addInputText) {
           haveSameListName = true;
         }
       });
 
       if (haveSameListName === false) {
-        this.isShowInput = false;
-        this.$store.commit("addSongList", this.inputText);
+        this.isShowAddInput = false;
+        this.$store.commit("addSongList", this.addInputText);
         this.activeIndex = this.markList.length - 1;
-        this.inputText = "";
+        this.addInputText = "";
       } else {
         this.$message.showMessage({
           type: "warning",
           message: "已存在此歌单名，请使用其他名称",
         });
-        this.inputText = "";
+        this.addInputText = "";
       }
+    },
+
+    renameInputChange(index) {
+      let payload = {
+        newName: this.renameInputText,
+        index: index,
+      };
+
+      this.$store.commit("renameSongList", payload);
+      this.renameIndex = null;
+      this.renameInputText = "";
     },
 
     clickList(index) {
@@ -347,6 +396,7 @@ export default {
 }
 
 .nav-mark-song-item {
+  position: relative;
   height: 30px;
   display: flex;
   flex-wrap: nowrap;
@@ -379,9 +429,38 @@ export default {
   overflow: hidden;
 }
 
+.nav-edit-box {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.nav-rename-box {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  margin-right: 5px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-rename-box > img {
+  width: 100%;
+  height: 100%;
+}
+
+.nav-rename-box > img:hover {
+  transform: scale(1.2);
+}
+
+.nav-rename-box > img:active {
+  transform: scale(1.3);
+}
+
 .nav-delete-box {
   position: relative;
-  float: right;
   width: 14px;
   height: 14px;
   margin-right: 5px;
@@ -402,6 +481,29 @@ export default {
 
 .nav-delete-box > img:active {
   transform: scale(1.3);
+}
+
+.nav-rename-input-box {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-rename-input-box > input {
+  border: none;
+  width: 90%;
+  height: 20px;
+  font-size: 14px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.nav-rename-input-box > input:focus {
+  outline: none;
+  box-shadow: 0 0 5px var(--highlight-deep-color);
 }
 
 .nav-mark-add-item {
@@ -428,6 +530,7 @@ export default {
   border: none;
   width: 90%;
   height: 20px;
+  font-size: 14px;
   border-radius: 5px;
   text-align: center;
 }

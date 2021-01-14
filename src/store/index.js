@@ -76,7 +76,6 @@ export default new Vuex.Store({
     },
 
     sendRemoveMarkListIndex(state, removeMarkListIndex) {
-      console.log(state.removeMarkListIndex)
       state.removeMarkListIndex = removeMarkListIndex
     },
 
@@ -112,6 +111,12 @@ export default new Vuex.Store({
 
       localStorage.setItem('markList', JSON.stringify(state.markList))
 
+    },
+
+    renameSongList(state, payload) {
+      let index = payload.index
+      let newName = payload.newName
+      state.markList[index].name = newName
     },
 
     addMarkSong(state, markListIndex) {

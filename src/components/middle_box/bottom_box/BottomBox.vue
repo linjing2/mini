@@ -855,7 +855,7 @@ export default {
   width: 124px;
   height: 50px;
   float: left;
-  margin-left: 115px;
+  margin-left: 80px;
 }
 
 .previous-song {
