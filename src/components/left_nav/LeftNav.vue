@@ -30,7 +30,7 @@
         @blur="hideMarkBox"
         tabindex="0"
       >
-        <img class="nav-icon" src="@/assets/mark.svg" @click="markBox" />
+        <img class="nav-icon" src="@/assets/marked.svg" @click="markBox" />
         <div class="nav-text" @click="markBox">收藏</div>
         <img
           class="nav-arrow-down-icon"
@@ -79,6 +79,7 @@
                 @blur="hideAddInput"
                 @change="addInputChange"
                 v-model="addInputText"
+                maxlength="10"
               />
             </div>
             <div class="nav-mark-add-box" v-else @click="showAddInput">
@@ -93,7 +94,7 @@
     </div>
     <div class="playing-box">
       <div class="album-img-box">
-        <img :src="getAlbumImgUrl" :style="albumImgStyle" />
+        <album-img></album-img>
       </div>
       <div class="playing-song-name">
         {{ currentList.length === 0 ? "" : currentList[currentListIndex].songname }}
@@ -107,12 +108,12 @@
 
 <script>
 import { mapState } from "vuex";
+import AlbumImg from "./album_img/AlbumImg.vue";
 
 export default {
   name: "left-nav",
   data() {
     return {
-      defaultAlbumImgUrl: require("@/assets/default-album-img.svg"),
       markBoxStyle: {},
       arrowStytle: {},
       isShowMarkBox: false,
@@ -124,36 +125,9 @@ export default {
       hoverIndex: null,
     };
   },
+  components: { AlbumImg },
   computed: {
-    ...mapState([
-      "albumImgStyle",
-      "currentList",
-      "currentListIndex",
-      "markList",
-      "isInputFocus",
-    ]),
-
-    getAlbumImgUrl() {
-      let isHaveAlbumImg = true;
-
-      //启动时以默认专辑图片做为背景图片
-      if (this.currentList.length === 0) {
-        isHaveAlbumImg = false;
-      } else {
-        //获取当前歌曲专辑图片
-        var albumImg = this.currentList[this.currentListIndex].albumimg;
-
-        //如果返回下面的专辑图片地址，说明此专辑根本没专辑图片
-        if (
-          albumImg ===
-          "http://imgcache.qq.com/music/photo/album_300/0/300_albumpic_0_0.jpg"
-        ) {
-          isHaveAlbumImg = false;
-        }
-      }
-
-      return isHaveAlbumImg ? albumImg : this.defaultAlbumImgUrl;
-    },
+    ...mapState(["currentList", "currentListIndex", "markList", "isInputFocus"]),
   },
   methods: {
     //点击收藏时展示下拉框的下拉和收起动画
@@ -321,7 +295,7 @@ export default {
 
 .router-button-box {
   width: 100%;
-  height: 480px;
+  height: 470px;
   overflow: hidden;
 }
 
@@ -562,34 +536,17 @@ export default {
 }
 
 .playing-box {
-  width: 180px;
-  height: 225px;
-  margin-left: 10px;
+  width: 200px;
+  height: 240px;
 }
 
 .album-img-box {
-  width: 180px;
-  height: 180px;
+  width: 200px;
+  height: 200px;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  border-radius: 50%;
-  box-shadow: 0 0 10px var(--highlight-deep-color);
-}
-
-.album-img-box > img {
-  width: 100%;
-  height: 100%;
-}
-
-@keyframes albumRotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .playing-song-name {

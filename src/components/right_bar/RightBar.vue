@@ -36,11 +36,8 @@
           <div class="thanksItem">
             <div class="Link" @click="openLink1">Vue.js</div>
             <div class="Link" @click="openLink2">electron</div>
-            <div class="Link" @click="openLink3">Element</div>
             <div class="Link" @click="openLink4">node-music-api</div>
-            <div class="Link" @click="openLink5">
-              vue-cli-plugin-electron-builder
-            </div>
+            <div class="Link" @click="openLink5">vue-cli-plugin-electron-builder</div>
           </div>
         </div>
       </div>
@@ -62,7 +59,6 @@ export default {
   methods: {
     closeMainWindow() {
       ipcRenderer.send("closeMainWindow");
-      
     },
 
     minimizeMainWindow() {
@@ -70,7 +66,7 @@ export default {
     },
 
     closeAboutDialog() {
-      this.isShowAboutDialog = false
+      this.isShowAboutDialog = false;
     },
 
     openLink0() {
@@ -82,16 +78,11 @@ export default {
     openLink2() {
       shell.openExternal("https://www.electronjs.org/");
     },
-    openLink3() {
-      shell.openExternal("https://element.eleme.cn/#/zh-CN");
-    },
     openLink4() {
       shell.openExternal("https://github.com/lunhui1994/node-music-api");
     },
     openLink5() {
-      shell.openExternal(
-        "https://github.com/nklayman/vue-cli-plugin-electron-builder"
-      );
+      shell.openExternal("https://github.com/nklayman/vue-cli-plugin-electron-builder");
     },
   },
 };

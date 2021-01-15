@@ -25,6 +25,7 @@
               @blur="hideInput"
               @change="inputChange"
               v-model="inputText"
+              maxlength="10"
             />
           </div>
           <div class="mark-dialog-add-box" v-else @click="showInput">

@@ -18,7 +18,7 @@ export default new Vuex.Store({
     markList:[],
     markListIndex: 0,
     playMode: 'listForwardMode',  //播放模式
-    albumImgStyle: {},  //控制专辑图片旋转
+    albumImgRotateStyle: {},  //控制专辑图片旋转
     searchText: '',  //用户搜索内容
     currentPage: 1,  //搜索请求页数(一页50包含50首歌曲)
     loadMoreText: '加载更多',  //加载更多按钮显示的文本
@@ -172,14 +172,14 @@ export default new Vuex.Store({
 
     //修改专辑图片样式，使专辑图片开始转动
     albumRotateRunning(state) {
-      state.albumImgStyle = {
+      state.albumImgRotateStyle = {
         'animation': 'albumRotate 20s linear infinite running'
       }
     },
 
     //修改专辑图片样式，使专辑图片暂停转动（保持已转动的角度）
     albumRotatePaused(state) {
-      state.albumImgStyle = {
+      state.albumImgRotateStyle = {
         'animation': 'albumRotate 20s linear infinite paused'
       }
     },
