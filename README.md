@@ -13,7 +13,7 @@ Windows：    [mini-music-Setup-1.1.0.exe](https://gitee.com/cgper/miniMusic/att
 
 Mac:         [mini-music-1.1.0.dmg](https://gitee.com/cgper/miniMusic/attach_files/521613/download/mini-music-1.1.0.dmg)
 
-Linux:       [mini-music_1.1.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/521623/download/mini-music_1.1.0_amd64.deb)
+Linux:       [mini-music_1.2.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/622327/download/mini-music_1.2.0_amd64.deb)
 
 Andriod：    [mini-music-1.1.0.apk](https://gitee.com/cgper/mini-music-mobile/attach_files/530445/download/mini-music-1.1.0.apk)
 
@@ -39,8 +39,14 @@ andriod 扫码下载：
 为了防止用户退出应用后丢失历史数据，本应用会记录你的一些使用习惯（包括历史搜索、mark的歌曲、音量大小）。但所有数据均会保存到本地浏览器（或app)的localStorage中储存，不会发送到网络而造成隐私泄漏。这也意味着音乐播放器在你更换浏览器后就不会再有你的使用数据。
 
 ### 提示
+#### 窗口移动
 此app为无边框应用，拖动窗口需在右侧40px宽的rightbar拖动区按住左键以拖动窗口，下图红色区：
 ![拖动区](https://images.gitee.com/uploads/images/2020/1109/195202_4bfc9ec9_2020534.png "rightbar.png")
+
+#### 快捷键
+| 空格键   | ↑键  | ↓键 | ←键 | →键 |
+|-------|------|-------|-------|--------|
+| 暂停/播放 | 增加音量 | 减小音量  | 上一首   | 下一首    |
 
 
 ### 开发
@@ -56,21 +62,25 @@ andriod 扫码下载：
 #### web版
 web版和desktop版有着细微差别，请前往[迷你音乐web版](https://gitee.com/cgper/mini-music-webpage)
 
-### 更新
-#### 相比上一版的变化：
-- 修复搜索页面新搜索后没自动回到顶端
-- 修复播放模式弹窗未对齐
-- 修复搜索框中的字体太靠近边框
-- 修复当前光标与当前播放歌曲不对应问题
+### 更新v1.2.0
+- 新增歌曲分类收藏
+- 新增loading动画
+- 新增专辑图片切换动画
+- 更新message通知组件
+- 彻底移除element-ui组件，全部采用自制组件
 
-- 新增一键回顶
-- 按需引入element组件，减少打包体积
-- 优化凌乱的代码，使代码看起来更“优雅”
-- 新增键盘控制
+### 期待
+- 更换音乐数据api，将会有更多的音乐可听
+- 增加更多的皮肤主题### 更新
+- 新增歌曲分类收藏
+- 新增loading动画
+- 新增专辑图片切换动画
+- 更新message通知组件
+- 彻底移除element-ui组件，全部采用自制组件
 
-| 空格键   | ↑键  | ↓键 | ←键 | →键 |
-|-------|------|-------|-------|--------|
-| 暂停/播放 | 增加音量 | 减小音量  | 上一首   | 下一首    |
+### 期待
+- 更换音乐数据api，将会有更多的音乐可听
+- 增加更多的皮肤主题
 
 ### 致谢
 [Vue.js](https://cn.vuejs.org/)
