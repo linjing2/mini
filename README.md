@@ -47,6 +47,7 @@ andriod 扫码下载：
 
 #### 窗口移动
 此app为无边框应用，拖动窗口需在右侧40px宽的rightbar拖动区按住左键以拖动窗口，下图红色区：
+
 ![拖动区](https://images.gitee.com/uploads/images/2020/1109/195202_4bfc9ec9_2020534.png "rightbar.png")
 
 #### Tips
