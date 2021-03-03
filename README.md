@@ -15,7 +15,7 @@ Mac:         [mini-music-1.2.0.dmg](https://gitee.com/cgper/miniMusic/attach_fil
 
 Linux:       [mini-music_1.2.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/622327/download/mini-music_1.2.0_amd64.deb)
 
-Andriod：    [mini-music-1.1.0.apk](https://gitee.com/cgper/mini-music-mobile/attach_files/530445/download/mini-music-1.1.0.apk)
+Andriod（测试）：    [mini-music-1.1.0.apk](https://gitee.com/cgper/mini-music-mobile/attach_files/530445/download/mini-music-1.1.0.apk)
 
 andriod 扫码下载：
 
@@ -26,14 +26,14 @@ andriod 扫码下载：
 
 ### 截图
 #### desktop版
-![发现](https://images.gitee.com/uploads/images/2020/1109/173555_cf3c6edf_2020534.png "发现.png")
-![搜索](https://images.gitee.com/uploads/images/2020/1109/173626_ea6c763c_2020534.png "搜索.png")
-![喜欢](https://images.gitee.com/uploads/images/2020/1109/173652_296e0304_2020534.png "喜欢.png")
-![歌词](https://images.gitee.com/uploads/images/2020/1109/173705_b533eb64_2020534.png "歌词.png")
+![发现](https://images.gitee.com/uploads/images/2021/0303/101905_096579b6_2020534.png "发现.png")
+![搜索](https://images.gitee.com/uploads/images/2021/0303/101928_13aba41e_2020534.png "搜索.png")
+![喜欢](https://images.gitee.com/uploads/images/2021/0303/101947_6a9f93bf_2020534.png "喜欢.png")
+![歌词](https://images.gitee.com/uploads/images/2021/0303/102003_85954301_2020534.png "歌词.png")
 #### 移动版
 ![](https://images.gitee.com/uploads/images/2020/1125/161948_c0653461_2020534.png "截图.png")
 #### web版
-![web版](https://images.gitee.com/uploads/images/2020/1109/174013_13efee9c_2020534.png "web版.png")
+![Web版](https://images.gitee.com/uploads/images/2021/0303/102129_17894994_2020534.png "Web.png")
 
 ### 隐私
 为了防止用户退出应用后丢失历史数据，本应用会记录你的一些使用习惯（包括历史搜索、mark的歌曲、音量大小）。但所有数据均会保存到本地浏览器（或app)的localStorage中储存，不会发送到网络而造成隐私泄漏。这也意味着音乐播放器在你更换浏览器后就不会再有你的使用数据。
