@@ -48,7 +48,7 @@ andriod 扫码下载：
 #### 窗口移动
 此app为无边框应用，拖动窗口需在右侧40px宽的rightbar拖动区按住左键以拖动窗口，下图红色区：
 
-![拖动区](https://images.gitee.com/uploads/images/2020/1109/195202_4bfc9ec9_2020534.png "rightbar.png")
+![拖动区](https://images.gitee.com/uploads/images/2021/0303/102845_8be80e5b_2020534.png "拖动区.png")
 
 #### Tips
 - 搜索列表右键可添加收藏，取消收藏需进入收藏页面点击歌曲前面的五角星。
