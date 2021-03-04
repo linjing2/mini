@@ -28,7 +28,6 @@ andriod 扫码下载：
 #### desktop版
 ![发现](https://images.gitee.com/uploads/images/2021/0303/101905_096579b6_2020534.png "发现.png")
 ![搜索](https://images.gitee.com/uploads/images/2021/0303/101928_13aba41e_2020534.png "搜索.png")
-![喜欢](https://images.gitee.com/uploads/images/2021/0303/101947_6a9f93bf_2020534.png "喜欢.png")
 ![歌词](https://images.gitee.com/uploads/images/2021/0303/102003_85954301_2020534.png "歌词.png")
 #### 移动版
 ![](https://images.gitee.com/uploads/images/2020/1125/161948_c0653461_2020534.png "截图.png")
