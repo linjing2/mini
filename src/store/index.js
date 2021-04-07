@@ -15,7 +15,7 @@ export default new Vuex.Store({
     searchList: [],  //搜索歌单
     discoverList: [],  //发现歌单
     likedList: [],  //喜欢歌单
-    markList:[],
+    markList: [],
     markListIndex: 0,
     playMode: 'listForwardMode',  //播放模式
     albumImgRotateStyle: {},  //控制专辑图片旋转
@@ -28,11 +28,17 @@ export default new Vuex.Store({
     isInputFocus: false,  //用户是否正在输入，用于决定是否移除快捷键监听
     isSearchPageBlur: false,  //搜索页面是否模糊
     isSearchPageLoading: false,  //搜索页面是否显示正在加载
-    isDiscoverPageLoading: false , //发现页面是否显示正在加载
+    isDiscoverPageLoading: false, //发现页面是否显示正在加载
     selectedSong: {},    //被选中的歌曲，用于暂存需要收藏的歌曲
     dialog: "",          //需要显示对话框组件的名称
     isShowDialog: false, //是否显示对话框
-    removeMarkListIndex: null  //暂存需要删除的歌单的index
+    isShowSettingPanel: false,  //是否显示设置面板
+    removeMarkListIndex: null,  //暂存需要删除的歌单的index
+    routerHistory: {       //记录最后一次路由跳转历史，用于导航路由和设置路由切换时自动回到上一次路由位置
+      navRouter: '/Discover',
+      settingRouter: '/Appearance/Background',
+    },
+    backgroundTheme: 'chameleon-theme'
   },
   mutations: {
 
@@ -82,11 +88,31 @@ export default new Vuex.Store({
     showDialog(state, dialog) {
       state.dialog = dialog
       state.isShowDialog = true
-      console.log(state.dialog)
     },
 
     hideDialog(state) {
       state.isShowDialog = false
+    },
+
+    showSettingPanel(state) {
+      state.isShowSettingPanel = true
+    },
+
+    hideSettingPanel(state) {
+      state.isShowSettingPanel = false
+    },
+
+    setRouterHistory(state, payload) {
+      if(payload.router === 'nav') {
+        state.routerHistory.navRouter = payload.path
+      }
+      if(payload.router === 'setting') {
+        state.routerHistory.settingRouter = payload.path
+      }
+    },
+
+    setBackgroundTheme(state, theme) {
+      state.backgroundTheme = theme
     },
 
     //新建歌单
@@ -295,9 +321,9 @@ export default new Vuex.Store({
         console.log(res)
         state.currentSongUrl = res.data.data.musicUrl
         if (state.currentSongUrl === "https://ws.stream.qqmusic.qq.com/") {
-          Message.error({
-            message: '无法获取音乐资源，可能为付费音乐或其他原因',
-            showClose: true
+          Vue.prototype.$message.showMessage({
+            type: 'error',
+            message: "无法获取音乐资源，可能为付费音乐或其他原因。"
           })
           this.commit('albumRotatePaused')
         }

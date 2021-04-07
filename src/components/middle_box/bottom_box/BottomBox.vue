@@ -88,7 +88,7 @@
         <img :src="playStateImgUrl" width="40px" />
       </div>
       <div class="next-song" @click="playNextSong">
-        <img src="@/assets/next-song.svg" width="40px" />
+        <img src="@/assets/next-song.svg" width="40px"/>
       </div>
     </div>
     <div class="volume-box">
@@ -227,9 +227,9 @@ export default {
   watch: {
     //由于按键监听(快捷键)会干扰搜索输入，所以这里监测用户是否正在搜索输入
     //搜索时一定要移除按键监听,搜索结束再添加监听
-    isInputFocus() {
-      console.log("isInputFocus", this.isInputFocus);
-      if (this.isInputFocus === true) {
+    isInputFocus(newValue) {
+      console.log("isInputFocus", newValue);
+      if (newValue === true) {
         document.removeEventListener("keydown", this.keyDown);
       } else {
         document.addEventListener("keydown", this.keyDown);
@@ -259,7 +259,6 @@ export default {
       this.audio.addEventListener("canplay", this.getDuration);
       this.audio.addEventListener("timeupdate", this.getCurrentTime);
       this.audio.addEventListener("ended", this.autoPlayNextSong);
-      this.audio.addEventListener("error", this.error);
       this.audio.addEventListener("playing", this.playing);
       this.audio.addEventListener("pause", this.pause);
     },
@@ -342,15 +341,6 @@ export default {
       //实时获取歌曲的当前播放时间
       this.currentTime = this.audio.currentTime;
       this.$store.commit("sendCurrentTime", this.currentTime);
-    },
-
-    error() {
-      if (this.currentSongUrl.length !== 0) {
-        this.$message.showMessage({
-          type: "error",
-          message: "音乐播放出错",
-        });
-      }
     },
 
     playing() {
@@ -601,12 +591,12 @@ export default {
   height: 2px;
   margin-top: 5px;
   position: absolute;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: var(--progress-bar-color);
 }
 
 .progressed {
   height: 100%;
-  background-color: var(--highlight-color);
+  background-color: #c5b5f0;
 }
 
 .slider-dot {
@@ -702,10 +692,24 @@ export default {
   position: absolute;
   width: 56px;
   height: 165px;
-  margin-top: -190px;
+  z-index: 999;
+  top: 0px;
+  transform: translateY(-100%);
   border-radius: 8px;
-  background-color: white;
-  box-shadow: 0 0 10px var(--highlight-deep-color);
+  background-color: var(--background-color);
+  filter: drop-shadow(0 0 10px var(--highlight-deep-color));
+}
+
+.speed-options-box::before {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  content: "";
+  left: 50%;
+  bottom: -6px;
+  border-radius: 2px;
+  transform: translateX(-50%) rotate(45deg);
+  background-color: var(--background-color);
 }
 
 .speed-option {
@@ -758,11 +762,24 @@ export default {
   width: 100px;
   height: 115px;
   position: absolute;
-  margin-top: -105px;
-  margin-left: -35px;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%) translateY(-100%);
   border-radius: 10px;
-  background-color: white;
-  box-shadow: 0 0 10px var(--highlight-deep-color);
+  background-color: var(--background-color);
+  filter: drop-shadow(0 0 10px var(--highlight-deep-color));
+}
+
+.mode-options-box::before {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  content: "";
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  background-color: var(--background-color);
+  border-radius: 2px;
 }
 
 .mode-options-box:hover {
@@ -951,12 +968,12 @@ export default {
   height: 2px;
   margin-top: 5px;
   position: absolute;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: var(--progress-bar-color);
 }
 
 .volume-progressed {
   height: 100%;
-  background-color: var(--highlight-color);
+  background-color: #c5b5f0;
 }
 
 .volume-dot {

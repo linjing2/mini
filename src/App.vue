@@ -1,31 +1,30 @@
 <template>
   <div id="app">
-    <div class="app-background">
-      <div class="blur-background">
-        <img :src="getAlbumImg" />
-      </div>
-      <div v-if="false" class="milk-white-theme"></div>
-      <div v-if="false" class="highlight-black-theme"></div>
-      <div v-if="false" class="simple-green-theme"></div>
+    <div class="app-background" :style="appStyle">
+      <background-color></background-color>
     </div>
-    <div class="app-background-above">
+    <div class="app-background-above" :style="appStyle">
       <!-- 展示需要显示的对话框 -->
       <component v-if="isShowDialog" :is="dialog"></component>
       <left-nav></left-nav>
       <middle-box></middle-box>
       <right-bar></right-bar>
     </div>
+    <setting  :style="settingPanelStyle"></setting>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
 
+import BackgroundColor from "@/common/BackgroundColor.vue"
 import LeftNav from "./components/left_nav/LeftNav";
 import MiddleBox from "./components/middle_box/MiddleBox";
 import RightBar from "./components/right_bar/RightBar";
 import RemoveSongList from "@/common/dialog/RemoveSongList.vue";
 import AddMarkSong from "@/common/dialog/AddMarkSong.vue";
+import About from "@/common/dialog/About.vue";
+import Setting from "@/common/setting/Setting.vue";
 
 export default {
   name: "app",
@@ -35,33 +34,43 @@ export default {
     RightBar,
     AddMarkSong,
     RemoveSongList,
+    About,
+    Setting,
+    BackgroundColor
   },
   data() {
     return {
-      //默认专辑图片
-      defaultAlbumImgUrl: require("@/assets/default-album-img.svg"),
+      appStyle: {},
+      settingPanelStyle: {},
     };
   },
   computed: {
-    ...mapState(["currentList", "currentListIndex", "dialog", "isShowDialog"]),
-
-    getAlbumImg() {
-      //启动时以默认专辑图片做为背景图片
-      if (this.currentList.length === 0) {
-        return this.defaultAlbumImgUrl;
+    ...mapState([
+      "dialog",
+      "isShowDialog",
+      "isShowSettingPanel",
+      "backgroundTheme"
+    ]),
+  },
+  watch: {
+    //绘制设置面板展示和隐藏的翻转动画
+    isShowSettingPanel: function (newValue) {
+      if(newValue === true) {
+        this.appStyle = {
+          animation: "Flip_0-90 0.3s linear forwards"
+        }
+        this.settingPanelStyle = {
+          animation: "Flip_90-180 0.3s linear 0.3s forwards"
+        }
+      }else {
+        this.settingPanelStyle = {
+          animation: "Flip_180-90 0.3s linear forwards"
+        }
+        this.appStyle = {
+          transform: "rotateY(90deg)",
+          animation: "Flip_90-0 0.3s linear 0.3s forwards"
+        }
       }
-
-      //获取当前歌曲专辑图片
-      let albumimg = this.currentList[this.currentListIndex].albumimg;
-
-      //返回下面的专辑图片地址，说明此专辑根本没专辑图片
-      if (
-        albumimg === "http://imgcache.qq.com/music/photo/album_300/0/300_albumpic_0_0.jpg"
-      ) {
-        return this.defaultAlbumImgUrl;
-      }
-
-      return albumimg;
     },
   },
   mounted() {
@@ -75,65 +84,82 @@ export default {
 :root {
   --highlight-color: #c5b5f0;
   --highlight-deep-color: #7e57c2;
+  --font-size: 16px;
+  --font-color: black;
+  --background-color: #fdfdfd;
+  --progress-bar-color: rgba(255,255,255, 0.1)
 }
 
 body {
   position: relative;
+  perspective: 20000px;
 }
 
 #app {
-  width: 1000px;
-  height: 800px;
+  width: 1030px;
+  height: 830px;
   position: relative;
-  margin-left: 15px;
-  margin-top: 15px;
   border-radius: 20px;
   -webkit-user-select: none;
-  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.3);
   overflow: hidden;
-  background-color: white;
-  /* color: white; */
+  color: var(--font-color);
+}
+
+@keyframes Flip_0-90 {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(90deg);
+  }
+}
+
+@keyframes Flip_90-0 {
+  from {
+    transform: rotateY(90deg);
+  }
+  to {
+    transform: rotateY(0deg);
+  }
+}
+
+@keyframes Flip_90-180 {
+  from {
+    transform: rotateY(-90deg);
+  }
+  to {
+    transform: rotateY(0deg);
+  }
+}
+
+@keyframes Flip_180-90 {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(-90deg);
+  }
 }
 
 .app-background {
-  width: 100%;
-  height: 100%;
+  width: 1000px;
+  height: 800px;
   position: absolute;
-}
-
-.blur-background {
-  width: 100%;
-  height: 100%;
-  filter: blur(150px);
-}
-
-.milk-white-theme {
-  width: 100%;
-  height: 100%;
-  background-color: #fdfdfd;
-}
-
-.highlight-black-theme {
-  width: 100%;
-  height: 100%;
-  background-color: #171717;
-}
-
-.simple-green-theme {
-  width: 100%;
-  height: 100%;
-  background-color: #dffff5;
-}
-
-.blur-background > img {
-  width: 100%;
-  height: 100%;
+  margin-left: 15px;
+  margin-top: 15px;
+  border-radius: 20px;
+  background-color: #fff;
+  overflow: hidden;
 }
 
 .app-background-above {
-  width: 100%;
-  height: 100%;
+  width: 1000px;
+  height: 800px;
   position: absolute;
+  margin-left: 15px;
+  margin-top: 15px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.3);
 }
 
 /* 下面修改全局滚动条样式 */

@@ -334,7 +334,7 @@ export default {
   height: 30px;
   margin-left: 5px;
   line-height: 30px;
-  color: black;
+  color: var(--font-color);
 }
 
 .nav-arrow-down-icon {
@@ -355,13 +355,13 @@ export default {
 
 .nav-mark-song-box {
   width: 100%;
-  max-height: 0px;
+  max-height: 100px;
   margin-top: 35px;
   overflow-y: scroll;
   background-color: orange;
   position: absolute;
   border-radius: 10px;
-  background-color: white;
+  background-color: var(--background-color);
   box-shadow: 0 0 6px var(--highlight-deep-color);
 }
 

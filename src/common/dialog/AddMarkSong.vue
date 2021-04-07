@@ -160,7 +160,7 @@ export default {
   overflow: hidden;
   border-radius: 12px;
   box-shadow: 0 0 10px var(--highlight-deep-color);
-  background-color: #fff;
+  background-color: var(--background-color);
 }
 
 .mark-dialog-body {
@@ -268,8 +268,8 @@ export default {
 .mark-dialog-cancel {
   width: 100%;
   font-size: 14px;
-  border-top: 1px rgba(197, 181, 240, 0.5) solid;
-  border-right: 1px rgba(197, 181, 240, 0.5) solid;
+  border-top: 1px var(--progress-bar-color) solid;
+  border-right: 1px var(--progress-bar-color) solid;
 }
 
 .mark-dialog-cancel:hover {
@@ -280,7 +280,7 @@ export default {
 .mark-dialog-confirm {
   width: 100%;
   font-size: 14px;
-  border-top: 1px rgba(197, 181, 240, 0.5) solid;
+  border-top: 1px var(--progress-bar-color) solid;
 }
 
 .mark-dialog-confirm:hover {

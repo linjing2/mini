@@ -19,6 +19,7 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@iconfu/svg-inject": "^1.2.3",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "normalize.css": "^8.0.1",

@@ -1,9 +1,5 @@
 <template>
   <div class="top-box">
-    <div class="back-or-forward">
-      <img @click="goBack" src="@/assets/back.svg" width="20px" />
-      <img @click="goForward" src="@/assets/forward.svg" width="20px" />
-    </div>
     <div class="input-box">
       <input
         type="text"
@@ -53,14 +49,6 @@ export default {
     }
   },
   methods: {
-    goBack() {
-      this.$router.go(-1);
-    },
-
-    goForward() {
-      this.$router.go(1);
-    },
-
     searchSong() {
       this.isShowSearchHistory = false;
       if (this.searchText !== "") {
@@ -169,30 +157,6 @@ export default {
   position: relative;
 }
 
-.back-or-forward {
-  height: 20px;
-  margin-top: 15px;
-  float: left;
-}
-
-.back-or-forward img {
-  border-radius: 6px;
-}
-
-.back-or-forward img:hover {
-  cursor: pointer;
-  transform: scale(1.2);
-  background-color: var(--highlight-color);
-}
-
-.back-or-forward img:active {
-  transform: scale(1.5);
-}
-
-.back-or-forward img:nth-child(2) {
-  margin-left: 10px;
-}
-
 .input-box {
   position: absolute;
   width: 400px;
@@ -206,9 +170,10 @@ export default {
   border: none;
   width: 400px;
   height: 30px;
+  color: var(--font-color);
   box-sizing: border-box;
   padding-left: 8px;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
 }
 
@@ -228,7 +193,7 @@ export default {
   overflow-x: hidden;
   overflow-y: scroll;
   border-radius: 10px;
-  background-color: white;
+  background-color: var(--background-color);
   box-shadow: 0 0 5px var(--highlight-deep-color);
 }
 

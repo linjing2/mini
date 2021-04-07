@@ -9,27 +9,69 @@ const LikedPage = () => import('@/components/middle_box/router_views/liked_page/
 const LyricPage = () => import('@/components/middle_box/router_views/lyric_page/LyricPage')
 const MarkPage = () => import('@/components/middle_box/router_views/mark_page/MarkPage')
 
+const Appearance = () => import('@/common/setting/appearance/Appearance')
+const Background = () => import('@/common/setting/appearance/background/Background')
+const HighlightColor = () => import('@/common/setting/appearance/highlight_color/HighlightColor')
+const Font = () => import('@/common/setting/appearance/font/Font')
+
 const routes = [
   {
     path: '/DiscoverPage',
-    component: DiscoverPage,
+    components: {
+      nav: DiscoverPage
+    }
   },
   {
     path: '/SearchPage',
-    component: SearchPage
+    components: {
+      nav: SearchPage
+    }
   },
   {
     path: '/LikedPage',
-    component: LikedPage
+    components: {
+      nav: LikedPage
+    }
   },
   {
     path: '/LyricPage',
-    component: LyricPage
+    components: {
+      nav: LyricPage
+    }
   },
   {
     path: '/MarkPage',
-    component: MarkPage
-  }
+    components: {
+      nav: MarkPage
+    }
+  },
+  {
+    path: '/Appearance',
+    
+    components: {
+      settingView: Appearance
+    },
+    children: [
+      {
+        path: 'Background',
+        components: {
+          appearanceSettingView: Background
+        }
+      },
+      {
+        path: 'HighlightColor',
+        components: {
+          appearanceSettingView: HighlightColor
+        }
+      },
+      {
+        path: 'Font',
+        components: {
+          appearanceSettingView: Font
+        }
+      }
+    ]
+  },
 ]
 
 const router = new VueRouter({

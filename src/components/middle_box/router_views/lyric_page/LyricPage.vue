@@ -17,7 +17,7 @@ export default {
     return {
       playingLyricStytle: {
         transform: "scale(1.5)",
-        color: "var(--highlight-deep-color)",
+        color: "var(--highlight-color)",
       },
       currentLyricIndex: 0,
       scrollTop: 0,

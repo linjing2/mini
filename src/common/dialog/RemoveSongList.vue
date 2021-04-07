@@ -47,7 +47,7 @@ export default {
   overflow: hidden;
   border-radius: 12px;
   box-shadow: 0 0 10px var(--highlight-deep-color);
-  background-color: #fff;
+  background-color: var(--background-color);
 }
 
 .remove-song-list-title {
@@ -79,8 +79,8 @@ export default {
   font-size: 14px;
   line-height: 30px;
   text-align: center;
-  border-top: 1px rgba(197, 181, 240, 0.5) solid;
-  border-right: 1px rgba(197, 181, 240, 0.5) solid;
+  border-top: 1px var(--progress-bar-color) solid;
+  border-right: 1px var(--progress-bar-color) solid;
 }
 
 .remove-song-list-cancel:hover {
@@ -94,7 +94,7 @@ export default {
   font-size: 14px;
   line-height: 30px;
   text-align: center;
-  border-top: 1px rgba(197, 181, 240, 0.5) solid;
+  border-top: 1px var(--progress-bar-color) solid;
 }
 
 .remove-song-list-confirm:hover {
