@@ -334,6 +334,7 @@ export default {
   height: 30px;
   margin-left: 5px;
   line-height: 30px;
+  font-size: var(--font-size);
   color: var(--font-color);
 }
 

@@ -86,8 +86,70 @@ export default {
   --highlight-deep-color: #7e57c2;
   --font-size: 16px;
   --font-color: black;
+  --font-family: '';
+  --lyric-font-family: '';
   --background-color: #fdfdfd;
-  --progress-bar-color: rgba(255,255,255, 0.1)
+  --progress-bar-color: rgba(255,255,255, 0.1);
+}
+
+@font-face {
+  font-family: '清松手写体';
+  src: url('./assets/font/清松手写体.ttf');
+}
+
+@font-face {
+  font-family: '新叶念体';
+  src: url('./assets/font/新叶念体.otf');
+}
+
+@font-face {
+  font-family: '点点像素体';
+  src: url('./assets/font/点点像素体.otf');
+}
+
+@font-face {
+  font-family: '汉字拼音体';
+  src: url('./assets/font/汉字拼音体.ttf');
+}
+
+@font-face {
+  font-family: '寒蝉手拙体';
+  src: url('./assets/font/寒蝉手拙体.ttf');
+}
+
+@font-face {
+  font-family: '品如手写体';
+  src: url('./assets/font/品如手写体.ttf');
+}
+
+@font-face {
+  font-family: '阿朱泡泡体';
+  src: url('./assets/font/阿朱泡泡体.ttf');
+}
+
+@font-face {
+  font-family: 'OPPO Sans';
+  src: url('./assets/font/OPPO Sans.ttf');
+}
+
+@font-face {
+  font-family: '杨任东竹石体';
+  src: url('./assets/font/杨任东竹石体.ttf');
+}
+
+@font-face {
+  font-family: '方正楷体简体';
+  src: url('./assets/font/方正楷体简体.ttf');
+}
+
+@font-face {
+  font-family: '方正楷体繁体';
+  src: url('./assets/font/方正楷体繁体.ttf');
+}
+
+@font-face {
+  font-family: '站酷快乐体';
+  src: url('./assets/font/站酷快乐体.ttf');
 }
 
 body {
@@ -102,6 +164,7 @@ body {
   border-radius: 20px;
   -webkit-user-select: none;
   overflow: hidden;
+  font-family: var(--font-family);
   color: var(--font-color);
 }
 

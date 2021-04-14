@@ -325,7 +325,7 @@ export default new Vuex.Store({
             type: 'error',
             message: "无法获取音乐资源，可能为付费音乐或其他原因。"
           })
-          this.commit('albumRotatePaused')
+          this.commit('playNextSong')
         }
 
         //处理歌词
