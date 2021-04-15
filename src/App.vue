@@ -10,14 +10,14 @@
       <middle-box></middle-box>
       <right-bar></right-bar>
     </div>
-    <setting  :style="settingPanelStyle"></setting>
+    <setting :style="settingPanelStyle"></setting>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
 
-import BackgroundColor from "@/common/BackgroundColor.vue"
+import BackgroundColor from "@/common/BackgroundColor.vue";
 import LeftNav from "./components/left_nav/LeftNav";
 import MiddleBox from "./components/middle_box/MiddleBox";
 import RightBar from "./components/right_bar/RightBar";
@@ -36,7 +36,7 @@ export default {
     RemoveSongList,
     About,
     Setting,
-    BackgroundColor
+    BackgroundColor,
   },
   data() {
     return {
@@ -45,31 +45,26 @@ export default {
     };
   },
   computed: {
-    ...mapState([
-      "dialog",
-      "isShowDialog",
-      "isShowSettingPanel",
-      "backgroundTheme"
-    ]),
+    ...mapState(["dialog", "isShowDialog", "isShowSettingPanel", "backgroundTheme"]),
   },
   watch: {
     //绘制设置面板展示和隐藏的翻转动画
     isShowSettingPanel: function (newValue) {
-      if(newValue === true) {
+      if (newValue === true) {
         this.appStyle = {
-          animation: "Flip_0-90 0.3s linear forwards"
-        }
+          animation: "Flip_0-90 0.3s linear forwards",
+        };
         this.settingPanelStyle = {
-          animation: "Flip_90-180 0.3s linear 0.3s forwards"
-        }
-      }else {
+          animation: "Flip_90-180 0.3s linear 0.3s forwards",
+        };
+      } else {
         this.settingPanelStyle = {
-          animation: "Flip_180-90 0.3s linear forwards"
-        }
+          animation: "Flip_180-90 0.3s linear forwards",
+        };
         this.appStyle = {
           transform: "rotateY(90deg)",
-          animation: "Flip_90-0 0.3s linear 0.3s forwards"
-        }
+          animation: "Flip_90-0 0.3s linear 0.3s forwards",
+        };
       }
     },
   },
@@ -86,70 +81,73 @@ export default {
   --highlight-deep-color: #7e57c2;
   --font-size: 16px;
   --font-color: black;
-  --font-family: '';
-  --lyric-font-family: '';
+  --font-family: "";
+  --font-weight: normal;
+  --lyric-font-family: "";
+  --lyric-font-size: 20px;
+  --lyric-font-weight: normal;
   --background-color: #fdfdfd;
-  --progress-bar-color: rgba(255,255,255, 0.1);
+  --progress-bar-color: rgba(255, 255, 255, 0.1);
 }
 
 @font-face {
-  font-family: '清松手写体';
-  src: url('./assets/font/清松手写体.ttf');
+  font-family: "清松手写体";
+  src: url("./assets/font/清松手写体.ttf");
 }
 
 @font-face {
-  font-family: '新叶念体';
-  src: url('./assets/font/新叶念体.otf');
+  font-family: "新叶念体";
+  src: url("./assets/font/新叶念体.otf");
 }
 
 @font-face {
-  font-family: '点点像素体';
-  src: url('./assets/font/点点像素体.otf');
+  font-family: "点点像素体";
+  src: url("./assets/font/点点像素体.otf");
 }
 
 @font-face {
-  font-family: '汉字拼音体';
-  src: url('./assets/font/汉字拼音体.ttf');
+  font-family: "汉字拼音体";
+  src: url("./assets/font/汉字拼音体.ttf");
 }
 
 @font-face {
-  font-family: '寒蝉手拙体';
-  src: url('./assets/font/寒蝉手拙体.ttf');
+  font-family: "寒蝉手拙体";
+  src: url("./assets/font/寒蝉手拙体.ttf");
 }
 
 @font-face {
-  font-family: '品如手写体';
-  src: url('./assets/font/品如手写体.ttf');
+  font-family: "品如手写体";
+  src: url("./assets/font/品如手写体.ttf");
 }
 
 @font-face {
-  font-family: '阿朱泡泡体';
-  src: url('./assets/font/阿朱泡泡体.ttf');
+  font-family: "阿朱泡泡体";
+  src: url("./assets/font/阿朱泡泡体.ttf");
 }
 
 @font-face {
-  font-family: 'OPPO Sans';
-  src: url('./assets/font/OPPO Sans.ttf');
+  font-family: "OPPO Sans";
+  src: url("./assets/font/OPPO Sans.ttf");
 }
 
 @font-face {
-  font-family: '杨任东竹石体';
-  src: url('./assets/font/杨任东竹石体.ttf');
+  font-family: "杨任东竹石体";
+  src: url("./assets/font/杨任东竹石体.ttf");
 }
 
 @font-face {
-  font-family: '方正楷体简体';
-  src: url('./assets/font/方正楷体简体.ttf');
+  font-family: "方正楷体简体";
+  src: url("./assets/font/方正楷体简体.ttf");
 }
 
 @font-face {
-  font-family: '方正楷体繁体';
-  src: url('./assets/font/方正楷体繁体.ttf');
+  font-family: "方正楷体繁体";
+  src: url("./assets/font/方正楷体繁体.ttf");
 }
 
 @font-face {
-  font-family: '站酷快乐体';
-  src: url('./assets/font/站酷快乐体.ttf');
+  font-family: "站酷快乐体";
+  src: url("./assets/font/站酷快乐体.ttf");
 }
 
 body {
@@ -165,6 +163,8 @@ body {
   -webkit-user-select: none;
   overflow: hidden;
   font-family: var(--font-family);
+  font-size: var(--font-size);
+  font-weight: var(--font-weight);
   color: var(--font-color);
 }
 

@@ -73,9 +73,8 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  /* font-size: 30px; */
-  /* font-weight: bolder; */
+  font-size: var(--lyric-font-size);
+  font-weight: var(--lyric-font-weight);
   font-family: var(--lyric-font-family);
-
 }
 </style>
