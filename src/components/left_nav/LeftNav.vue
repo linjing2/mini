@@ -38,7 +38,7 @@
           @click="markBox"
           :style="arrowStytle"
         />
-        <div class="nav-mark-song-box" :style="markBoxStyle">
+        <div class="nav-mark-song-box" v-show="isShowMarkBox" :style="markBoxStyle">
           <div
             class="nav-mark-song-item"
             v-for="(item, index) in markList"

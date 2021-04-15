@@ -1,7 +1,12 @@
 <template>
   <div class="background-color">
     <div class="background-box">
-      <div :class="[{themeChange : (index === 0)},item]" v-for="(item, index) in backgroundList" :style="{zIndex: -index}" :key="item + item.length">
+      <div
+        :class="[{ themeChange: index === 0 }, item]"
+        v-for="(item, index) in backgroundList"
+        :style="{ zIndex: -index }"
+        :key="item + item.length"
+      >
         <img v-if="item == 'chameleon-theme'" :src="getAlbumImg" />
       </div>
     </div>
@@ -14,7 +19,11 @@ import { mapState } from "vuex";
 export default {
   name: "background-color",
   computed: {
-    ...mapState(["backgroundTheme", "currentList", "currentListIndex"]),
+    ...mapState(["setting", "currentList", "currentListIndex"]),
+
+    background: function () {
+      return this.setting.appearance.background.value;
+    },
 
     getAlbumImg() {
       //启动时以默认专辑图片做为背景图片
@@ -27,8 +36,7 @@ export default {
 
       //返回下面的专辑图片地址，说明此专辑根本没专辑图片
       if (
-        albumimg ===
-        "http://imgcache.qq.com/music/photo/album_300/0/300_albumpic_0_0.jpg"
+        albumimg === "http://imgcache.qq.com/music/photo/album_300/0/300_albumpic_0_0.jpg"
       ) {
         return this.defaultAlbumImgUrl;
       }
@@ -40,32 +48,30 @@ export default {
     return {
       defaultAlbumImgUrl: require("@/assets/default-album-img.svg"),
       backgroundList: [
-        'chameleon-theme',
-        'milk-white-theme',
-        'dark-highlight-theme',
-        'simple-green-theme',
-        'colorful-theme'
-      ]
-    }
+        "chameleon-theme",
+        "milk-white-theme",
+        "dark-highlight-theme",
+        "simple-green-theme",
+        "colorful-theme",
+      ],
+    };
   },
   watch: {
-    backgroundTheme(newValue) {
-
+    background: function (newBackground) {
       //如果监视到背景发生变化，则将用户选择的背景层移到顶层
-      for(let i = 0; i < this.backgroundList.length; i++) {
-        if(this.backgroundList[i] == newValue) {
-          let item = this.backgroundList.splice(i, 1)
-          this.backgroundList.unshift(item)
+      for (let i = 0; i < this.backgroundList.length; i++) {
+        if (this.backgroundList[i] == newBackground) {
+          let item = this.backgroundList.splice(i, 1);
+          this.backgroundList.unshift(item);
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style>
-
-.background-color{
+.background-color {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -77,15 +83,15 @@ export default {
   position: relative;
 }
 
-.themeChange{
+.themeChange {
   animation: themeMoveOut 1s cubic-bezier(0.2, 1, 0.9, 0.2);
 }
 
 @keyframes themeMoveOut {
-  from{
+  from {
     transform: translateX(-100%);
   }
-  to{
+  to {
     transform: translateX(0);
   }
 }

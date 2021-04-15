@@ -28,12 +28,16 @@ export default {
   },
   computed: {
     ...mapState(["currentList", "currentListIndex", "albumImgRotateStyle"]),
+    songID() {
+      if (this.currentList.length !== 0) {
+        return this.currentList[this.currentListIndex].songmid;
+      }
+    },
   },
   watch: {
     //播放歌曲变化时，显示翻转动画
-    //专辑旋转动画由绑定的style控制，与这个无关
-    //下面的翻转动画由class控制
-    currentListIndex() {
+    songID() {
+      console.log(this.currentList[this.currentListIndex]);
       let albumimg = this.currentList[this.currentListIndex].albumimg;
 
       if (

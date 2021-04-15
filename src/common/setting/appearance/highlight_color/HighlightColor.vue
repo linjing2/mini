@@ -1,62 +1,77 @@
 <template>
   <div class="setting-hightlight-color">
     <div class="hightlight-color-radio-box">
-      <label class="hightlight-color-option" v-for="item in checkList" :key="item.id">
-        <div class="hightlight-color-dot" :style="{backgroundColor: item.value,transform: item.value == picked ? 'scale(1.3)':''}"></div>
-        <input type="radio" name="hightlight-color" :value="item.value" v-model="picked">
-        <div class="hightlight-color-option-text">{{item.text}}</div>
+      <label
+        class="hightlight-color-option"
+        v-for="(item, index) in highlightColorList"
+        :key="item.text + index"
+      >
+        <div
+          class="hightlight-color-dot"
+          :style="{
+            backgroundColor: item.value,
+            transform: item.value == picked.value ? 'scale(1.3)' : '',
+          }"
+        ></div>
+        <input type="radio" name="hightlight-color" :value="item" v-model="picked" />
+        <div class="hightlight-color-option-text">{{ item.text }}</div>
       </label>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
-  name: 'setting-hightlight-color',
+  name: "setting-hightlight-color",
+  computed: {
+    ...mapState(["setting"]),
+  },
   data() {
     return {
-      checkList: [
+      highlightColorList: [
         {
-          id: 0,
-          text: '罗兰紫',
-          value: '#c5b5f0'
+          text: "罗兰紫",
+          value: "#c5b5f0",
         },
         {
-          id: 1,
-          text: '活力橙',
-          value: '#ff5d00'
+          text: "活力橙",
+          value: "#ff5d00",
         },
         {
-          id: 2,
-          text: '柠檬黄',
-          value: '#f8cb00'
+          text: "柠檬黄",
+          value: "#f8cb00",
         },
         {
-          id: 3,
-          text: '青葱绿',
-          value: '#99f158'
+          text: "青葱绿",
+          value: "#99f158",
         },
         {
-          id: 4,
-          text: '妖艳红',
-          value: '#f74f9e'
+          text: "妖艳红",
+          value: "#f74f9e",
         },
         {
-          id: 5,
-          text: '天空蓝',
-          value: 'skyblue'
-        }
+          text: "天空蓝",
+          value: "skyblue",
+        },
       ],
-      picked: '#c5b5f0'
-    }
+      picked: {
+        text: "罗兰紫",
+        value: "#c5b5f0",
+      },
+    };
+  },
+  mounted() {
+    this.picked = this.setting.appearance.highlightColor;
   },
   watch: {
-    picked(newValue) {
-      console.log(newValue)
-      document.body.style.setProperty("--highlight-color", newValue)
-    }
-  }
-}
+    picked(newPicked) {
+      document.body.style.setProperty("--highlight-color", newPicked.value);
+      this.$store.commit("setHighlightColor", newPicked);
+    },
+  },
+};
 </script>
 
 <style>
@@ -97,7 +112,7 @@ export default {
 }
 
 .hightlight-color-option input:checked + .hightlight-color-option-text {
-    background-color: var(--highlight-color);
+  background-color: var(--highlight-color);
 }
 
 .hightlight-color-option-text {
@@ -109,5 +124,4 @@ export default {
   border-radius: 15px;
   transition: all 0.3s;
 }
-
 </style>

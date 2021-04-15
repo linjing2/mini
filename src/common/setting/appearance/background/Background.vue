@@ -1,86 +1,97 @@
 <template>
   <div class="setting-background">
     <div class="background-radio-box">
-      <label class="background-option" v-for="item in checkList" :key="item.id">
-        <input type="radio" name="backgorund" :value="item.value" v-model="picked">
-        <div class="option-text">{{item.text}}</div>
+      <label
+        class="background-option"
+        v-for="(item, index) in backgroundList"
+        :key="item.text + index"
+      >
+        <input type="radio" name="backgorund" :value="item" v-model="picked" />
+        <div class="option-text">{{ item.text }}</div>
       </label>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
-  name: 'setting-background',
+  name: "setting-background",
+  computed: {
+    ...mapState(["setting"]),
+  },
   data() {
     return {
-      checkList: [
+      backgroundList: [
         {
-          id: 0,
-          text: '变色龙',
-          value: 'chameleon-theme'
+          text: "变色龙",
+          value: "chameleon-theme",
         },
         {
-          id: 1,
-          text: '牛奶白',
-          value: 'milk-white-theme'
+          text: "牛奶白",
+          value: "milk-white-theme",
         },
         {
-          id: 2,
-          text: '高亮黑',
-          value: 'dark-highlight-theme'
+          text: "高亮黑",
+          value: "dark-highlight-theme",
         },
         {
-          id: 3,
-          text: '清新绿',
-          value: 'simple-green-theme'
+          text: "清新绿",
+          value: "simple-green-theme",
         },
         {
-          id: 4,
-          text: '炫丽彩',
-          value: 'colorful-theme'
-        }
+          text: "炫丽彩",
+          value: "colorful-theme",
+        },
       ],
-      picked: 'chameleon-theme'
-    }
+      picked: {
+        text: "变色龙",
+        value: "chameleon-theme",
+      },
+    };
+  },
+  mounted() {
+    this.picked = this.setting.appearance.background;
   },
   watch: {
-    picked: function(newValue) {
-      console.log(newValue)
-      if(newValue === 'dark-highlight-theme') {
-        document.body.style.setProperty("--font-color", '#eee');
-        document.body.style.setProperty("--progress-bar-color", 'rgba(255,255,255,0.1)');
-      }else {
-        document.body.style.setProperty("--font-color", 'black');
-        document.body.style.setProperty("--progress-bar-color", 'rgba(0,0,0,0.1)');
+    picked: function (newBackground) {
+      //暗主题需要改变文字、进度条等颜色
+      if (newBackground.value === "dark-highlight-theme") {
+        document.body.style.setProperty("--font-color", "#eee");
+        document.body.style.setProperty("--progress-bar-color", "rgba(255,255,255,0.1)");
+      } else {
+        document.body.style.setProperty("--font-color", "black");
+        document.body.style.setProperty("--progress-bar-color", "rgba(0,0,0,0.1)");
       }
 
-      switch(newValue) {
-        case 'chameleon-theme':
-          document.body.style.setProperty("--background-color", 'white');
-          break
-        
-        case 'milk-white-theme':
-          document.body.style.setProperty("--background-color", '#fdfdfd');
-          break
-        
-        case 'dark-highlight-theme':
-          document.body.style.setProperty("--background-color", '#171717');
-          break
-        
-        case 'simple-green-theme':
-          document.body.style.setProperty("--background-color", '#dffff5');
-          break
+      //根据不同主题改变背景 颜色
+      switch (newBackground.value) {
+        case "chameleon-theme":
+          document.body.style.setProperty("--background-color", "white");
+          break;
 
-        case 'colorful-theme':
-          document.body.style.setProperty("--background-color", 'white');
-          break
+        case "milk-white-theme":
+          document.body.style.setProperty("--background-color", "#fdfdfd");
+          break;
+
+        case "dark-highlight-theme":
+          document.body.style.setProperty("--background-color", "#171717");
+          break;
+
+        case "simple-green-theme":
+          document.body.style.setProperty("--background-color", "#dffff5");
+          break;
+
+        case "colorful-theme":
+          document.body.style.setProperty("--background-color", "white");
+          break;
       }
-      
-      this.$store.commit('setBackgroundTheme', newValue)
-    }
-  }
-}
+
+      this.$store.commit("setBackground", newBackground);
+    },
+  },
+};
 </script>
 
 <style>
@@ -107,11 +118,11 @@ export default {
 }
 
 .background-option input:checked + .option-text {
-    background-color: var(--highlight-color);
+  background-color: var(--highlight-color);
 }
 
 .background-option input:checked + .option-text::before {
-    box-shadow: 0 0 0 5px var(--highlight-color) inset;
+  box-shadow: 0 0 0 5px var(--highlight-color) inset;
 }
 
 .option-text {

@@ -9,6 +9,7 @@ import getDiscoverList from '@/network/getDiscoverList.js'
 
 export default new Vuex.Store({
   state: {
+    appVersion: "1.3.0",
     currentList: [],   //当前歌单
     currentListIndex: null, //当前歌曲
     currentSongUrl: '',  //当前歌曲播放链接
@@ -38,7 +39,27 @@ export default new Vuex.Store({
       navRouter: '/Discover',
       settingRouter: '/Appearance/Background',
     },
-    backgroundTheme: 'chameleon-theme'
+    setting: {        //记录用户的设置信息
+      appVersion: '1.3.0',
+      appearance: {
+        background: {
+          text: '变色龙',
+          value: 'chameleon-theme'
+        },
+        highlightColor: {
+          text: '罗兰紫',
+          value: '#c5b5f0'
+        },
+        font: {
+          fontFamily: '系统默认',
+          lyricFontFamily: '跟随界面字体',
+          fontWeight: { text: "常规", value: "normal" },
+          lyricFontWeight: { text: "常规", value: "normal" },
+          fontSize: '16px',
+          lyricFontSize: '20px',
+        }
+      }
+    },
   },
   mutations: {
 
@@ -49,6 +70,34 @@ export default new Vuex.Store({
 
       if (localStorage.hasOwnProperty('markList')) {
         state.markList = JSON.parse(localStorage.getItem('markList'))
+      }
+
+      if (localStorage.hasOwnProperty('setting')) {
+        let setting = JSON.parse(localStorage.getItem('setting'))
+        if(setting.appVersion === state.appVersion) {
+          state.setting = setting
+        }else {
+          //做一些不同版本兼容性工作
+
+        }
+      }
+
+      this.commit('initApp')
+    },
+
+    initApp(state) {
+      document.body.style.setProperty("--highlight-color", state.setting.appearance.highlightColor.value);
+      document.body.style.setProperty("--font-family", state.setting.appearance.font.fontFamily);
+      document.body.style.setProperty("--lyric-font-family", state.setting.appearance.font.lyricFontFamily);
+      document.body.style.setProperty("--font-weight", state.setting.appearance.font.fontWeight.value);
+      document.body.style.setProperty("--lyric-font-weight", state.setting.appearance.font.lyricFontWeight.value);
+      document.body.style.setProperty("--font-size", state.setting.appearance.font.fontSize);
+      document.body.style.setProperty("--lyric-font-size", state.setting.appearance.font.lyricFontSize);
+
+      //暗主题需要改变文字、进度条等颜色
+      if (state.setting.appearance.background.value === "dark-highlight-theme") {
+        document.body.style.setProperty("--font-color", "#eee");
+        document.body.style.setProperty("--progress-bar-color", "rgba(255,255,255,0.1)");
       }
     },
 
@@ -103,16 +152,52 @@ export default new Vuex.Store({
     },
 
     setRouterHistory(state, payload) {
-      if(payload.router === 'nav') {
+      if (payload.router === 'nav') {
         state.routerHistory.navRouter = payload.path
       }
-      if(payload.router === 'setting') {
+      if (payload.router === 'setting') {
         state.routerHistory.settingRouter = payload.path
       }
     },
 
-    setBackgroundTheme(state, theme) {
-      state.backgroundTheme = theme
+    setBackground(state, background) {
+      state.setting.appearance.background = background
+      localStorage.setItem('setting',JSON.stringify(state.setting))
+    },
+
+    setHighlightColor(state, highlightColor) {
+      state.setting.appearance.highlightColor = highlightColor
+      localStorage.setItem('setting',JSON.stringify(state.setting))
+    },
+
+    setFontFamily(state, fontFamily) {
+      state.setting.appearance.font.fontFamily = fontFamily
+      localStorage.setItem('setting',JSON.stringify(state.setting))
+    },
+
+    setLyricFontFamily(state, lyricFontFamily) {
+      state.setting.appearance.font.lyricFontFamily = lyricFontFamily
+      localStorage.setItem('setting',JSON.stringify(state.setting))
+    },
+
+    setFontWeight(state, fontWeight) {
+      state.setting.appearance.font.fontWeight = fontWeight
+      localStorage.setItem('setting',JSON.stringify(state.setting))
+    },
+
+    setLyricFontWeight(state, lyricFontWeight) {
+      state.setting.appearance.font.lyricFontWeight = lyricFontWeight
+      localStorage.setItem('setting',JSON.stringify(state.setting))
+    },
+
+    setFontSize(state, fontSize) {
+      state.setting.appearance.font.fontSize = fontSize
+      localStorage.setItem('setting',JSON.stringify(state.setting))
+    },
+
+    setLyricFontSize(state, lyricFontSize) {
+      state.setting.appearance.font.lyricFontSize = lyricFontSize
+      localStorage.setItem('setting',JSON.stringify(state.setting))
     },
 
     //新建歌单
@@ -235,6 +320,8 @@ export default new Vuex.Store({
       //搜索时搜索页面模糊并显示加载动画
       state.isSearchPageBlur = true
       state.isSearchPageLoading = true
+
+      state.loadMoreText = '加载更多', 
 
       getSearchList(state.searchText, 1)
         .then(res => {

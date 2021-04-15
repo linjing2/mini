@@ -5,7 +5,7 @@
       <div class="font-family-drop-down-box-wrap">
         <div class="font-family-drop-down-box" @click="showFontFamilyOption()">
           <div class="font-family-using">
-            {{ fontFamilyText }}
+            {{ fontFamily }}
           </div>
           <img src="@/assets/arrow-down.svg" />
           <div
@@ -32,8 +32,8 @@
       <div class="font-family-text">歌词字体</div>
       <div class="font-family-drop-down-box-wrap">
         <div class="font-family-drop-down-box" @click="showLyricFontOption()">
-          <div class="font-family-using" :style="{ fontFamily: lyricFontFamilyText }">
-            {{ lyricFontFamilyText }}
+          <div class="font-family-using" :style="{ fontFamily: lyricFontFamily }">
+            {{ lyricFontFamily }}
           </div>
           <img src="@/assets/arrow-down.svg" />
           <div
@@ -62,7 +62,7 @@
       <div class="font-family-drop-down-box-wrap">
         <div class="font-family-drop-down-box" @click="showFontWeightOption">
           <div class="font-family-using">
-            {{ fontWeightText }}
+            {{ fontWeight.text }}
           </div>
           <img src="@/assets/arrow-down.svg" />
           <div
@@ -90,7 +90,7 @@
       <div class="font-family-drop-down-box-wrap">
         <div class="font-family-drop-down-box" @click="showLyricFontWeightOption">
           <div class="font-family-using">
-            {{ lyricFontWeightText }}
+            {{ lyricFontWeight.text }}
           </div>
           <img src="@/assets/arrow-down.svg" />
           <div
@@ -177,6 +177,8 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "setting-font",
   data() {
@@ -185,10 +187,10 @@ export default {
       isShowLyricFontOption: false,
       isShowFontWeightOption: false,
       isShowLyricFontWeightOption: false,
-      fontFamilyText: "系统默认",
-      lyricFontFamilyText: "跟随界面字体",
-      fontWeightText: "常规",
-      lyricFontWeightText: "常规",
+      fontFamily: "系统默认",
+      lyricFontFamily: "跟随界面字体",
+      fontWeight: { text: "常规", value: "normal" },
+      lyricFontWeight: { text: "常规", value: "normal" },
       fontFamilyList: [
         "系统默认",
         "阿朱泡泡体",
@@ -261,6 +263,8 @@ export default {
     };
   },
   computed: {
+    ...mapState(["setting"]),
+
     //字体大小调节指针移动的距离由字体大小计算得出
     fontSizeThumbMoveLength: function () {
       let fonSizeNum = Number(this.fontSize.match(/\d+/));
@@ -274,6 +278,14 @@ export default {
   },
   mounted() {
     document.addEventListener("mouseup", this.mouseup);
+
+    //获取历史数据
+    this.fontFamily = this.setting.appearance.font.fontFamily;
+    this.lyricFontFamily = this.setting.appearance.font.lyricFontFamily;
+    this.fontWeight = this.setting.appearance.font.fontWeight;
+    this.lyricFontWeight = this.setting.appearance.font.lyricFontWeight;
+    this.fontSize = this.setting.appearance.font.fontSize;
+    this.lyricFontSize = this.setting.appearance.font.lyricFontSize;
   },
   methods: {
     showFontFamilyOption() {
@@ -321,46 +333,56 @@ export default {
     },
 
     changeFontFamily(fontFamily) {
-      this.fontFamilyText = fontFamily;
+      this.fontFamily = fontFamily;
+
       document.body.style.setProperty("--font-family", fontFamily);
-      if (this.lyricFontFamilyText === "跟随界面字体") {
+
+      if (this.lyricFontFamily === "跟随界面字体") {
         document.body.style.setProperty("--lyric-font-family", fontFamily);
       }
+
+      this.$store.commit("setFontFamily", fontFamily);
     },
 
     changeLyricFontFamily(lyricFontFamily) {
       if (lyricFontFamily === "跟随界面字体") {
-        document.body.style.setProperty("--lyric-font-family", this.fontFamilyText);
+        document.body.style.setProperty("--lyric-font-family", this.fontFamily);
       } else {
         document.body.style.setProperty("--lyric-font-family", lyricFontFamily);
       }
-      this.lyricFontFamilyText = lyricFontFamily;
+      this.lyricFontFamily = lyricFontFamily;
       this.isShowLyricFontOption = false;
+
+      this.$store.commit("setLyricFontFamily", lyricFontFamily);
     },
 
-    changeFontWeight(item) {
-      if (item.text === "细") {
-        document.body.style.setProperty("--font-weight", item.value);
+    changeFontWeight(fontWeight) {
+      if (fontWeight.text === "细") {
+        document.body.style.setProperty("--font-weight", fontWeight.value);
       }
-      if (item.text === "常规") {
-        document.body.style.setProperty("--font-weight", item.value);
+      if (fontWeight.text === "常规") {
+        document.body.style.setProperty("--font-weight", fontWeight.value);
       }
-      if (item.text === "粗") {
-        document.body.style.setProperty("--font-weight", item.value);
+      if (fontWeight.text === "粗") {
+        document.body.style.setProperty("--font-weight", fontWeight.value);
       }
-      this.fontWeightText = item.text;
+      this.fontWeight = fontWeight;
       this.isShowFontWeightOption = false;
+
+      this.$store.commit("setFontWeight", fontWeight);
     },
 
-    changeLyricFontWeight(item) {
-      if (item.text === "常规") {
-        document.body.style.setProperty("--lyric-font-weight", item.value);
+    changeLyricFontWeight(lyricFontWeight) {
+      if (lyricFontWeight.text === "常规") {
+        document.body.style.setProperty("--lyric-font-weight", lyricFontWeight.value);
       }
-      if (item.text === "粗") {
-        document.body.style.setProperty("--lyric-font-weight", item.value);
+      if (lyricFontWeight.text === "粗") {
+        document.body.style.setProperty("--lyric-font-weight", lyricFontWeight.value);
       }
-      this.lyricFontWeightText = item.text;
+      this.lyricFontWeight = lyricFontWeight;
       this.isShowLyricFontWeightOption = false;
+
+      this.$store.commit("setLyricFontWeight", lyricFontWeight);
     },
 
     fontSizeThumbStartMove(e) {
@@ -409,6 +431,9 @@ export default {
     mouseup() {
       this.isFontSizeThumbMoveable = false;
       this.isLyricFontSizeThumbMoveable = false;
+
+      this.$store.commit("setFontSize", this.fontSize);
+      this.$store.commit("setLyricFontSize", this.lyricFontSize);
     },
   },
 };
