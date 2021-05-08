@@ -32,7 +32,8 @@ export default {
       }
 
       //获取当前歌曲专辑图片
-      let albumimg = this.currentList[this.currentListIndex].albumimg;
+      let albumimg = this.currentList[this.currentListIndex].albumImgUrl
+      ;
 
       //返回下面的专辑图片地址，说明此专辑根本没专辑图片
       if (

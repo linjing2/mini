@@ -7,6 +7,11 @@ import { request } from "@/network/request.js";
 import getSearchList from '@/network/getSearchList.js'
 import getDiscoverList from '@/network/getDiscoverList.js'
 
+import { Singer, Album, Music, Mv, Lyric, Category, PlayList } from '@/network/spider/commonObject'
+import { getSearch, getSongVkey, getCdn, getAlbum, getLyric } from "@/network/spider";
+
+import standardizeAPI from '@/network/standardizeAPI.js'
+
 export default new Vuex.Store({
   state: {
     appVersion: "1.3.0",
@@ -21,12 +26,19 @@ export default new Vuex.Store({
     playMode: 'listForwardMode',  //播放模式
     albumImgRotateStyle: {},  //控制专辑图片旋转
     searchText: '',  //用户搜索内容
-    currentPage: 1,  //搜索请求页数(一页50包含50首歌曲)
+    searchPage: 1,  //搜索请求页数(一页包含20首歌曲)
     loadMoreText: '加载更多',  //加载更多按钮显示的文本
     canLoadMore: true,  //指示是否已没有更多数据可加载
     lyric: [],  //歌词
     currentTime: null,  //当前歌曲正在播放的时刻
     isInputFocus: false,  //用户是否正在输入，用于决定是否移除快捷键监听
+    loading: {           //用于控制页面是否显示loading动画
+      searchPage: {
+        isLoading: false,
+        isBlur: false,
+        loadMoreText: '加载更多'
+      }
+    },
     isSearchPageBlur: false,  //搜索页面是否模糊
     isSearchPageLoading: false,  //搜索页面是否显示正在加载
     isDiscoverPageLoading: false, //发现页面是否显示正在加载
@@ -74,9 +86,9 @@ export default new Vuex.Store({
 
       if (localStorage.hasOwnProperty('setting')) {
         let setting = JSON.parse(localStorage.getItem('setting'))
-        if(setting.appVersion === state.appVersion) {
+        if (setting.appVersion === state.appVersion) {
           state.setting = setting
-        }else {
+        } else {
           //做一些不同版本兼容性工作
 
         }
@@ -108,6 +120,34 @@ export default new Vuex.Store({
       //不要直接两者相等，不然两歌单可能会相互干扰
       state.currentList = []
       state.currentList.push(...payload.list)
+    },
+
+    setCurrentListIndex(state, currentListIndex) {
+      state.currentListIndex = currentListIndex
+    },
+
+    setCurrentSongUrl(state, songUrl) {
+      state.currentSongUrl = songUrl
+    },
+
+    setLyric(state, lyric) {
+      state.lyric = lyric
+    },
+
+    setSearchList(state, searchList) {
+      state.searchList = searchList
+    },
+
+    setSearchText(state, searchText) {
+      state.searchText = searchText
+    },
+
+    setSearchPage(state, searchPage) {
+      state.searchPage = searchPage
+    },
+
+    pushSearchLoadMore(state, loadMoreList) {
+      state.searchList.push(...loadMoreList)
     },
 
     sendMarkListIndex(state, markListIndex) {
@@ -143,6 +183,15 @@ export default new Vuex.Store({
       state.isShowDialog = false
     },
 
+    setLoading(state, payload) {
+      switch (payload.whichPage) {
+        case "SearchPage":
+          state.loading.searchPage.isLoading = payload.isLoading
+          state.loading.searchPage.isbBlur = payload.isBlur
+          break
+      }
+    },
+
     showSettingPanel(state) {
       state.isShowSettingPanel = true
     },
@@ -162,42 +211,42 @@ export default new Vuex.Store({
 
     setBackground(state, background) {
       state.setting.appearance.background = background
-      localStorage.setItem('setting',JSON.stringify(state.setting))
+      localStorage.setItem('setting', JSON.stringify(state.setting))
     },
 
     setHighlightColor(state, highlightColor) {
       state.setting.appearance.highlightColor = highlightColor
-      localStorage.setItem('setting',JSON.stringify(state.setting))
+      localStorage.setItem('setting', JSON.stringify(state.setting))
     },
 
     setFontFamily(state, fontFamily) {
       state.setting.appearance.font.fontFamily = fontFamily
-      localStorage.setItem('setting',JSON.stringify(state.setting))
+      localStorage.setItem('setting', JSON.stringify(state.setting))
     },
 
     setLyricFontFamily(state, lyricFontFamily) {
       state.setting.appearance.font.lyricFontFamily = lyricFontFamily
-      localStorage.setItem('setting',JSON.stringify(state.setting))
+      localStorage.setItem('setting', JSON.stringify(state.setting))
     },
 
     setFontWeight(state, fontWeight) {
       state.setting.appearance.font.fontWeight = fontWeight
-      localStorage.setItem('setting',JSON.stringify(state.setting))
+      localStorage.setItem('setting', JSON.stringify(state.setting))
     },
 
     setLyricFontWeight(state, lyricFontWeight) {
       state.setting.appearance.font.lyricFontWeight = lyricFontWeight
-      localStorage.setItem('setting',JSON.stringify(state.setting))
+      localStorage.setItem('setting', JSON.stringify(state.setting))
     },
 
     setFontSize(state, fontSize) {
       state.setting.appearance.font.fontSize = fontSize
-      localStorage.setItem('setting',JSON.stringify(state.setting))
+      localStorage.setItem('setting', JSON.stringify(state.setting))
     },
 
     setLyricFontSize(state, lyricFontSize) {
       state.setting.appearance.font.lyricFontSize = lyricFontSize
-      localStorage.setItem('setting',JSON.stringify(state.setting))
+      localStorage.setItem('setting', JSON.stringify(state.setting))
     },
 
     //新建歌单
@@ -260,7 +309,7 @@ export default new Vuex.Store({
 
       //检测当前歌曲是否已在喜欢的列表中
       state.likedList.forEach((likedItem, index) => {
-        if (likedItem.songmid === item.songmid) {
+        if (likedItem.songID === item.songID) {
           isThisSongLiked = true
           likedSongIndex = index
         }
@@ -315,23 +364,51 @@ export default new Vuex.Store({
     },
 
     handleSearchSong(state, searchText) {
+      console.log('handleSearchSong')
       state.searchText = searchText
 
       //搜索时搜索页面模糊并显示加载动画
       state.isSearchPageBlur = true
       state.isSearchPageLoading = true
 
-      state.loadMoreText = '加载更多', 
+      state.loadMoreText = '加载更多',
 
-      getSearchList(state.searchText, 1)
-        .then(res => {
+        console.log('state.searchText', state.searchText)
+      let keyword = state.searchText
+      console.log('getSearch', getSearch)
+      getSearch({
+        keyword: keyword,
+        page: 2,
+      })
+        .then((res) => {
+          console.log('res', JSON.parse(res.data.slice(9, -1)).data)
+          let rawSongList = JSON.parse(res.data.slice(9, -1)).data.song.list
+          console.log('rawSongList', rawSongList)
 
-          let searchList = res.data.data.list
+          //提取有用的数据
+          rawSongList.forEach(item => {
 
-          //有一些无id歌曲，将其剔除掉。因为没id根本无法得到歌曲资源
-          state.searchList = searchList.filter(item => item.songmid.length === 14)
+            let songItem = {
+              songID: item.mid,
+              songName: item.name,
+              songUrl: item.url,
+              singer: [],
+              albumName: item.album.name,
+              albumImgUrl: ''
+            }
 
-          console.log(state.searchList)
+            item.singer.forEach(each => {
+              songItem.singer.push({
+                name: each.name,
+                ID: each.mid
+              })
+            })
+
+            state.searchList.push(songItem)
+          })
+
+          console.log('state.searchList', state.searchList)
+          console.log('state.currentList', state.currentList)
 
           //搜索后再显示loadMore
           state.haveSearched = true
@@ -340,41 +417,89 @@ export default new Vuex.Store({
           state.isSearchPageBlur = false
           state.isSearchPageLoading = false
         })
-        .catch(err => {
-          console.log(err)
-          Vue.prototype.$message.showMessage({
-            type: 'error',
-            message: "请求数据出错：" + err
-          })
-          state.isSearchPageBlur = false
-          state.isSearchPageLoading = false
-        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      // getSearch({ keyword: state.searchText, page: 1 })
+      //   .then(res => {
+      //     console.log('res', res)
+      //     let { zhida, song: { list, totalnum, curpage } } = JSON.parse(res.data.slice(9, -1)).data // zhida ？ 直达 api 里面有中文 
+      //     let direct
+      //     switch (zhida.type) {
+      //       case 1:
+      //         direct = new Singer(zhida.zhida_singer.singerName, zhida.zhida_singer.singerMID)
+      //         break;
+      //       case 2:
+      //         direct = new Album(zhida.zhida_album.albumName, zhida.zhida_album.albumMID)
+      //         break;
+      //     }
+      //     let result = {
+      //       direct, totalPage: Math.ceil(totalnum / 20),
+      //       songList: list.map(
+      //         ({ name, mid, file: { media_mid }, singer, album, type, pay: { pay_play } }) =>
+      //           new Music(
+      //             name, mid, media_mid,
+      //             new Album(album.name, album.mid),
+      //             singer.map(singerItem =>
+      //               new Singer(singerItem.name, singerItem.mid)),
+      //             type, pay_play))
+      //     }
+
+      //     state.searchList = result
+
+      //     console.log(state.searchList)
+
+      //     //搜索后再显示loadMore
+      //     state.haveSearched = true
+
+      //     //搜索完成隐藏搜索页面模糊和显示加载动画
+      //     state.isSearchPageBlur = false
+      //     state.isSearchPageLoading = false
+      //   })
+      //   .catch(err => {
+      //     console.log(err)
+      //     Vue.prototype.$message.showMessage({
+      //       type: 'error',
+      //       message: "请求数据出错：" + err
+      //     })
+      //     state.isSearchPageBlur = false
+      //     state.isSearchPageLoading = false
+      //   })
     },
 
     handleLoadMore(state) {
       state.loadMoreText = "加载中..."
-      if (state.canLoadMore) {
+      if (state.currentPage < state.searchList.totalPage) {
         state.currentPage += 1
         getSearchList(state.searchText, state.currentPage)
           .then(res => {
-            //得到下一页的搜索结果
-            let moreSearchList = res.data.data.list
-
-            //如请求结果为0，则说明没有更多歌曲了
-            if (moreSearchList.length === 0) {
-              state.loadMoreText = "已到达底线，再也加载不出来了"
-              state.canLoadMore = false
-            } else {
-              moreSearchList.forEach(item => {
-
-                //有一些无id歌曲，将其剔除掉。因为没id根本无法得到歌曲资源
-                if (item.songmid.length === 14) {
-                  state.searchList.push(item)
-                }
-              })
-              state.loadMoreText = "加载更多"
-              console.log(state.searchList)
+            let { zhida, song: { list, totalnum, curpage } } = JSON.parse(res.data.slice(9, -1)).data // zhida ？ 直达 api 里面有中文 
+            let direct
+            switch (zhida.type) {
+              case 1:
+                direct = new Singer(zhida.zhida_singer.singerName, zhida.zhida_singer.singerMID)
+                break;
+              case 2:
+                direct = new Album(zhida.zhida_album.albumName, zhida.zhida_album.albumMID)
+                break;
             }
+            let result = {
+              direct, totalPage: Math.ceil(totalnum / 20),
+              songList: list.map(
+                ({ name, mid, file: { media_mid }, singer, album, type, pay: { pay_play } }) =>
+                  new Music(
+                    name, mid, media_mid,
+                    new Album(album.name, album.mid),
+                    singer.map(singerItem =>
+                      new Singer(singerItem.name, singerItem.mid)),
+                    type, pay_play))
+            }
+
+            state.searchList.songList.push(...result.songList)
+
+            state.loadMoreText = "加载更多"
+            console.log(state.searchList)
           })
           .catch(err => {
             state.loadMoreText = "加载更多"
@@ -384,6 +509,8 @@ export default new Vuex.Store({
               message: "请求数据出错：" + err
             })
           })
+      } else {
+        state.loadMoreText = "已到达底线，再也加载不出来了"
       }
     },
 
@@ -457,9 +584,9 @@ export default new Vuex.Store({
       }
     },
 
-    playCurrentSong() {
-      this.commit('getSongUrlAndLyric')
-    },
+    // playCurrentSong() {
+    //   this.commit('getSongUrlAndLyric')
+    // },
 
     playNextSong(state) {
       //各个列表下一首到头了，则将index停留在最后一位
@@ -480,6 +607,155 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    async handleSearchSong({ commit }, searchText) {
+      console.log('searchText', searchText)
+
+      //显示搜索页面loading动画和页面模糊
+      let showLoading = {
+        whichPage: "SearchPage",
+        isLoading: true,
+        isBlur: true
+      }
+      commit("setLoading", showLoading)
+
+      //新的搜索将搜索页数置为1
+      commit("setSearchPage", 1)
+
+      let searchConfig = {
+        keyword: searchText,
+        page: 1
+      }
+      console.log('searchConfig', searchConfig)
+
+      let searchResult = null
+      try {
+        searchResult = await getSearch(searchConfig)
+      } catch (err) {
+        console.log(err)
+      }
+
+      console.log('action', searchResult)
+
+      //将请求到的数据结构标准化
+      let searchList = standardizeAPI(searchResult.songList)
+
+      console.log('searchList', searchList)
+      commit('setSearchList', searchList)
+
+      //搜索完成后隐藏页面loading动画和页面模糊
+      let hideLoading = {
+        whichPage: "SearchPage",
+        isLoading: false,
+        isBlur: false
+      }
+      commit("setLoading", hideLoading)
+    },
+
+    async loadMoreSong({ dispatch, state }, whichPage) {
+      console.log('loadMoreSong', whichPage)
+      switch (whichPage) {
+        case "SearchPage":
+          dispatch('loadMoreSearchSong')
+          break
+      }
+    },
+
+    async loadMoreSearchSong({ commit, state }) {
+      //将搜索页面加一
+      commit("setSearchPage", state.searchPage + 1)
+
+      let moreSearchSongList = []
+
+      let searchConfig = {
+        keyword: state.searchText,
+        page: state.searchPage
+      }
+
+      try {
+        moreSearchSongList = await getSearch(searchConfig)
+      } catch (err) {
+        console.log(err)
+      }
+
+      let loadMoreList = standardizeAPI(moreSearchSongList.songList)
+
+      console.log(loadMoreList)
+      commit("pushSearchLoadMore", loadMoreList)
+    },
+
+    async playCurrentSong({ state, commit }) {
+
+      let currentSong = state.currentList[state.currentListIndex]
+
+      function generateGuid() {
+        const t = new Date().getUTCMilliseconds();
+        const guid = (Math.round(2147483647 * Math.random()) * t) % 1e10;
+        window.localStorage.guid = guid;
+        return guid;
+      }
+
+      let guid = generateGuid();
+      console.log("guid", guid);
+
+      let songID = currentSong.songID
+      console.log("songID", songID);
+
+      let purl = await getSongVkey({
+        songMid: songID,
+      });
+      console.log("purl", purl);
+
+      //提示vip歌曲无法播放
+      if(purl == '') {
+        Vue.prototype.$message.showMessage({
+          type: 'error',
+          message: "无法请求播放数据，可能为vip歌曲"
+        })
+      }
+      let cdn = await getCdn(guid);
+      console.log("cdn", cdn);
+      console.log("url", cdn + purl);
+
+      let songUrl = cdn + purl
+
+      commit('setCurrentSongUrl', songUrl)
+      console.log('state.currentSongUrl', state.currentSongUrl)
+
+      let lyric = await getLyric(songID)
+      console.log('lyric', lyric)
+
+      commit('setLyric', lyric.lyricList)
+    },
+
+    playNextSong({ state, commit , dispatch}) {
+
+      commit('setCurrentListIndex',state.currentListIndex + 1)
+
+      //各个列表下一首到头了，则将index停留在最后一位
+      if (state.currentListIndex < state.currentList.length) {
+        dispatch('playCurrentSong')
+      } else {
+        //当播放列表index超出，如果是列表循环模式，则将index置零，从头开始播放
+        if (state.playMode === "listCycleMode") {
+          commit('setCurrentListIndex', 0)
+          dispatch('playCurrentSong')
+        } else {
+          //如果不是列表循环模式，则index停留在最后
+          commit('setCurrentListIndex', state.currentList.length - 1)
+        }
+      }
+    },
+
+    playPreviousSong({ state, commit , dispatch}) {
+      //各个列表上一首到头则index重新置零
+      commit('setCurrentListIndex',state.currentListIndex - 1)
+      if (state.currentListIndex >= 0) {
+        dispatch('playCurrentSong')
+      } else {
+        commit('setCurrentListIndex',0)
+      }
+    },
+    
   },
   modules: {
   }

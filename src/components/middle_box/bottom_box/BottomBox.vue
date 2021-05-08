@@ -88,7 +88,7 @@
         <img :src="playStateImgUrl" width="40px" />
       </div>
       <div class="next-song" @click="playNextSong">
-        <img src="@/assets/next-song.svg" width="40px"/>
+        <img src="@/assets/next-song.svg" width="40px" />
       </div>
     </div>
     <div class="volume-box">
@@ -162,6 +162,14 @@ export default {
       "isInputFocus",
     ]),
 
+    songUrl() {
+      if (this.currentList.length !== 0) {
+        return this.currentList[this.currentListIndex];
+      } else {
+        return "";
+      }
+    },
+
     showTime() {
       //实时显示歌曲播放时间进度
       var current_m = Math.floor(this.currentTime / 60);
@@ -186,7 +194,7 @@ export default {
       let currentSongID = null;
 
       if (this.currentList.length !== 0) {
-        currentSongID = this.currentList[this.currentListIndex].songmid;
+        currentSongID = this.currentList[this.currentListIndex].songID;
       }
 
       let isThisSongLiked = false;
@@ -194,7 +202,7 @@ export default {
       //检测当前歌曲是否已在喜欢列表中
       //在，则点亮红心。否则不点亮。
       this.likedList.forEach((item, index) => {
-        if (item.songmid === currentSongID) {
+        if (item.songID === currentSongID) {
           isThisSongLiked = true;
         }
       });
@@ -206,7 +214,7 @@ export default {
       let currentSongID = null;
 
       if (this.currentList.length !== 0) {
-        currentSongID = this.currentList[this.currentListIndex].songmid;
+        currentSongID = this.currentList[this.currentListIndex].songID;
       }
 
       let isThisSongMarked = false;
@@ -215,7 +223,7 @@ export default {
       //在，则点亮star。否则不点亮。
       this.markList.forEach((songList) => {
         songList.list.forEach((item) => {
-          if (item.songmid === currentSongID) {
+          if (item.songID === currentSongID) {
             isThisSongMarked = true;
           }
         });
@@ -228,7 +236,7 @@ export default {
     //由于按键监听(快捷键)会干扰搜索输入，所以这里监测用户是否正在搜索输入
     //搜索时一定要移除按键监听,搜索结束再添加监听
     isInputFocus(newValue) {
-      console.log("isInputFocus", newValue);
+      console.log('isInputFocus',newValue)
       if (newValue === true) {
         document.removeEventListener("keydown", this.keyDown);
       } else {
@@ -327,6 +335,7 @@ export default {
     },
 
     getDuration() {
+      this.$store.commit('albumRotateRunning')
       this.duration = this.audio.duration;
       this.playStateImgUrl = this.playingImgUrl;
 
@@ -419,7 +428,7 @@ export default {
         this.$store.commit("handleRandomMode");
       } else {
         //其他模式上一首按顺序播放上一首
-        this.$store.commit("playPreviousSong");
+        this.$store.dispatch("playPreviousSong");
       }
 
       //将上一首的播放速度延续到下一首
@@ -430,7 +439,7 @@ export default {
     },
 
     playContral() {
-      //确保当前有歌单才能播放或暂停R
+      //确保当前有歌单才能播放或暂停
       if (this.currentList.length !== 0) {
         if (this.audio.paused) {
           this.audio.play();
@@ -449,10 +458,11 @@ export default {
     },
 
     autoPlayNextSong() {
+      this.$store.commit('albumRotatePaused')
       switch (this.playMode) {
         case "listForwardMode":
           //默认顺序播放，不做处理,直接下一首
-          this.$store.commit("playNextSong");
+          this.$store.dispatch("playNextSong");
           break;
 
         case "singleCycleMode":
@@ -480,7 +490,7 @@ export default {
       if (this.playMode == "randomMode") {
         this.$store.commit("handleRandomMode");
       } else {
-        this.$store.commit("playNextSong");
+        this.$store.dispatch("playNextSong");
       }
 
       setTimeout(() => {

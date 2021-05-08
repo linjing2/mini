@@ -1,8 +1,8 @@
 <template>
   <div class="search-list-page">
-    <loading v-if="isSearchPageLoading"></loading>
+    <loading v-if="loading.searchPage.isLoading"></loading>
     <song-list
-      :class="{ blur: isSearchPageBlur }"
+      :class="{ blur: loading.searchPage.isLoading }"
       :list="searchList"
       :isShowLoadMore="true"
       ref="searchList"
@@ -25,7 +25,7 @@ export default {
     Loading,
   },
   computed: {
-    ...mapState(["searchList", "isSearchPageBlur", "isSearchPageLoading"]),
+    ...mapState(["searchList","loading"]),
   },
   mounted() {
     //添加监听scrollToTop事件，使新的搜索发生后立即回到顶端

@@ -14,11 +14,11 @@
         class="song-list-item"
         v-for="(item, index) in list"
         @click.right="mouseRightClick($event, item, index)"
-        :key="item.songmid"
+        :key="item.songID"
         :style="
           (currentList.length === 0
             ? ''
-            : currentList[currentListIndex].songmid === item.songmid
+            : currentList[currentListIndex].songID === item.songID
             ? playingSongStyle
             : '') || (selectSongIndex === index ? selectSongStyle : '')
         "
@@ -30,13 +30,13 @@
           <img :src="setLikeImgUrl(item)" @click="likeSong(item)" width="18px" />
         </div>
         <div class="song-list-song-name" @click="playThisSong(item, index)">
-          {{ item.songname }}
+          {{ item.songName }}
         </div>
         <div class="song-list-singer-name" @click="playThisSong(item, index)">
-          {{ item.singer.name }}
+          {{ showSingerName(item) }}
         </div>
         <div class="song-list-album-name" @click="playThisSong(item, index)">
-          {{ item.albumname }}
+          {{ item.albumName }}
         </div>
       </div>
       <div
@@ -123,7 +123,8 @@ export default {
 
       //将用户点击的歌曲index连带歌单一起发送至vuex
       this.$store.commit("sendCurrentIndex", payload);
-      this.$store.commit("playCurrentSong");
+      // this.$store.commit("playCurrentSong");
+      this.$store.dispatch("playCurrentSong");
     },
 
     likeSong(item) {
@@ -139,7 +140,7 @@ export default {
 
       //将已like的歌曲逐一与搜索列表对比，如有likedList中的歌曲，则红心点亮
       this.likedList.forEach((likedItem) => {
-        if (likedItem.songmid === item.songmid) {
+        if (likedItem.songID === item.songID) {
           isThisSongLiked = true;
         }
       });
@@ -161,6 +162,16 @@ export default {
       });
 
       return isThisSongMarked ? this.markedImgUrl : this.markImgUrl;
+    },
+
+    showSingerName(item) {
+      let singerNameArr = []
+      item.singer.forEach(each => {
+        singerNameArr.push(each.name)
+      })
+
+      let singerNames = singerNameArr.join('/')
+      return singerNames
     },
 
     backTop() {
@@ -198,7 +209,7 @@ export default {
     },
 
     loadMore() {
-      this.$store.commit("handleLoadMore");
+      this.$store.dispatch("loadMoreSong", "SearchPage");
     },
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <div class="left-nav">
-    <div class="logo-box">
+    <div class="logo-box" @click="testAPI">
       <div class="logo">
         <img src="@/assets/logo.svg" width="50px" />
       </div>
@@ -97,10 +97,10 @@
         <album-img></album-img>
       </div>
       <div class="playing-song-name">
-        {{ currentList.length === 0 ? "" : currentList[currentListIndex].songname }}
+        {{ currentList.length === 0 ? "" : currentList[currentListIndex].songName }}
       </div>
       <div class="playing-singer-name">
-        {{ currentList.length == 0 ? "" : currentList[currentListIndex].singer.name }}
+        {{ currentList.length == 0 ? "" : showSingerName }}
       </div>
     </div>
   </div>
@@ -109,6 +109,10 @@
 <script>
 import { mapState } from "vuex";
 import AlbumImg from "./album_img/AlbumImg.vue";
+
+import { getSearch, getSongVkey, getCdn, getLyric } from "@/network/spider";
+import request from "axios";
+import getSongUrl from "@/network/getSongUrl.js";
 
 export default {
   name: "left-nav",
@@ -128,8 +132,23 @@ export default {
   components: { AlbumImg },
   computed: {
     ...mapState(["currentList", "currentListIndex", "markList", "isInputFocus"]),
+
+    showSingerName() {
+      let singer = this.currentList[this.currentListIndex].singer
+      let singerNameArr = []
+      singer.forEach(item => {
+        singerNameArr.push(item.name)
+      })
+
+      let singerNames = singerNameArr.join('/')
+      return singerNames
+    },
   },
   methods: {
+    async testAPI() {
+      
+    },
+
     //点击收藏时展示下拉框的下拉和收起动画
     markBox() {
       this.$router.push("MarkPage");

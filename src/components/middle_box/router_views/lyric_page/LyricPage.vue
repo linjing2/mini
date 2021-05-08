@@ -2,7 +2,7 @@
   <div class="lyric-page" ref="lyricPage">
     <div class="lyric-item" v-for="(item, index) in lyric" :key="index">
       <div class="lyric-text-line" :style="setPlayingLyricStyle(item, index)">
-        {{ item.text }}
+        {{ item.lyric }}
       </div>
     </div>
   </div>

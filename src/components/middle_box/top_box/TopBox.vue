@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import { getSearch } from "@/network/spider";
+
 export default {
   name: "top-box",
   data() {
@@ -51,10 +53,13 @@ export default {
   methods: {
     searchSong() {
       this.isShowSearchHistory = false;
-      if (this.searchText !== "") {
-        //防止无输入搜索
-        this.$router.push("SearchPage");
-        this.$store.commit("handleSearchSong", this.searchText);
+      if (this.searchText !== "") {  //防止无输入搜索
+
+        //切换到搜索页面
+        this.$router.push({path: '/SearchPage'});
+
+        this.$store.dispatch("handleSearchSong", this.searchText);
+        this.$store.commit("setSearchText", this.searchText);
       }
 
       //下面开始记录搜索历史和搜索频率

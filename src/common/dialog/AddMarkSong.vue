@@ -3,7 +3,7 @@
     <div class="mark-dialog-body">
       <div class="mark-dialog-title">
         将
-        <span>{{ selectedSong.songname }}</span>
+        <span>{{ selectedSong.songName }}</span>
         加入：
       </div>
       <div class="mark-dialog-item-box">

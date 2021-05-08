@@ -30,7 +30,7 @@ export default {
     ...mapState(["currentList", "currentListIndex", "albumImgRotateStyle"]),
     songID() {
       if (this.currentList.length !== 0) {
-        return this.currentList[this.currentListIndex].songmid;
+        return this.currentList[this.currentListIndex].songID;
       }
     },
   },
@@ -38,7 +38,7 @@ export default {
     //播放歌曲变化时，显示翻转动画
     songID() {
       console.log(this.currentList[this.currentListIndex]);
-      let albumimg = this.currentList[this.currentListIndex].albumimg;
+      let albumimg = this.currentList[this.currentListIndex].albumImgUrl;
 
       if (
         //专辑图片无效链接，通常为专辑无图片时返回的请求结果，没啥用

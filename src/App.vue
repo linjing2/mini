@@ -70,7 +70,7 @@ export default {
   },
   mounted() {
     this.$store.commit("getHistoryData");
-    this.$router.push("DiscoverPage");
+    // this.$router.push("DiscoverPage");
   },
 };
 </script>
