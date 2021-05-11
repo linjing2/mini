@@ -24,6 +24,7 @@ import RightBar from "./components/right_bar/RightBar";
 import RemoveSongList from "@/common/dialog/RemoveSongList.vue";
 import AddMarkSong from "@/common/dialog/AddMarkSong.vue";
 import About from "@/common/dialog/About.vue";
+import MvPlayer from "@/common/dialog/MvPlayer.vue";
 import Setting from "@/common/setting/Setting.vue";
 
 export default {
@@ -35,6 +36,7 @@ export default {
     AddMarkSong,
     RemoveSongList,
     About,
+    MvPlayer,
     Setting,
     BackgroundColor,
   },
@@ -70,7 +72,7 @@ export default {
   },
   mounted() {
     this.$store.commit("getHistoryData");
-    // this.$router.push("DiscoverPage");
+    this.$router.push({ path: "DiscoverPage" });
   },
 };
 </script>

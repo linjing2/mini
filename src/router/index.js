@@ -8,6 +8,9 @@ const DiscoverPage = () => import('@/components/middle_box/router_views/discover
 const LikedPage = () => import('@/components/middle_box/router_views/liked_page/LikedPage')
 const LyricPage = () => import('@/components/middle_box/router_views/lyric_page/LyricPage')
 const MarkPage = () => import('@/components/middle_box/router_views/mark_page/MarkPage')
+const PlayListPage = () => import('@/components/middle_box/router_views/play_list_page/PlayListPage')
+const SingerPage = () => import('@/components/middle_box/router_views/singer_page/SingerPage')
+const AlbumPage = () => import('@/components/middle_box/router_views/album_page/AlbumPage')
 
 const Appearance = () => import('@/common/setting/appearance/Appearance')
 const Background = () => import('@/common/setting/appearance/background/Background')
@@ -43,6 +46,24 @@ const routes = [
     path: '/MarkPage',
     components: {
       nav: MarkPage
+    }
+  },
+  {
+    path: '/PlayListPage',
+    components: {
+      nav: PlayListPage
+    }
+  },
+  {
+    path: '/SingerPage',
+    components: {
+      nav: SingerPage
+    }
+  },
+  {
+    path: '/AlbumPage',
+    components: {
+      nav: AlbumPage
     }
   },
   {

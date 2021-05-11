@@ -66,6 +66,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    loadMoreText: {
+      type: String,
+      default: "加载更多",
+    },
     isShowMarkImg: {
       type: Boolean,
       default: false,
@@ -96,7 +100,6 @@ export default {
       "currentListIndex",
       "likedList",
       "markList",
-      "loadMoreText",
     ]),
   },
   mounted() {
@@ -165,13 +168,13 @@ export default {
     },
 
     showSingerName(item) {
-      let singerNameArr = []
-      item.singer.forEach(each => {
-        singerNameArr.push(each.name)
-      })
+      let singerNameArr = [];
+      item.singer.forEach((each) => {
+        singerNameArr.push(each.name);
+      });
 
-      let singerNames = singerNameArr.join('/')
-      return singerNames
+      let singerNames = singerNameArr.join("/");
+      return singerNames;
     },
 
     backTop() {
@@ -209,7 +212,7 @@ export default {
     },
 
     loadMore() {
-      this.$store.dispatch("loadMoreSong", "SearchPage");
+      this.$emit("loadMore");
     },
   },
 };

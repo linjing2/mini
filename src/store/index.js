@@ -16,13 +16,17 @@ export default new Vuex.Store({
   state: {
     appVersion: "1.3.0",
     currentList: [],   //当前歌单
-    currentListIndex: null, //当前歌曲
+    currentListIndex: null, //当前歌曲index
     currentSongUrl: '',  //当前歌曲播放链接
     searchList: [],  //搜索歌单
     discoverList: [],  //发现歌单
     likedList: [],  //喜欢歌单
-    markList: [],
+    markList: [],   //收藏歌单
     markListIndex: 0,
+    playList: [], 
+    singerInfo: {},
+    albumInfo: {},
+    MVUrl: '',
     playMode: 'listForwardMode',  //播放模式
     albumImgRotateStyle: {},  //控制专辑图片旋转
     searchText: '',  //用户搜索内容
@@ -146,6 +150,22 @@ export default new Vuex.Store({
       state.searchPage = searchPage
     },
 
+    setPlayList(state, playList) {
+      state.playList = playList
+    },
+
+    setSingerInfo(state, singerInfo) {
+      state.singerInfo = singerInfo
+    },
+
+    setAlbumInfo(state, albumInfo) {
+      state.albumInfo = albumInfo
+    },
+
+    setMVUrl(state, MVUrl) {
+      state.MVUrl = MVUrl
+    },
+
     pushSearchLoadMore(state, loadMoreList) {
       state.searchList.push(...loadMoreList)
     },
@@ -176,6 +196,7 @@ export default new Vuex.Store({
 
     showDialog(state, dialog) {
       state.dialog = dialog
+      console.log('state.dialog',state.dialog)
       state.isShowDialog = true
     },
 
@@ -373,7 +394,7 @@ export default new Vuex.Store({
 
       state.loadMoreText = '加载更多',
 
-        console.log('state.searchText', state.searchText)
+      console.log('state.searchText', state.searchText)
       let keyword = state.searchText
       console.log('getSearch', getSearch)
       getSearch({

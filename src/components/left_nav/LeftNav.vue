@@ -110,9 +110,7 @@
 import { mapState } from "vuex";
 import AlbumImg from "./album_img/AlbumImg.vue";
 
-import { getSearch, getSongVkey, getCdn, getLyric } from "@/network/spider";
-import request from "axios";
-import getSongUrl from "@/network/getSongUrl.js";
+import { getSearch, getSongVkey, getCdn, getLyric, getCategory } from "@/network/spider";
 
 export default {
   name: "left-nav",
@@ -134,19 +132,20 @@ export default {
     ...mapState(["currentList", "currentListIndex", "markList", "isInputFocus"]),
 
     showSingerName() {
-      let singer = this.currentList[this.currentListIndex].singer
-      let singerNameArr = []
-      singer.forEach(item => {
-        singerNameArr.push(item.name)
-      })
+      let singer = this.currentList[this.currentListIndex].singer;
+      let singerNameArr = [];
+      singer.forEach((item) => {
+        singerNameArr.push(item.name);
+      });
 
-      let singerNames = singerNameArr.join('/')
-      return singerNames
+      let singerNames = singerNameArr.join("/");
+      return singerNames;
     },
   },
   methods: {
     async testAPI() {
-      
+      let cat = await getCategory();
+      console.log(cat);
     },
 
     //点击收藏时展示下拉框的下拉和收起动画
@@ -378,7 +377,6 @@ export default {
   max-height: 100px;
   margin-top: 35px;
   overflow-y: scroll;
-  background-color: orange;
   position: absolute;
   border-radius: 10px;
   background-color: var(--background-color);

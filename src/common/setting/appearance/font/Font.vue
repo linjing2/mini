@@ -506,8 +506,10 @@ export default {
   align-items: center;
   z-index: 999;
   border-radius: 10px;
-  background-color: var(--background-color);
-  filter: drop-shadow(0 0 10px var(--highlight-deep-color));
+  backdrop-filter: blur(50px);
+  box-sizing: border-box;
+  border: 1px solid var(--highlight-color);
+  box-shadow: 0 0 15px var(--highlight-color);
 }
 
 .font-family-option-box:focus {

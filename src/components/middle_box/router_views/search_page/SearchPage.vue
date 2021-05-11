@@ -5,6 +5,8 @@
       :class="{ blur: loading.searchPage.isLoading }"
       :list="searchList"
       :isShowLoadMore="true"
+      @loadMore="loadMoreSearchSong"
+      :loadMoreText="加载更多"
       ref="searchList"
     ></song-list>
   </div>
@@ -25,7 +27,7 @@ export default {
     Loading,
   },
   computed: {
-    ...mapState(["searchList","loading"]),
+    ...mapState(["searchList", "loading"]),
   },
   mounted() {
     //添加监听scrollToTop事件，使新的搜索发生后立即回到顶端
@@ -34,35 +36,8 @@ export default {
     });
   },
   methods: {
-    playThisSong(item, index) {
-      var payload = {
-        index: index,
-        activatedPage: "SearchPage",
-      };
-
-      this.$store.commit("sendCurrentIndex", payload);
-      this.$store.commit("playCurrentSong");
-    },
-
-    likeSong(item, index) {
-      this.$store.commit("sendLikedSong", item);
-    },
-
-    setLikeImgUrl(item) {
-      let isThisSongLiked = false;
-
-      //将已like的歌曲逐一与搜索列表对比，如有likedList中的歌曲，则红心点亮
-      this.likedList.forEach((likedItem) => {
-        if (likedItem.songmid === item.songmid) {
-          isThisSongLiked = true;
-        }
-      });
-
-      return isThisSongLiked ? this.likedImgUrl : this.likeImgUrl;
-    },
-
-    backTop() {
-      this.$refs.searchListBoxDom.scrollTop = 0;
+    loadMoreSearchSong() {
+      this.$store.dispatch("loadMoreSong", "SearchPage");
     },
   },
 };
