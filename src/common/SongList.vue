@@ -33,7 +33,7 @@
           {{ item.songName }}
         </div>
         <div class="song-list-singer-name" @click="playThisSong(item, index)">
-          {{ showSingerName(item) }}
+          <span @click.stop="showSinger(item)">{{ showSingerName(item) }}</span>
         </div>
         <div class="song-list-album-name" @click="playThisSong(item, index)">
           {{ item.albumName }}
@@ -52,6 +52,7 @@
 
 <script>
 import { mapState } from "vuex";
+import { getSingerInfo } from "@/network/spider";
 
 export default {
   name: "song-list",
@@ -74,6 +75,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isKeepScrollPositon: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -95,12 +100,7 @@ export default {
     };
   },
   computed: {
-    ...mapState([
-      "currentList",
-      "currentListIndex",
-      "likedList",
-      "markList",
-    ]),
+    ...mapState(["currentList", "currentListIndex", "likedList", "markList"]),
   },
   mounted() {
     //添加监听右键弹出的popbox是否失焦，失焦则隐藏选中歌曲的橙色边框
@@ -114,8 +114,10 @@ export default {
     });
   },
   activated() {
-    //重新进入页面后，保持原来的滚动位置
-    this.$refs.songListBoxDOM.scrollTop = this.scrollerPosition;
+    //回到歌单后，保持原来的滚动位置
+    if (this.isKeepScrollPositon === true) {
+      this.$refs.songListBoxDOM.scrollTop = this.scrollerPosition;
+    }
   },
   methods: {
     playThisSong(item, index) {
@@ -128,6 +130,36 @@ export default {
       this.$store.commit("sendCurrentIndex", payload);
       // this.$store.commit("playCurrentSong");
       this.$store.dispatch("playCurrentSong");
+    },
+
+    async showSinger(item) {
+      console.log(item);
+      //若只有一个歌手则直接进入歌手页面，否则弹出选择歌手对话框
+      if (item.singer.length > 1) {
+        this.$store.commit("setChooseSingerList", item.singer);
+        this.$store.commit("showDialog", "choose-singer");
+      } else {
+        let singerDescription = "";
+        try {
+          let singerInfoData = await getSingerInfo({ singerMid: item.singer[0].ID });
+          singerDescription = singerInfoData.desc;
+        } catch (err) {
+          console.log(err);
+          singerDescription = "";
+        }
+        let singerInfo = {
+          singerName: item.singer[0].name,
+          singerMid: item.singer[0].ID,
+          singerPic:
+            "http://y.gtimg.cn/music/photo_new/T001R150x150M000" +
+            item.singer[0].ID +
+            ".jpg",
+          singerDescription: singerDescription,
+        };
+        console.log(singerInfo);
+        this.$store.commit("setSingerInfo", singerInfo);
+        this.$router.push({ path: "SingerPage" });
+      }
     },
 
     likeSong(item) {
@@ -329,6 +361,10 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+}
+
+.song-list-singer-name > span:hover {
+  cursor: pointer;
 }
 
 .song-list-album-name {

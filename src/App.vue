@@ -25,6 +25,7 @@ import RemoveSongList from "@/common/dialog/RemoveSongList.vue";
 import AddMarkSong from "@/common/dialog/AddMarkSong.vue";
 import About from "@/common/dialog/About.vue";
 import MvPlayer from "@/common/dialog/MvPlayer.vue";
+import ChooseSinger from "@/common/dialog/ChooseSinger.vue";
 import Setting from "@/common/setting/Setting.vue";
 
 export default {
@@ -37,6 +38,7 @@ export default {
     RemoveSongList,
     About,
     MvPlayer,
+    ChooseSinger,
     Setting,
     BackgroundColor,
   },

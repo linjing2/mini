@@ -236,7 +236,7 @@ export default {
     //由于按键监听(快捷键)会干扰搜索输入，所以这里监测用户是否正在搜索输入
     //搜索时一定要移除按键监听,搜索结束再添加监听
     isInputFocus(newValue) {
-      console.log('isInputFocus',newValue)
+      console.log("isInputFocus", newValue);
       if (newValue === true) {
         document.removeEventListener("keydown", this.keyDown);
       } else {
@@ -335,7 +335,7 @@ export default {
     },
 
     getDuration() {
-      this.$store.commit('albumRotateRunning')
+      this.$store.commit("albumRotateRunning");
       this.duration = this.audio.duration;
       this.playStateImgUrl = this.playingImgUrl;
 
@@ -425,7 +425,7 @@ export default {
     playPreviousSong() {
       //随机播放模式下，上一首也是随机
       if (this.playMode === "randomMode") {
-        this.$store.commit("handleRandomMode");
+        this.$store.dispatch("handleRandomMode");
       } else {
         //其他模式上一首按顺序播放上一首
         this.$store.dispatch("playPreviousSong");
@@ -458,7 +458,7 @@ export default {
     },
 
     autoPlayNextSong() {
-      this.$store.commit('albumRotatePaused')
+      this.$store.commit("albumRotatePaused");
       switch (this.playMode) {
         case "listForwardMode":
           //默认顺序播放，不做处理,直接下一首
@@ -472,12 +472,12 @@ export default {
 
         case "listCycleMode":
           //列表循环，处理已嵌入vuex中的playNextSong中，所以直接下一首
-          this.$store.commit("playNextSong");
+          this.$store.dispatch("playNextSong");
           break;
 
         case "randomMode":
           //随机播放
-          this.$store.commit("handleRandomMode");
+          this.$store.dispatch("handleRandomMode");
           break;
       }
 
@@ -488,7 +488,7 @@ export default {
 
     playNextSong() {
       if (this.playMode == "randomMode") {
-        this.$store.commit("handleRandomMode");
+        this.$store.dispatch("handleRandomMode");
       } else {
         this.$store.dispatch("playNextSong");
       }

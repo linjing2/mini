@@ -4,7 +4,10 @@
       <div class="singer-img">
         <img :src="singerInfo.singerPic" />
       </div>
-      <div class="singer-description">{{ singerInfo.singerDescription }}</div>
+      <div class="singer-introduction">
+        <div class="singer-page-singer-name">{{ singerInfo.singerName }}</div>
+        <div class="singer-description">{{ singerInfo.singerDescription }}</div>
+      </div>
     </div>
     <div class="singer-tab-box">
       <div
@@ -32,6 +35,7 @@
           :isShowLoadMore="true"
           @loadMore="loadMoreSong"
           :loadMoreText="songLoadMoreText"
+          :isKeepScrollPositon="false"
         ></song-list>
       </div>
       <div class="singer-list-item" v-show="isShowSingerAlbum">
@@ -99,6 +103,11 @@ export default {
   },
   computed: {
     ...mapState(["singerInfo"]),
+  },
+  watch: {
+    singerInfo() {
+      this.getSong();
+    },
   },
   mounted() {
     //添加监听scrollToTop事件，使新的搜索发生后立即回到顶端
@@ -195,8 +204,7 @@ export default {
       let MVUrl = mvSourceUrl + cn + "?vkey=" + vkey;
       this.$store.commit("setMVUrl", MVUrl);
       console.log(MVUrl);
-      // this.$store.commit("showDialog", "add-mark-song");
-      this.$store.commit("showDialog", "mv-player-dialog");
+      this.$store.commit("showDialog", "mv-player");
     },
 
     async loadMoreSong() {
@@ -274,10 +282,21 @@ export default {
   height: 100%;
 }
 
+.singer-introduction {
+  width: 530px;
+  height: 140px;
+}
+
+.singer-page-singer-name {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  font-size: 20px;
+}
+
 .singer-description {
-  width: 500px;
+  width: 100%;
   height: 100px;
-  padding: 10px;
   line-height: 20px;
   text-indent: 2em;
   text-align: justify;

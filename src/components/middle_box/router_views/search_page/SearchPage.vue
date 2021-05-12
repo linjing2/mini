@@ -6,7 +6,6 @@
       :list="searchList"
       :isShowLoadMore="true"
       @loadMore="loadMoreSearchSong"
-      :loadMoreText="加载更多"
       ref="searchList"
     ></song-list>
   </div>

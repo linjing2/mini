@@ -71,7 +71,7 @@
         <div
           class="discover-list-item"
           v-for="item in playList"
-          @click="enterPlayList(item.playListMid)"
+          @click="enterPlayList(item)"
           :key="item.playListMid"
         >
           <img :src="item.imgUrl" />
@@ -198,11 +198,17 @@ export default {
       this.playList = playListData.list;
     },
 
-    async enterPlayList(playListMid) {
-      let playListData = await getPlayListInfo(playListMid);
+    async enterPlayList(item) {
+      let playListData = await getPlayListInfo(item.playListMid);
       let playList = standardizeAPI(playListData.list);
-      this.$store.commit("setPlayList", playList);
-      this.$router.push({ path: "PlayListPage" });
+      let albumInfo = {
+        albumID: item.playListMid,
+        albumImgUrl: item.imgUrl,
+        albumName: item.playListName,
+        musicList: playList,
+      };
+      this.$store.commit("setAlbumInfo", albumInfo);
+      this.$router.push({ path: "AlbumPage" });
     },
 
     async enterSingerInfo(singer) {
@@ -210,6 +216,7 @@ export default {
       let singerInfoData = await getSingerInfo({ singerMid: singer.singerMid });
       console.log(singerInfoData);
       let singerInfo = {
+        singerName: singer.singerName,
         singerMid: singer.singerMid,
         singerPic: singer.singerPic,
         singerDescription: singerInfoData.desc,

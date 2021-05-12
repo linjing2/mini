@@ -226,6 +226,7 @@
  export async function getSearch ({keyword, page}) {
    let url = `http://c.y.qq.com/soso/fcgi-bin/client_search_cp?new_json=1&t=0&aggr=1&cr=1&catZhida=1&lossless=0&flag_qc=0&p=${page}&n=50&w=${encodeURIComponent(keyword)}&needNewCode=0`
    let {zhida, song: {list, totalnum, curpage}} = JSON.parse((await baseRequest(url)).data.slice(9, -1)).data // zhida ？ 直达 api 里面有中文 
+   console.log(JSON.parse((await baseRequest(url)).data.slice(9, -1)).data)
    let direct
    switch (zhida.type) {
      case 1:
