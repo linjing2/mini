@@ -101,6 +101,19 @@ export default {
   },
   computed: {
     ...mapState(["currentList", "currentListIndex", "likedList", "markList"]),
+
+    //将list的第一个item的id作为list的id
+    listId() {
+      if (this.list.length > 0) {
+        return this.list[0].songID;
+      }
+    },
+  },
+  watch: {
+    //如果list的id变化则自动回到顶端
+    listId() {
+      this.backTop();
+    },
   },
   mounted() {
     //添加监听右键弹出的popbox是否失焦，失焦则隐藏选中歌曲的橙色边框

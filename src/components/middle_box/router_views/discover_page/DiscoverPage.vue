@@ -66,36 +66,44 @@
         </div>
       </div>
     </div>
-    <div class="discover-list" v-show="isShowCategoryPage">
-      <div class="discover-list-grip-box">
-        <div
-          class="discover-list-item"
-          v-for="item in playList"
-          @click="enterPlayList(item)"
-          :key="item.playListMid"
-        >
-          <img :src="item.imgUrl" />
-          <div class="discover-list-text">{{ item.playListName }}</div>
+    <div class="discover-list-display">
+      <loading :isLoading="isLoading"></loading>
+
+      <div class="discover-list" v-show="isShowCategoryPage">
+        <div class="discover-list-grip-box">
+          <grid-list
+            :list="playList"
+            :loadMoreText="loadMoreText"
+            @clickItem="enterPlayList"
+            @loadMore="loadMoreCategory"
+          ></grid-list>
         </div>
       </div>
-      <div class="discover-load-more" @click="loadMoreCategory">
-        {{ loadMoreText }}
-      </div>
-    </div>
-    <div class="discover-list" v-show="isShowSingerPage">
-      <div class="discover-list-grip-box">
-        <div
-          class="discover-list-item"
-          v-for="item in singerList"
-          @click="enterSingerInfo(item)"
-          :key="item.singerMid"
-        >
-          <img :src="item.singerPic" />
-          <div class="discover-list-text">{{ item.singerName }}</div>
+      <div class="discover-list" v-show="isShowSingerPage">
+        <div class="discover-list-grip-box">
+          <grid-list
+            :list="singerList"
+            :loadMoreText="loadMoreText"
+            @clickItem="enterSingerInfo"
+            @loadMore="loadMoreSinger"
+          ></grid-list>
+          <!-- <div
+            class="discover-list-item"
+            v-for="item in singerList"
+            @click="enterSingerInfo(item)"
+            :key="item.singerMid"
+          >
+            <img :src="item.singerPic" />
+            <div class="discover-list-text">{{ item.singerName }}</div>
+          </div> -->
         </div>
-      </div>
-      <div class="discover-load-more" @click="loadMoreSinger">
-        {{ loadMoreText }}
+        <!-- <div
+          class="discover-load-more"
+          @click="loadMoreSinger"
+          v-show="singerList.length > 0"
+        >
+          {{ loadMoreText }}
+        </div> -->
       </div>
     </div>
   </div>
@@ -104,6 +112,7 @@
 <script>
 import Loading from "@/common/Loading.vue";
 import SongList from "@/common/SongList.vue";
+import GridList from "@/common/GridList.vue";
 
 import {
   getCategory,
@@ -144,19 +153,21 @@ export default {
         { value: 1, text: "女" },
         { value: 2, text: "组合" },
       ],
-      categoryIdSelected: "",
+      categoryIdSelected: "10000000",
       singerAreaSelected: { value: -100, text: "全部" },
       singerGenderSelected: { value: -100, text: "全部" },
       hoverItem: "",
-      clickItem: "",
+      clickItem: "热门",
       loadMoreText: "加载更多",
       categoryListPage: 1,
       singerListPage: 1,
+      isLoading: false,
     };
   },
   components: {
     Loading,
     SongList,
+    GridList,
   },
   computed: {},
   mounted() {
@@ -174,15 +185,45 @@ export default {
   methods: {
     async getDiscoverTag() {
       //获取顶栏分类标签
-      this.categoryList = await getCategory();
+      try {
+        this.categoryList = await getCategory();
+      } catch (err) {
+        this.$message.showMessage({
+          type: "error",
+          message: "请求数据出错：" + err,
+        });
+      }
+      console.log("DiscoverTag", this.categoryList);
 
       //一进入直接展示第一个标签的歌单
       let firstCategoryItemId = this.categoryList[0].categoryList[0].categoryId;
-      let playListData = await getPlayList({ categoryId: firstCategoryItemId, page: 1 });
-      this.playList = playListData.list;
 
-      //移除第一个标签，因为此标签一进入已展示
-      this.categoryList.splice(0, 1);
+      this.isLoading = true;
+      let playListData;
+
+      try {
+        playListData = await getPlayList({ categoryId: firstCategoryItemId, page: 1 });
+      } catch (err) {
+        this.$message.showMessage({
+          type: "error",
+          message: "请求数据出错：" + err,
+        });
+        this.isLoading = false;
+      }
+      console.log("playListData", playListData);
+
+      let playList = [];
+      playListData.list.forEach((each) => {
+        let playListItem = {
+          id: each.playListMid,
+          imgUrl: each.imgUrl,
+          text: each.playListName,
+        };
+
+        playList.push(playListItem);
+      });
+      this.playList.push(...playList);
+      this.isLoading = false;
     },
 
     getCategoryList(item) {
@@ -194,34 +235,87 @@ export default {
       this.isShowSingerPage = false;
       this.isShowCategoryPage = true;
       this.categoryIdSelected = item.categoryId;
-      let playListData = await getPlayList({ categoryId: item.categoryId, page: 1 });
-      this.playList = playListData.list;
+      this.loadMoreText = "加载更多";
+      this.isLoading = true;
+
+      let playListData;
+
+      try {
+        playListData = await getPlayList({ categoryId: item.categoryId, page: 1 });
+      } catch (err) {
+        this.$message.showMessage({
+          type: "error",
+          message: "请求数据出错：" + err,
+        });
+        this.isLoading = false;
+      }
+      console.log("playListData", playListData);
+
+      //将请求得歌单格式化为GridList所需格式
+      let playList = [];
+      playListData.list.forEach((each) => {
+        let playListItem = {
+          id: each.playListMid,
+          imgUrl: each.imgUrl,
+          text: each.playListName,
+        };
+
+        playList.push(playListItem);
+      });
+      this.playList = playList;
+      this.isLoading = false;
     },
 
+    //点击后进入歌单页面
     async enterPlayList(item) {
-      let playListData = await getPlayListInfo(item.playListMid);
+      this.isLoading = true;
+
+      let playListData;
+      try {
+        playListData = await getPlayListInfo(item.id);
+      } catch (err) {
+        this.$message.showMessage({
+          type: "error",
+          message: "请求数据出错：" + err,
+        });
+        this.isLoading = false;
+      }
+      console.log("playListData", playListData);
       let playList = standardizeAPI(playListData.list);
       let albumInfo = {
-        albumID: item.playListMid,
+        albumID: item.id,
         albumImgUrl: item.imgUrl,
-        albumName: item.playListName,
+        albumName: item.text,
         musicList: playList,
       };
+      console.log("albumInfo", albumInfo);
+      this.isLoading = false;
       this.$store.commit("setAlbumInfo", albumInfo);
       this.$router.push({ path: "AlbumPage" });
     },
 
+    //点击歌手后进入歌手页面
     async enterSingerInfo(singer) {
-      console.log(singer);
-      let singerInfoData = await getSingerInfo({ singerMid: singer.singerMid });
-      console.log(singerInfoData);
+      this.isLoading = true;
+      let singerInfoData;
+      try {
+        singerInfoData = await getSingerInfo({ singerMid: singer.id });
+      } catch (err) {
+        this.$message.showMessage({
+          type: "error",
+          message: "请求数据出错：" + err,
+        });
+        this.isLoading = false;
+      }
+      console.log("singerInfoData", singerInfoData);
       let singerInfo = {
-        singerName: singer.singerName,
-        singerMid: singer.singerMid,
-        singerPic: singer.singerPic,
+        singerName: singer.text,
+        singerMid: singer.id,
+        singerPic: singer.imgUrl,
         singerDescription: singerInfoData.desc,
       };
-      console.log(singerInfo);
+      console.log("singerInfo", singerInfo);
+      this.isLoading = false;
       this.$store.commit("setSingerInfo", singerInfo);
       this.$router.push({ path: "SingerPage" });
     },
@@ -265,19 +359,50 @@ export default {
       this.isShowSingerOption = true;
     },
 
+    //此函数用于将请求的歌手数据转化为GridList所需格式
+    formatSingerToGrid(singerList) {
+      let gridList = [];
+      singerList.forEach((each) => {
+        let gridListItem = {
+          id: each.singerMid,
+          imgUrl: each.singerPic,
+          text: each.singerName,
+        };
+
+        gridList.push(gridListItem);
+      });
+      return gridList;
+    },
+
     async getSingerList() {
       this.clickItem = this.hoverItem;
       this.isShowCategoryPage = false;
       this.isShowSingerPage = true;
-      let singrtListData = await getNewSingerList({
-        page: 1,
-        area: this.singerAreaSelected.value,
-        sex: this.singerGenderSelected.value,
-        genre: -100,
-        index: -100,
-      });
-      console.log(singrtListData);
-      this.singerList = singrtListData.singerList;
+      this.loadMoreText = "加载更多";
+      this.isLoading = true;
+
+      let singerListData;
+      try {
+        singerListData = await getNewSingerList({
+          page: 1,
+          area: this.singerAreaSelected.value,
+          sex: this.singerGenderSelected.value,
+          genre: -100,
+          index: -100,
+        });
+      } catch (err) {
+        this.$message.showMessage({
+          type: "error",
+          message: "请求数据出错：" + err,
+        });
+        this.isLoading = false;
+      }
+      console.log("singerListData", singerListData);
+
+      let singerList = this.formatSingerToGrid(singerListData.singerList);
+
+      this.singerList = singerList;
+      this.isLoading = false;
     },
 
     async selectSingerArea(item) {
@@ -285,15 +410,31 @@ export default {
       this.isShowCategoryPage = false;
       this.isShowSingerPage = true;
       this.singerAreaSelected = item;
-      let singrtListData = await getNewSingerList({
-        page: 1,
-        area: this.singerAreaSelected.value,
-        sex: this.singerGenderSelected.value,
-        genre: -100,
-        index: -100,
-      });
-      console.log(singrtListData);
-      this.singerList = singrtListData.singerList;
+      this.loadMoreText = "加载更多";
+      this.isLoading = true;
+
+      let singerListData;
+      try {
+        singerListData = await getNewSingerList({
+          page: 1,
+          area: this.singerAreaSelected.value,
+          sex: this.singerGenderSelected.value,
+          genre: -100,
+          index: -100,
+        });
+      } catch (err) {
+        this.$message.showMessage({
+          type: "error",
+          message: "请求数据出错：" + err,
+        });
+        this.isLoading = false;
+      }
+      console.log("singerListData", singerListData);
+
+      let singerList = this.formatSingerToGrid(singerListData.singerList);
+
+      this.singerList = singerList;
+      this.isLoading = false;
     },
 
     async selectSingerGender(item) {
@@ -301,38 +442,108 @@ export default {
       this.isShowCategoryPage = false;
       this.isShowSingerPage = true;
       this.singerGenderSelected = item;
-      let singrtListData = await getNewSingerList({
-        page: 1,
-        area: this.singerAreaSelected.value,
-        sex: this.singerGenderSelected.value,
-        genre: -100,
-        index: -100,
-      });
-      console.log(singrtListData);
-      this.singerList = singrtListData.singerList;
+      this.loadMoreText = "加载更多";
+      this.isLoading = true;
+
+      let singerListData;
+      try {
+        singerListData = await getNewSingerList({
+          page: 1,
+          area: this.singerAreaSelected.value,
+          sex: this.singerGenderSelected.value,
+          genre: -100,
+          index: -100,
+        });
+      } catch (err) {
+        this.$message.showMessage({
+          type: "error",
+          message: "请求数据出错：" + err,
+        });
+        this.isLoading = false;
+      }
+      console.log("singerListData", singerListData);
+
+      let singerList = this.formatSingerToGrid(singerListData.singerList);
+
+      this.singerList = singerList;
+      this.isLoading = false;
     },
 
     async loadMoreCategory() {
       this.categoryListPage += 1;
-      let playListData = await getPlayList({
-        categoryId: this.categoryIdSelected,
-        page: this.categoryListPage,
+      this.loadMoreText = "加载中...";
+      this.isLoading = true;
+
+      let playListData;
+      try {
+        playListData = await getPlayList({
+          categoryId: this.categoryIdSelected,
+          page: this.categoryListPage,
+        });
+      } catch (err) {
+        this.$message.showMessage({
+          type: "error",
+          message: "请求数据出错：" + err,
+        });
+        this.loadMoreText = "加载更多";
+        this.isLoading = false;
+      }
+      console.log("playListData", playListData);
+
+      let playList = [];
+      playListData.list.forEach((each) => {
+        let playListItem = {
+          id: each.playListMid,
+          imgUrl: each.imgUrl,
+          text: each.playListName,
+        };
+
+        playList.push(playListItem);
       });
-      this.playList.push(...playListData.list);
+      this.playList.push(...playList);
+
+      if (playListData.list.length < 40) {
+        this.loadMoreText = "没有更多了q(≧▽≦q)";
+      } else {
+        this.loadMoreText = "加载更多";
+      }
+      this.isLoading = false;
     },
 
     async loadMoreSinger() {
       this.singerListPage += 1;
       this.loadMoreText = "加载中...";
-      let singrtListData = await getNewSingerList({
-        page: this.singerListPage,
-        area: this.singerAreaSelected.value,
-        sex: this.singerGenderSelected.value,
-        genre: -100,
-        index: -100,
-      });
-      this.singerList.push(...singrtListData.singerList);
-      this.loadMoreText = "加载更多";
+      this.isLoading = true;
+
+      let singerListData;
+      try {
+        singerListData = await getNewSingerList({
+          page: this.singerListPage,
+          area: this.singerAreaSelected.value,
+          sex: this.singerGenderSelected.value,
+          genre: -100,
+          index: -100,
+        });
+      } catch (err) {
+        this.$message.showMessage({
+          type: "error",
+          message: "请求数据出错：" + err,
+        });
+        this.loadMoreText = "加载更多";
+        this.isLoading = false;
+      }
+      console.log("singerListData", singerListData);
+
+      let singerList = this.formatSingerToGrid(singerListData.singerList);
+
+      this.singerList.push(...singerList);
+
+      if (singerList.length < 80) {
+        this.loadMoreText = "没有更多了q(≧▽≦q)";
+      } else {
+        this.loadMoreText = "加载更多";
+      }
+      this.isLoading = false;
     },
   },
 };
@@ -365,7 +576,7 @@ export default {
 
 .discover-category-option-box {
   position: absolute;
-  top: 40px;
+  top: 30px;
   width: 100%;
   height: 80px;
   display: flex;
@@ -383,7 +594,7 @@ export default {
 
 .discover-singer-option-box {
   position: absolute;
-  top: 40px;
+  top: 30px;
   width: 100%;
   height: 80px;
   border-radius: 20px;
@@ -429,19 +640,20 @@ export default {
   margin-left: 100px;
 }
 
-.discover-list {
+.discover-list-display {
+  position: relative;
   width: 100%;
   height: 640px;
-  overflow-y: scroll;
+}
+
+.discover-list {
+  width: 100%;
+  height: 100%;
 }
 
 .discover-list-grip-box {
   width: 100%;
-  display: grid;
-  grid-template-columns: repeat(4, 25%);
-  justify-items: center;
-  align-items: center;
-  grid-row-gap: 10px;
+  height: 100%;
 }
 
 .discover-list-item {

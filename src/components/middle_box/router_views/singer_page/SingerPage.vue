@@ -30,6 +30,7 @@
     </div>
     <div class="singer-list-box">
       <div class="singer-list-item" v-show="isShowSingerSong">
+        <loading :isLoading="isSongLoading"></loading>
         <song-list
           :list="songList"
           :isShowLoadMore="true"
@@ -39,14 +40,16 @@
         ></song-list>
       </div>
       <div class="singer-list-item" v-show="isShowSingerAlbum">
+        <loading :isLoading="isAlbumLoading"></loading>
         <grid-list
           :list="albumList"
           :loadMoreText="albumLoadMoreText"
           @loadMore="loadMoreAlbum"
-          @userClick="getAlbumInfo"
+          @clickItem="getAlbumInfo"
         ></grid-list>
       </div>
       <div class="singer-list-item" v-show="isShowSingerMV">
+        <loading :isLoading="isMvLoading"></loading>
         <div class="singer-mv-box">
           <div
             class="singer-mv-item"
@@ -67,6 +70,7 @@
 import { mapState } from "vuex";
 import SongList from "@/common/SongList.vue";
 import GridList from "@/common/GridList.vue";
+import Loading from "@/common/Loading.vue";
 
 import {
   getSingerMusicList,
@@ -95,11 +99,15 @@ export default {
       MVListPage: 0,
       MVLoadMoreText: "加载更多",
       activatedTab: "单曲",
+      isSongLoading: false,
+      isAlbumLoading: false,
+      isMvLoading: false,
     };
   },
   components: {
     SongList,
     GridList,
+    Loading,
   },
   computed: {
     ...mapState(["singerInfo"]),
@@ -110,12 +118,7 @@ export default {
     },
   },
   mounted() {
-    //添加监听scrollToTop事件，使新的搜索发生后立即回到顶端
-    this.$EventBus.$on("scrollToTop", () => {
-      this.$refs.playListDOM.backTop();
-    });
-
-    //已进入就展示歌手的单曲
+    //一进入就展示歌手的单曲
     this.getSong();
   },
   methods: {
@@ -127,10 +130,25 @@ export default {
       this.isShowSingerSong = true;
       this.songListPage = 0;
       this.songLoadMoreText = "加载更多";
-      let songListData = await getSingerMusicList({
-        page: 0,
-        singerMid: this.singerInfo.singerMid,
-      });
+      this.isSongLoading = true;
+
+      let songListData;
+      try {
+        songListData = await getSingerMusicList({
+          page: 0,
+          singerMid: this.singerInfo.singerMid,
+        });
+      } catch (err) {
+        this.$message.showMessage({
+          type: "error",
+          message: "请求数据出错：" + err,
+        });
+        this.isSongLoading = false;
+      }
+      console.log("songListData", songListData);
+
+      this.isSongLoading = false;
+
       this.songList = standardizeAPI(songListData.list);
     },
 
@@ -141,10 +159,25 @@ export default {
       this.isShowSingerAlbum = true;
       this.albumListPage = 0;
       this.albumLoadMoreText = "加载更多";
-      let albumListData = await getSingerAlbumList({
-        page: 0,
-        singerMid: this.singerInfo.singerMid,
-      });
+      this.isAlbumLoading = true;
+
+      let albumListData;
+      try {
+        albumListData = await getSingerAlbumList({
+          page: 0,
+          singerMid: this.singerInfo.singerMid,
+        });
+      } catch (err) {
+        this.$message.showMessage({
+          type: "error",
+          message: "请求数据出错：" + err,
+        });
+        this.isAlbumLoading = false;
+      }
+      console.log("albumListData", albumListData);
+
+      this.isAlbumLoading = false;
+
       let albumList = [];
       albumListData.list.forEach((item) => {
         let gridListItem = {
@@ -161,11 +194,23 @@ export default {
     },
 
     async getAlbumInfo(item) {
-      console.log(item);
-      let albumInfoData = await getAlbum({
-        albumMid: item.id,
-      });
-      console.log(albumInfoData);
+      this.isAlbumLoading = true;
+
+      let albumInfoData;
+      try {
+        albumInfoData = await getAlbum({
+          albumMid: item.id,
+        });
+      } catch (err) {
+        this.$message.showMessage({
+          type: "error",
+          message: "请求数据出错：" + err,
+        });
+        this.isAlbumLoading = false;
+      }
+      console.log("albumInfoData", albumInfoData);
+      this.isAlbumLoading = false;
+
       let musicList = standardizeAPI(albumInfoData.musicList);
       let albumInfo = {
         albumID: albumInfoData.album.albumMid,
@@ -176,7 +221,6 @@ export default {
           ".jpg?max_age=2592000",
         musicList: musicList,
       };
-      console.log(albumInfo);
       this.$store.commit("setAlbumInfo", albumInfo);
       this.$router.push({ path: "AlbumPage" });
     },
@@ -186,24 +230,52 @@ export default {
       this.isShowSingerSong = false;
       this.isShowSingerAlbum = false;
       this.isShowSingerMV = true;
-      let MVListData = await getSingerMvList({
-        singerMid: this.singerInfo.singerMid,
-        page: 0,
-      });
-      console.log(MVListData);
+      this.isMvLoading = true;
+
+      let MVListData;
+      try {
+        MVListData = await getSingerMvList({
+          singerMid: this.singerInfo.singerMid,
+          page: 0,
+        });
+      } catch (err) {
+        this.$message.showMessage({
+          type: "error",
+          message: "请求数据出错：" + err,
+        });
+        this.isMvLoading = false;
+      }
+      console.log("MVListData", MVListData);
+      this.isMvLoading = false;
       this.MVList = MVListData.list;
     },
 
     async getMVInfo(item) {
-      let MVInfoData = await getMvInfo({
-        mvId: item.mvId,
-      });
+      this.isMvLoading = true;
+
+      let MVInfoData;
+      try {
+        MVInfoData = await getMvInfo({
+          mvId: item.mvId,
+        });
+      } catch (err) {
+        this.$message.showMessage({
+          type: "error",
+          message: "请求数据出错：" + err,
+        });
+        this.isMvLoading = false;
+      }
+      console.log("MVInfoData", MVInfoData);
+      this.isMvLoading = false;
+
       let { mvSourceUrl, cn, vkey } = await getMUrl({
         fileid: MVInfoData.fileid,
       });
+
       let MVUrl = mvSourceUrl + cn + "?vkey=" + vkey;
-      this.$store.commit("setMVUrl", MVUrl);
       console.log(MVUrl);
+
+      this.$store.commit("setMVUrl", MVUrl);
       this.$store.commit("showDialog", "mv-player");
     },
 
@@ -211,10 +283,24 @@ export default {
       //如果可以加载更多单曲则请求更多单曲，否则停止请求单曲
       if (this.songLoadMoreText != "已经到底啦o((>ω< ))o") {
         this.songListPage += 1;
-        let songListData = await getSingerMusicList({
-          page: this.songListPage,
-          singerMid: this.singerInfo.singerMid,
-        });
+        this.isSongLoading = true;
+
+        let songListData;
+        try {
+          songListData = await getSingerMusicList({
+            page: this.songListPage,
+            singerMid: this.singerInfo.singerMid,
+          });
+        } catch (err) {
+          this.$message.showMessage({
+            type: "error",
+            message: "请求数据出错：" + err,
+          });
+          this.isSongLoading = false;
+        }
+        console.log("songListData", songListData);
+        this.isSongLoading = false;
+
         if (songListData.list.length < 30) {
           this.songLoadMoreText = "已经到底啦o((>ω< ))o";
         }
@@ -226,14 +312,28 @@ export default {
       //如果可以加载更多专辑则请求更多专辑，否则停止请求单曲
       if (this.albumLoadMoreText != "已经到底啦o((>ω< ))o") {
         this.albumListPage += 1;
-        let albumListData = await getSingerAlbumList({
-          page: this.albumListPage,
-          singerMid: this.singerInfo.singerMid,
-        });
+        this.isAlbumLoading = true;
+
+        let albumListData;
+        try {
+          albumListData = await getSingerAlbumList({
+            page: this.albumListPage,
+            singerMid: this.singerInfo.singerMid,
+          });
+        } catch (err) {
+          this.$message.showMessage({
+            type: "error",
+            message: "请求数据出错：" + err,
+          });
+          this.isAlbumLoading = false;
+        }
+        console.log("albumListData", albumListData);
+        this.isAlbumLoading = false;
+
         if (albumListData.list.length < 30) {
           this.albumLoadMoreText = "已经到底啦o((>ω< ))o";
         }
-        console.log(albumListData);
+
         albumListData.list.forEach((item) => {
           let gridListItem = {
             id: item.albumMid,
@@ -332,6 +432,7 @@ export default {
 }
 
 .singer-list-item {
+  position: relative;
   width: 100%;
   height: 100%;
 }

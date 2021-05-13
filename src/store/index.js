@@ -33,16 +33,6 @@ export default new Vuex.Store({
     lyric: [],  //歌词
     currentTime: null,  //当前歌曲正在播放的时刻
     isInputFocus: false,  //用户是否正在输入，用于决定是否移除快捷键监听
-    loading: {           //用于控制页面是否显示loading动画
-      searchPage: {
-        isLoading: false,
-        isBlur: false,
-        loadMoreText: '加载更多'
-      }
-    },
-    isSearchPageBlur: false,  //搜索页面是否模糊
-    isSearchPageLoading: false,  //搜索页面是否显示正在加载
-    isDiscoverPageLoading: false, //发现页面是否显示正在加载
     selectedSong: {},    //被选中的歌曲，用于暂存需要收藏的歌曲
     dialog: "",          //需要显示对话框组件的名称
     isShowDialog: false, //是否显示对话框
@@ -141,6 +131,7 @@ export default new Vuex.Store({
 
     setSearchText(state, searchText) {
       state.searchText = searchText
+      console.log(state.searchText)
     },
 
     setSearchPage(state, searchPage) {
@@ -203,15 +194,6 @@ export default new Vuex.Store({
 
     hideDialog(state) {
       state.isShowDialog = false
-    },
-
-    setLoading(state, payload) {
-      switch (payload.whichPage) {
-        case "SearchPage":
-          state.loading.searchPage.isLoading = payload.isLoading
-          state.loading.searchPage.isbBlur = payload.isBlur
-          break
-      }
     },
 
     showSettingPanel(state) {
@@ -367,89 +349,6 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async handleSearchSong({ commit }, searchText) {
-      console.log('searchText', searchText)
-
-      //显示搜索页面loading动画和页面模糊
-      let showLoading = {
-        whichPage: "SearchPage",
-        isLoading: true,
-        isBlur: true
-      }
-      commit("setLoading", showLoading)
-
-      //新的搜索将搜索页数置为1
-      commit("setSearchPage", 1)
-
-      let searchConfig = {
-        keyword: searchText,
-        page: 1
-      }
-      console.log('searchConfig', searchConfig)
-
-      let searchResult = null
-      try {
-        searchResult = await getSearch(searchConfig)
-      } catch (err) {
-        console.log(err)
-        Vue.prototype.$message.showMessage({
-          type: 'error',
-          message: "请求数据出错：" + err
-        })
-      }
-
-      console.log('action', searchResult)
-
-      //将请求到的数据结构标准化
-      let searchList = standardizeAPI(searchResult.songList)
-
-      console.log('searchList', searchList)
-      commit('setSearchList', searchList)
-
-      //搜索完成后隐藏页面loading动画和页面模糊
-      let hideLoading = {
-        whichPage: "SearchPage",
-        isLoading: false,
-        isBlur: false
-      }
-      commit("setLoading", hideLoading)
-    },
-
-    async loadMoreSong({ dispatch}, whichPage) {
-      console.log('loadMoreSong', whichPage)
-      switch (whichPage) {
-        case "SearchPage":
-          dispatch('loadMoreSearchSong')
-          break
-      }
-    },
-
-    async loadMoreSearchSong({ commit, state }) {
-      //将搜索页面加一
-      commit("setSearchPage", state.searchPage + 1)
-
-      let moreSearchSongList = []
-
-      let searchConfig = {
-        keyword: state.searchText,
-        page: state.searchPage
-      }
-
-      try {
-        moreSearchSongList = await getSearch(searchConfig)
-      } catch (err) {
-        console.log(err)
-        Vue.prototype.$message.showMessage({
-          type: 'error',
-          message: "请求数据出错：" + err
-        })
-      }
-
-      let loadMoreList = standardizeAPI(moreSearchSongList.songList)
-
-      console.log(loadMoreList)
-      commit("pushSearchLoadMore", loadMoreList)
-    },
 
     async playCurrentSong({ state, commit }) {
 

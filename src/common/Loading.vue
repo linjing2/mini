@@ -1,5 +1,5 @@
 <template>
-  <div class="loading-page">
+  <div class="loading-page" v-if="isLoading" :class="{ blur: isBlur }">
     <div class="loading-box">
       <div class="loading-ring-out">
         <div class="loading-ring-inner"></div>
@@ -20,6 +20,16 @@
 <script>
 export default {
   name: "loading",
+  props: {
+    isLoading: {
+      type: Boolean,
+      default: false,
+    },
+    isBlur: {
+      type: Boolean,
+      default: false,
+    },
+  },
 };
 </script>
 
@@ -31,7 +41,11 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 100;
+  z-index: 999;
+}
+
+.blur {
+  backdrop-filter: blur(10px);
 }
 
 .loading-box {

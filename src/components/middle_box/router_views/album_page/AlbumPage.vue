@@ -22,11 +22,6 @@ export default {
   components: {
     SongList,
   },
-  watch: {
-    albumInfo(newValue) {
-      console.log("newValue", newValue);
-    },
-  },
   computed: {
     ...mapState(["albumInfo"]),
   },

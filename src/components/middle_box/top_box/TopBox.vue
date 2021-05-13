@@ -36,8 +36,6 @@
 </template>
 
 <script>
-import { getSearch } from "@/network/spider";
-
 export default {
   name: "top-box",
   data() {
@@ -71,7 +69,6 @@ export default {
         //切换到搜索页面
         this.$router.push({ path: "/SearchPage" });
 
-        this.$store.dispatch("handleSearchSong", this.searchText);
         this.$store.commit("setSearchText", this.searchText);
       }
 
@@ -122,9 +119,6 @@ export default {
     searchThisText(item) {
       this.searchText = item.searchText;
       this.searchSong();
-
-      //搜索后将搜索页面滑动到顶端
-      this.$EventBus.$emit("scrollToTop");
 
       //隐藏搜索提示框
       this.isShowSearchHistory = false;
