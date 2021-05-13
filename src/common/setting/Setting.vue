@@ -12,33 +12,32 @@
 </template>
 
 <script>
-import BackgroundColor from '../BackgroundColor.vue'
+import BackgroundColor from "../BackgroundColor.vue";
 export default {
   components: { BackgroundColor },
   name: "setting",
   data() {
-    return {
-    }
+    return {};
   },
   mounted() {
-    this.$router.push("Appearance/Background")
+    this.$router.push({ path: "Appearance/Background" });
   },
   methods: {
     hideSettingPanel() {
-      this.$store.commit('hideSettingPanel')
+      this.$store.commit("hideSettingPanel");
 
       //记录离开时的设置路由路径
       let payload = {
-        router: 'setting',
-        path: this.$router.currentRoute.path
-      }
-      this.$store.commit("setRouterHistory", payload)
+        router: "setting",
+        path: this.$router.currentRoute.path,
+      };
+      this.$store.commit("setRouterHistory", payload);
 
       //回到主页面后重新回到上次离开时的路由位置
-      this.$router.push(this.$store.state.routerHistory.navRouter)
-    }
-  }
-}
+      this.$router.push(this.$store.state.routerHistory.navRouter);
+    },
+  },
+};
 </script>
 
 <style>
@@ -54,7 +53,6 @@ export default {
   transform: rotateY(90deg);
   border-radius: 20px;
   overflow: hidden;
-  /* background-color: var(--background-color); */
   box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.3);
 }
 

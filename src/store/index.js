@@ -4,17 +4,15 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 
-import { getSearch, getSongVkey, getCdn, getAlbum, getLyric } from "@/network/spider";
-
-import standardizeAPI from '@/network/standardizeAPI.js'
+import { getSongVkey, getCdn,  getLyric } from "@/network/spider";
 
 export default new Vuex.Store({
   state: {
     appVersion: "1.3.0",
+    canShowThemeAnimation: false, 
     currentList: [],   //当前歌单
     currentListIndex: null, //当前歌曲index
     currentSongUrl: '',  //当前歌曲播放链接
-    searchList: [],  //搜索歌单
     discoverList: [],  //发现歌单
     likedList: [],  //喜欢歌单
     markList: [],   //收藏歌单
@@ -27,9 +25,6 @@ export default new Vuex.Store({
     playMode: 'listForwardMode',  //播放模式
     albumImgRotateStyle: {},  //控制专辑图片旋转
     searchText: '',  //用户搜索内容
-    searchPage: 1,  //搜索请求页数(一页包含20首歌曲)
-    loadMoreText: '加载更多',  //加载更多按钮显示的文本
-    canLoadMore: true,  //指示是否已没有更多数据可加载
     lyric: [],  //歌词
     currentTime: null,  //当前歌曲正在播放的时刻
     isInputFocus: false,  //用户是否正在输入，用于决定是否移除快捷键监听
@@ -102,6 +97,33 @@ export default new Vuex.Store({
         document.body.style.setProperty("--font-color", "#eee");
         document.body.style.setProperty("--progress-bar-color", "rgba(255,255,255,0.1)");
       }
+
+      //根据不同主题改变背景颜色
+      switch (state.setting.appearance.background.value) {
+        case "chameleon-theme":
+          document.body.style.setProperty("--background-color", "white");
+          break;
+
+        case "milk-white-theme":
+          document.body.style.setProperty("--background-color", "#fdfdfd");
+          break;
+
+        case "dark-highlight-theme":
+          document.body.style.setProperty("--background-color", "#171717");
+          break;
+
+        case "simple-green-theme":
+          document.body.style.setProperty("--background-color", "#dffff5");
+          break;
+
+        case "colorful-theme":
+          document.body.style.setProperty("--background-color", "white");
+          break;
+      }
+    },
+
+    setCanShowThemeAnimation(state,canShowThemeAnimation){
+      state.canShowThemeAnimation = canShowThemeAnimation
     },
 
     sendCurrentIndex(state, payload) {

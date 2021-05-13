@@ -2,7 +2,12 @@
   <div class="background-color">
     <div class="background-box">
       <div
-        :class="[{ themeChange: index === 0 }, item]"
+        :class="[
+          {
+            themeChange: index === 0 && canShowThemeAnimation === true,
+          },
+          item,
+        ]"
         v-for="(item, index) in backgroundList"
         :style="{ zIndex: -index }"
         :key="item + item.length"
@@ -19,7 +24,7 @@ import { mapState } from "vuex";
 export default {
   name: "background-color",
   computed: {
-    ...mapState(["setting", "currentList", "currentListIndex"]),
+    ...mapState(["setting", "currentList", "currentListIndex", "canShowThemeAnimation"]),
 
     background: function () {
       return this.setting.appearance.background.value;
@@ -32,15 +37,7 @@ export default {
       }
 
       //获取当前歌曲专辑图片
-      let albumimg = this.currentList[this.currentListIndex].albumImgUrl
-      ;
-
-      //返回下面的专辑图片地址，说明此专辑根本没专辑图片
-      if (
-        albumimg === "http://imgcache.qq.com/music/photo/album_300/0/300_albumpic_0_0.jpg"
-      ) {
-        return this.defaultAlbumImgUrl;
-      }
+      let albumimg = this.currentList[this.currentListIndex].albumImgUrl;
 
       return albumimg;
     },
@@ -58,7 +55,8 @@ export default {
     };
   },
   watch: {
-    background: function (newBackground) {
+    background(newBackground) {
+      console.log("can", this.canShowThemeAnimation);
       //如果监视到背景发生变化，则将用户选择的背景层移到顶层
       for (let i = 0; i < this.backgroundList.length; i++) {
         if (this.backgroundList[i] == newBackground) {

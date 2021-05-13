@@ -49,6 +49,7 @@ export default {
         text: "变色龙",
         value: "chameleon-theme",
       },
+      count: 0,
     };
   },
   mounted() {
@@ -56,6 +57,13 @@ export default {
   },
   watch: {
     picked: function (newBackground) {
+      //第一次进入不要改变setCanShowThemeAnimation
+      if (this.count === 1) {
+        console.log(this.count);
+        this.$store.commit("setCanShowThemeAnimation", true);
+      }
+      this.count += 1;
+
       //暗主题需要改变文字、进度条等颜色
       if (newBackground.value === "dark-highlight-theme") {
         document.body.style.setProperty("--font-color", "#eee");
@@ -65,7 +73,7 @@ export default {
         document.body.style.setProperty("--progress-bar-color", "rgba(0,0,0,0.1)");
       }
 
-      //根据不同主题改变背景 颜色
+      //根据不同主题改变背景颜色
       switch (newBackground.value) {
         case "chameleon-theme":
           document.body.style.setProperty("--background-color", "white");
