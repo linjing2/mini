@@ -1,29 +1,4 @@
-/**
- *
- *          ┌─┐       ┌─┐
- *       ┌──┘ ┴───────┘ ┴──┐
- *       │                 │
- *       │       ───       │
- *       │  ─┬┘       └┬─  │
- *       │                 │
- *       │       ─┴─       │
- *       │                 │
- *       └───┐         ┌───┘
- *           │         │
- *           │         │
- *           │         │
- *           │         └──────────────┐
- *           │                        │
- *           │                        ├─┐
- *           │                        ┌─┘
- *           │                        │
- *           └─┐  ┐  ┌───────┬──┐  ┌──┘
- *             │ ─┤ ─┤       │ ─┤ ─┤
- *             └──┴──┘       └──┴──┘
- * 有钱了不起啊，腾讯就可以为所欲为么。
- * 哦，没错，有钱就是可以为所欲为。明天我们把 api 里面一半的变量名随机改成驼峰和下划线、匈牙利命名法，
- * 后天又改回来，我们人多不怕，气不死也要累死你
- */
+
  import request from 'axios'
  import http from 'http'
  import https from 'https'
@@ -37,11 +12,7 @@
  const httpAgent = new http.Agent(keepAliveConf)
  const httpsAgent = new https.Agent(keepAliveConf)
  
- /**
-  * fuck webpack, Ruined my day
-  * 真的是日乐购了,我特么草拟吗.
-  */
- request.defaults.adapter = global.require('axios/lib/adapters/http')
+ request.defaults.adapter = require('axios/lib/adapters/http')
  
  const baseRequest = request.create({
    headers: {
