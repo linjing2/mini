@@ -66,7 +66,7 @@ andriod 扫码下载：
 web版和desktop版有着细微差别，请前往[迷你音乐web版](https://gitee.com/cgper/mini-music-webpage)
 
 ### 更新v1.3.0
-- 更换数据接口，修复数据借口失效问题
+- 更换数据接口，修复数据接口失效问题
 - 新增设置面板，可自定外观
 
 ### 说明
