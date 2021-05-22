@@ -11,7 +11,7 @@
 ### 安装包
 Windows：    [mini-music-Setup-1.3.0.exe](https://gitee.com/cgper/miniMusic/attach_files/709595/download/mini-music%20Setup%201.3.0.exep%201.2.0.exe)
 
-Mac:         [mini-music-1.2.0.dmg](https://gitee.com/cgper/miniMusic/attach_files/622331/download/mini-music-1.2.0.dmg)
+Mac:         [mini-music-1.3.0.dmg(github)](https://github.com/CGPer/miniMusic/releases/download/v1.3.0/mini-music-1.3.0.dmg)
 
 Linux:       [mini-music_1.3.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/709596/download/mini-music_1.3.0_amd64.deb)
 
@@ -69,15 +69,20 @@ web版和desktop版有着细微差别，请前往[迷你音乐web版](https://gi
 - 更换数据接口，修复数据借口失效问题
 - 新增设置面板，可自定外观
 
+### 说明
+- Mac版安装包大太无法上传，安装包链接为github链接
+- Linux版由于electron有bug，有些微差别
+- 由于Gitee暂停page服务三四个月，故web版无法更新
+
 ### 致谢
 [Vue.js](https://cn.vuejs.org/)
 
 [electron](https://www.electronjs.org/)
-
-[Element](https://element.eleme.cn/#/zh-CN)
 
 [CoCoMusic](https://github.com/xtuJSer/CoCoMusic)
 
 [vue-cli-plugin-electron-builder](https://github.com/nklayman/vue-cli-plugin-electron-builder)
 
 [node-music-api](https://github.com/lunhui1994/node-music-api) （ < v1.3.0）
+
+[Element](https://element.eleme.cn/#/zh-CN)（ < v1.2.0）
