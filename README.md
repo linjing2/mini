@@ -6,7 +6,7 @@
 ### 版权
 此项目仅用于代码学习和技术交流，不提供任何音乐下载或vip付费服务。请尊重音乐平台和创作者的版权，切勿做出任何损害音乐平台和创作者利益的行为。如若此项目无意侵犯了你的利益，请及时联系作者（1833608478@qq.com）,立即删除源代码。
 
-所有歌曲数据均来源于网络，本项目几乎与你打开浏览器在线听音乐无异，仅仅只是节省了你打开网站搜索的时间而已。这里参考借鉴~~Ctrl CV~~了xtuJSer提供的数据接口[CoCoMusic](https://github.com/xtuJSer/CoCoMusic)。顺便提醒，数据接口随时可能失效，请提前做好心理准备。
+所有歌曲数据均来源于网络，本项目几乎与你打开浏览器在线听音乐无异，仅仅只是节省了你打开网站搜索的时间而已。这里参考借鉴~~Ctrl CV~~了xtuJSer的项目[CoCoMusic](https://github.com/xtuJSer/CoCoMusic)中的数据接口。顺便提醒，数据接口随时可能失效，请提前做好心理准备。
 
 ### 安装包
 Windows：    [mini-music-Setup-1.3.0.exe](https://gitee.com/cgper/miniMusic/attach_files/709595/download/mini-music%20Setup%201.3.0.exep%201.2.0.exe)
