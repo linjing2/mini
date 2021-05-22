@@ -11,11 +11,11 @@
 所有歌曲数据均来源于网络，本项目几乎与你打开浏览器在线听音乐无异，仅仅只是节省了你打开网站搜索的时间而已。这里特别感谢lunhui1994提供的数据接口[node-music-api](https://github.com/lunhui1994/node-music-api)。顺便提醒，数据接口随时可能失效，请提前做好心理准备。
 
 ### 安装包
-Windows：    [mini-music-Setup-1.2.0.exe](https://gitee.com/cgper/miniMusic/attach_files/622493/download/mini-music%20Setup%201.2.0.exe)
+Windows：    [mini-music-Setup-1.3.0.exe](https://gitee.com/cgper/miniMusic/attach_files/709595/download/mini-music%20Setup%201.3.0.exep%201.2.0.exe)
 
 Mac:         [mini-music-1.2.0.dmg](https://gitee.com/cgper/miniMusic/attach_files/622331/download/mini-music-1.2.0.dmg)
 
-Linux:       [mini-music_1.2.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/622327/download/mini-music_1.2.0_amd64.deb)
+Linux:       [mini-music_1.3.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/709596/download/mini-music_1.3.0_amd64.deb)
 
 Andriod（测试）：    [mini-music-1.1.0.apk](https://gitee.com/cgper/mini-music-mobile/attach_files/530445/download/mini-music-1.1.0.apk)
 
@@ -24,7 +24,7 @@ andriod 扫码下载：
 ![](https://images.gitee.com/uploads/images/2020/1125/162724_4ad751f3_2020534.png "屏幕截图.png")
 
 ### Web版
-在线体验：[点击在线体验](http://cgper.gitee.io/mini-music-webpage)
+在线体验：[迷你音乐web v1.2.0](http://cgper.gitee.io/mini-music-webpage)
 
 ### 截图
 #### desktop版
@@ -58,7 +58,7 @@ andriod 扫码下载：
 #### desktop版
 ##### 安装开发依赖
 > npm install
-##### 调试
+##### 调试(注意：安装完依赖后，将node_modules/axios/lib/adapters下http.js里的内容覆盖掉xhr.js里的内容)
 > npm run electron:serve
 ##### 打包（你使用哪个系统平台就会打包对应平台的安装包）
 > npm run electron:build
@@ -67,17 +67,9 @@ andriod 扫码下载：
 #### web版
 web版和desktop版有着细微差别，请前往[迷你音乐web版](https://gitee.com/cgper/mini-music-webpage)
 
-### 更新v1.2.0
-- 新增歌曲分类收藏
-- 新增loading动画
-- 新增专辑图片切换动画
-- 更新message通知组件
-- 彻底移除element-ui组件，全部采用自制组件
-
-
-### 期待
-- 更换音乐数据api，将会有更多的音乐可听
-- 增加更多的皮肤主题
+### 更新v1.3.0
+- 更换数据接口，修复数据借口失效问题
+- 新增设置面板，可自定外观
 
 ### 致谢
 [Vue.js](https://cn.vuejs.org/)
