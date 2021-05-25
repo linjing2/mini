@@ -13,7 +13,7 @@ Windows：    [mini-music-Setup-1.3.1.exe](https://gitee.com/cgper/miniMusic/att
 
 Mac:         [mini-music-1.3.1.dmg(github)](https://github.com/CGPer/miniMusic/releases/download/v1.3.1/mini-music-1.3.1.dmg)
 
-Linux:       [mini-music_1.3.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/709596/download/mini-music_1.3.0_amd64.deb)
+Linux:       [mini-music_1.3.1_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/712145/download/mini-music_1.3.1_amd64.deb)
 
 Andriod（测试）：    [mini-music-1.1.0.apk](https://gitee.com/cgper/mini-music-mobile/attach_files/530445/download/mini-music-1.1.0.apk)
 
