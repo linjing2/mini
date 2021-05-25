@@ -9,7 +9,7 @@
 所有歌曲数据均来源于网络，本项目几乎与你打开浏览器在线听音乐无异，仅仅只是节省了你打开网站搜索的时间而已。这里参考借鉴~~Ctrl CV~~了xtuJSer的项目[CoCoMusic](https://github.com/xtuJSer/CoCoMusic)中的数据接口。顺便提醒，数据接口随时可能失效，请提前做好心理准备。
 
 ### 安装包
-Windows：    [mini-music-Setup-1.3.1.exe](https://gitee.com/cgper/miniMusic/attach_files/712119/download/mini-music%20Setup%201.3.1.exe)
+Windows：    [mini-music-Setup-1.3.1.exe](https://gitee.com/cgper/miniMusic/attach_files/712128/download/mini-music%20Setup%201.3.1.exe)
 
 Mac:         [mini-music-1.3.0.dmg(github)](https://github.com/CGPer/miniMusic/releases/download/v1.3.0/mini-music-1.3.0.dmg)
 
