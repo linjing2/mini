@@ -11,7 +11,7 @@
 ### 安装包
 Windows：    [mini-music-Setup-1.3.1.exe](https://gitee.com/cgper/miniMusic/attach_files/712128/download/mini-music%20Setup%201.3.1.exe)
 
-Mac:         [mini-music-1.3.0.dmg(github)](https://github.com/CGPer/miniMusic/releases/download/v1.3.0/mini-music-1.3.0.dmg)
+Mac:         [mini-music-1.3.1.dmg(github)](https://github.com/CGPer/miniMusic/releases/download/v1.3.1/mini-music-1.3.1.dmg)
 
 Linux:       [mini-music_1.3.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/709596/download/mini-music_1.3.0_amd64.deb)
 
