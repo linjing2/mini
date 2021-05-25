@@ -36,9 +36,13 @@ export default {
   computed: {
     ...mapState(["searchText"]),
   },
+  mounted() {
+    if(this.searchText != '') {
+      this.searchSong()
+    }
+  },
   watch: {
     searchText(newValue) {
-      console.log(newValue);
       this.searchSong();
     },
   },
