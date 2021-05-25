@@ -9,14 +9,22 @@ import { getSongVkey, getCdn,  getLyric } from "@/network/spider";
 export default new Vuex.Store({
   state: {
     appVersion: "1.3.0",
-    canShowThemeAnimation: false, 
+    isShowThemeAnimation: false, 
     currentList: [],   //当前歌单
     currentListIndex: null, //当前歌曲index
     currentSongUrl: '',  //当前歌曲播放链接
     discoverList: [],  //发现歌单
     likedList: [],  //喜欢歌单
+    likedListStore:{  //喜欢歌单存储到localStorage
+      appVersion: "1.3.0",
+      likedList: []
+    },
     markList: [],   //收藏歌单
     markListIndex: 0,
+    markListStore:{  //收藏歌单存储到localStorage
+      appVersion: "1.3.0",
+      markList: []
+    },
     playList: [], 
     singerInfo: {},
     albumInfo: {},
@@ -62,12 +70,30 @@ export default new Vuex.Store({
   mutations: {
 
     getHistoryData(state) {
-      if (localStorage.hasOwnProperty('likedList')) {
-        state.likedList = JSON.parse(localStorage.getItem('likedList'))
+      //检查本地是否有喜欢歌单的历史数据
+      if (localStorage.hasOwnProperty('likedListStore')) {
+        let likedListStore = JSON.parse(localStorage.getItem('likedListStore'))
+        //如果有，再检查历史数据的版本是否与此app为同一版本
+        //高版本app可能无法使用低版本的历史数据
+        if(likedListStore.appVersion === state.appVersion) {
+          state.likedList = likedListStore.likedList
+        }else {
+          //做一些不同版本兼容性工作
+
+        }
       }
 
-      if (localStorage.hasOwnProperty('markList')) {
-        state.markList = JSON.parse(localStorage.getItem('markList'))
+      //检查本地是否有收藏歌单的历史数据
+      if (localStorage.hasOwnProperty('markListStore')) {
+        let markListStore = JSON.parse(localStorage.getItem('markListStore'))
+        //如果有，再检查历史数据的版本是否与此app为同一版本
+        //高版本app可能无法使用低版本的历史数据
+        if(markListStore.appVersion === state.appVersion) {
+          state.markList = markListStore.markList
+        }else {
+          //做一些不同版本兼容性工作
+          
+        }
       }
 
       if (localStorage.hasOwnProperty('setting')) {
@@ -122,8 +148,8 @@ export default new Vuex.Store({
       }
     },
 
-    setCanShowThemeAnimation(state,canShowThemeAnimation){
-      state.canShowThemeAnimation = canShowThemeAnimation
+    setIsShowThemeAnimation(state,isShowThemeAnimation){
+      state.isShowThemeAnimation = isShowThemeAnimation
     },
 
     sendCurrentIndex(state, payload) {
@@ -210,7 +236,6 @@ export default new Vuex.Store({
 
     showDialog(state, dialog) {
       state.dialog = dialog
-      console.log('state.dialog',state.dialog)
       state.isShowDialog = true
     },
 
@@ -283,7 +308,9 @@ export default new Vuex.Store({
       }
       state.markList.push(newSongList)
 
-      localStorage.setItem('markList', JSON.stringify(state.markList))
+      //将收藏歌单存储起来
+      state.markListStore.markList = state.markList
+      localStorage.setItem('markListStore', JSON.stringify(state.markListStore))
 
     },
 
@@ -295,14 +322,21 @@ export default new Vuex.Store({
         message: '歌单已被删除'
       })
 
-      localStorage.setItem('markList', JSON.stringify(state.markList))
+      //将收藏歌单存储起来
+      state.markListStore.markList = state.markList
+      localStorage.setItem('markListStore', JSON.stringify(state.markListStore))
 
     },
 
+    //修改收藏歌单名称
     renameSongList(state, payload) {
       let index = payload.index
       let newName = payload.newName
       state.markList[index].name = newName
+
+      //将收藏歌单存储起来
+      state.markListStore.markList = state.markList
+      localStorage.setItem('markListStore', JSON.stringify(state.markListStore))
     },
 
     addMarkSong(state, markListIndex) {
@@ -312,7 +346,9 @@ export default new Vuex.Store({
         message: "收藏成功，歌曲已加入歌单",
       });
 
-      localStorage.setItem('markList', JSON.stringify(state.markList))
+      //将收藏歌单存储起来
+      state.markListStore.markList = state.markList
+      localStorage.setItem('markListStore', JSON.stringify(state.markListStore))
 
     },
 
@@ -324,7 +360,9 @@ export default new Vuex.Store({
         message: '已将此歌曲从收藏列表移除'
       })
 
-      localStorage.setItem('markList', JSON.stringify(state.markList))
+      //将收藏歌单存储起来
+      state.markListStore.markList = state.markList
+      localStorage.setItem('markListStore', JSON.stringify(state.markListStore))
 
     },
 
@@ -353,7 +391,11 @@ export default new Vuex.Store({
 
       }
 
-      localStorage.setItem('likedList', JSON.stringify(state.likedList))
+      //将喜欢歌单存储起来
+      console.log(state.likedList)
+      console.log(state.likedListStore)
+      state.likedListStore.likedList = state.likedList
+      localStorage.setItem('likedListStore', JSON.stringify(state.likedListStore))
     },
 
     //修改专辑图片样式，使专辑图片开始转动

@@ -4,7 +4,7 @@
       <div
         :class="[
           {
-            themeChange: index === 0 && canShowThemeAnimation === true,
+            themeChange: index === 0 && isShowThemeAnimation === true,
           },
           item,
         ]"
@@ -24,7 +24,7 @@ import { mapState } from "vuex";
 export default {
   name: "background-color",
   computed: {
-    ...mapState(["setting", "currentList", "currentListIndex", "canShowThemeAnimation"]),
+    ...mapState(["setting", "currentList", "currentListIndex", "isShowThemeAnimation"]),
 
     background: function () {
       return this.setting.appearance.background.value;
@@ -56,7 +56,6 @@ export default {
   },
   watch: {
     background(newBackground) {
-      console.log("can", this.canShowThemeAnimation);
       //如果监视到背景发生变化，则将用户选择的背景层移到顶层
       for (let i = 0; i < this.backgroundList.length; i++) {
         if (this.backgroundList[i] == newBackground) {

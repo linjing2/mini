@@ -3,11 +3,17 @@
     <background-color></background-color>
     <div class="setting-option-box">
       <router-link to="/Appearance" class="setting-option">外观</router-link>
+      <router-link to="/Development" class="setting-option">开发</router-link>
     </div>
     <keep-alive>
       <router-view name="settingView" class="setting-view"></router-view>
     </keep-alive>
-    <div class="setting-close-button close-button" @click="hideSettingPanel"></div>
+    <div class="setting-panel-right-bar">
+      <div class="setting-close-button-box">
+        <div class="setting-close-button close-button" @click="hideSettingPanel"></div>
+      </div>
+      <div class="setting-panel-drag-bar"></div>
+    </div>
   </div>
 </template>
 
@@ -62,7 +68,8 @@ export default {
   z-index: 999;
   flex-shrink: 0;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   border-radius: 20px 0 0 20px;
 }
 
@@ -86,15 +93,29 @@ export default {
 
 .setting-view {
   z-index: 999;
-  width: 600px;
+  width: 560px;
   height: 100%;
+}
+
+.setting-panel-right-bar {
+  position: relative;
+  z-index: 999;
+  width: 40px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.setting-close-button-box {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .setting-close-button {
   z-index: 999;
-  position: absolute;
-  right: 10px;
-  top: 10px;
 }
 
 .setting-close-button:hover {
@@ -105,5 +126,10 @@ export default {
   background-size: contain;
   box-shadow: 0 0 15px #7e57c2;
   cursor: pointer;
+}
+
+.setting-panel-drag-bar {
+  flex: 1;
+  /* -webkit-app-region: drag; */
 }
 </style>

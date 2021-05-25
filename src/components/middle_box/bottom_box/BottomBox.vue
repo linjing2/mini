@@ -459,6 +459,8 @@ export default {
 
     autoPlayNextSong() {
       this.$store.commit("albumRotatePaused");
+      this.playStateImgUrl = this.pausedImgUrl
+      
       switch (this.playMode) {
         case "listForwardMode":
           //默认顺序播放，不做处理,直接下一首

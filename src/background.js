@@ -95,5 +95,6 @@ if (isDevelopment) {
   }
 }
 
-ipcMain.on('closeMainWindow', e=> win.close());
-ipcMain.on('minimizeMainWindow', e=> win.minimize());
+ipcMain.on('closeMainWindow', ()=> win.close());
+ipcMain.on('minimizeMainWindow', ()=> win.minimize());
+ipcMain.on('turnOnDevTool', ()=> win.webContents.openDevTools());

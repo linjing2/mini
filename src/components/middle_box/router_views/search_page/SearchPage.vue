@@ -42,9 +42,6 @@ export default {
       this.searchSong();
     },
   },
-  mounted() {
-    this.searchSong();
-  },
   methods: {
     async searchSong() {
       let searchText = this.searchText;

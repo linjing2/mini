@@ -16,6 +16,9 @@ const Background = () => import('@/common/setting/appearance/background/Backgrou
 const HighlightColor = () => import('@/common/setting/appearance/highlight_color/HighlightColor')
 const Font = () => import('@/common/setting/appearance/font/Font')
 
+const Development = () => import('@/common/setting/development/Development')
+const Console = () => import('@/common/setting/development/console/Console')
+
 const routes = [
   {
     path: '/DiscoverPage',
@@ -61,7 +64,7 @@ const routes = [
   },
   {
     path: '/Appearance',
-    
+    redirect:'/Appearance/Background',
     components: {
       settingView: Appearance
     },
@@ -84,6 +87,21 @@ const routes = [
           appearanceSettingView: Font
         }
       }
+    ]
+  },
+  {
+    path: '/Development',
+    redirect:'/Development/Console',
+    components: {
+      settingView: Development
+    },
+    children: [
+      {
+        path: 'Console',
+        components: {
+          developmentSettingView: Console
+        }
+      },
     ]
   },
 ]

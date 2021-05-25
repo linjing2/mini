@@ -1,14 +1,28 @@
 <template>
   <div class="setting-background">
     <div class="background-radio-box">
-      <label
+      <div
         class="background-option"
         v-for="(item, index) in backgroundList"
         :key="item.text + index"
       >
-        <input type="radio" name="backgorund" :value="item" v-model="picked" />
-        <div class="option-text">{{ item.text }}</div>
-      </label>
+        <div
+          class="background-option-ring"
+          :class="{
+            'background-option-ring-picked': picked.value === item.value,
+          }"
+          @click="setBackground(item)"
+        ></div>
+        <div
+          class="background-option-text"
+          :class="{
+            'background-option-text-picked': picked.value === item.value,
+          }"
+          @click="setBackground(item)"
+        >
+          {{ item.text }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -49,32 +63,34 @@ export default {
         text: "变色龙",
         value: "chameleon-theme",
       },
-      count: 0,
     };
   },
   mounted() {
     this.picked = this.setting.appearance.background;
   },
-  watch: {
-    picked: function (newBackground) {
-      //第一次进入不要改变setCanShowThemeAnimation
-      if (this.count === 1) {
-        console.log(this.count);
-        this.$store.commit("setCanShowThemeAnimation", true);
-      }
-      this.count += 1;
+  methods: {
+    setBackground(item) {
+
+      //只有点击改变背景时才展示背景切换动画
+      this.$store.commit("setIsShowThemeAnimation", true);
 
       //暗主题需要改变文字、进度条等颜色
-      if (newBackground.value === "dark-highlight-theme") {
+      if (item.value === "dark-highlight-theme") {
         document.body.style.setProperty("--font-color", "#eee");
-        document.body.style.setProperty("--progress-bar-color", "rgba(255,255,255,0.1)");
+        document.body.style.setProperty(
+          "--progress-bar-color",
+          "rgba(255,255,255,0.1)"
+        );
       } else {
         document.body.style.setProperty("--font-color", "black");
-        document.body.style.setProperty("--progress-bar-color", "rgba(0,0,0,0.1)");
+        document.body.style.setProperty(
+          "--progress-bar-color",
+          "rgba(0,0,0,0.1)"
+        );
       }
 
       //根据不同主题改变背景颜色
-      switch (newBackground.value) {
+      switch (item.value) {
         case "chameleon-theme":
           document.body.style.setProperty("--background-color", "white");
           break;
@@ -96,8 +112,9 @@ export default {
           break;
       }
 
-      this.$store.commit("setBackground", newBackground);
-    },
+      this.picked = item
+      this.$store.commit("setBackground", item);
+    }
   },
 };
 </script>
@@ -113,7 +130,7 @@ export default {
 
 .background-radio-box {
   width: 500px;
-  height: 100px;
+  height: 80px;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
@@ -121,38 +138,36 @@ export default {
   margin-top: 40px;
 }
 
-.background-option input {
-  display: none;
+.background-option {
+  width: 80px;
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
 }
 
-.background-option input:checked + .option-text {
+.background-option-ring {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--highlight-color) inset;
+}
+
+.background-option-text {
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 10px;
+  border-radius: 15px;
+}
+
+.background-option-text-picked {
   background-color: var(--highlight-color);
 }
 
-.background-option input:checked + .option-text::before {
+.background-option-ring-picked {
   box-shadow: 0 0 0 5px var(--highlight-color) inset;
-}
-
-.option-text {
-  position: relative;
-  width: 80px;
-  height: 30px;
-  text-align: center;
-  line-height: 30px;
-  border-radius: 15px;
-  transition: all 0.3s;
-}
-
-.option-text::before {
-  content: "";
-  position: absolute;
-  display: block;
-  width: 20px;
-  height: 20px;
-  top: -22px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-radius: 50%;
-  box-shadow: 0 0 0 2px var(--highlight-color) inset;
 }
 </style>
