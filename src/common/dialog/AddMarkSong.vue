@@ -81,7 +81,7 @@ export default {
 
         //检查要收藏的歌曲是否已被收藏过
         list.forEach((item) => {
-          if (item.songmid === this.selectedSong.songmid) {
+          if (item.songID === this.selectedSong.songID) {
             isThisSongMarked = true;
           }
         });
