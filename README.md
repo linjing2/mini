@@ -9,7 +9,7 @@
 所有歌曲数据均来源于网络，本项目几乎与你打开浏览器在线听音乐无异，仅仅只是节省了你打开网站搜索的时间而已。这里参考借鉴~~Ctrl CV~~了xtuJSer的项目[CoCoMusic](https://github.com/xtuJSer/CoCoMusic)中的数据接口。顺便提醒，数据接口随时可能失效，请提前做好心理准备。
 
 ### 安装包
-Windows：    [mini-music-Setup-1.3.0.exe](https://gitee.com/cgper/miniMusic/attach_files/709595/download/mini-music%20Setup%201.3.0.exep%201.2.0.exe)
+Windows：    [mini-music-Setup-1.3.1.exe](https://gitee.com/cgper/miniMusic/attach_files/712119/download/mini-music%20Setup%201.3.1.exe)
 
 Mac:         [mini-music-1.3.0.dmg(github)](https://github.com/CGPer/miniMusic/releases/download/v1.3.0/mini-music-1.3.0.dmg)
 
@@ -65,7 +65,12 @@ andriod 扫码下载：
 #### web版
 web版和desktop版有着细微差别，请前往[迷你音乐web版](https://gitee.com/cgper/mini-music-webpage)
 
-### 更新v1.3.0
+### 更新v1.3.1
+- 修复v1.3.0无法收藏歌曲bug
+- 新增开启调试控制台功能
+
+
+### 更新v1.3.0(可能存在无法收藏歌曲bug，请使用v1.3.1版本。由于更换了音乐接口，故低于v1.3.0版本的历史数据会被抹掉)
 - 更换数据接口，修复数据接口失效问题
 - 新增设置面板，更多外观可选
 - 更新发现页面，发现更多歌曲
