@@ -23,6 +23,7 @@ andriod 扫码下载：
 
 ### Web版
 在线体验：[迷你音乐web v1.2.0](http://cgper.gitee.io/mini-music-webpage)
+
 若提示Network Error无法使用，在页面右击选择检查选项，切换到Console栏，查看红色报错链接。点击进入报错链接，会提示不安全。选择下方高级按钮继续前往，然后返回web版页面即可凑活使用。新版在gitee的page服务恢复后更新。
 
 ### 截图
