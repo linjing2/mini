@@ -92,7 +92,7 @@ web版和desktop版有着细微差别，请前往[迷你音乐web版](https://gi
 
 [vue-cli-plugin-electron-builder](https://github.com/nklayman/vue-cli-plugin-electron-builder)
 
-[BootStrap Icons](https://icons.getbootstrap.com/)   感谢Bootstr Icons提供的开源图标
+[BootStrap Icons](https://icons.getbootstrap.com/)   感谢BootStrap Icons提供的开源图标
 
 [100font](https://www.100font.com/)  感谢本项目中用到的免费商用字体
 
