@@ -58,7 +58,8 @@ andriod 扫码下载：
 #### desktop版
 ##### 安装开发依赖
 > npm install
-##### 调试(注意：安装完依赖后，将node_modules/axios/lib/adapters下http.js里的内容覆盖掉xhr.js里的内容)
+##### 调试
+注意：安装完依赖后，将node_modules/axios/lib/adapters下http.js里的内容覆盖掉xhr.js里的内容
 > npm run electron:serve
 ##### 打包（你使用哪个系统平台就会打包对应平台的安装包）
 > npm run electron:build
