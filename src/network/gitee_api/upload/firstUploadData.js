@@ -28,7 +28,7 @@ export default async function firstUploadData(config) {
   });
   console.log('创建markListStore文件成功', createMarkListRes)
 
-  if (createLikedListRes.status === 200 && createMarkListRes.status === 200) {
+  if (createLikedListRes.status === 201 && createMarkListRes.status === 201) {
     Vue.prototype.$message.showMessage({
       type: 'success',
       message: '上传数据成功'
