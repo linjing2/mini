@@ -8,7 +8,7 @@ import { getSongVkey, getCdn,  getLyric } from "@/network/spider";
 
 export default new Vuex.Store({
   state: {
-    appVersion: "1.3.0",
+    appVersion: "1.4.0",
     isShowThemeAnimation: false, 
     currentList: [],   //当前歌单
     currentListIndex: null, //当前歌曲index
@@ -16,13 +16,13 @@ export default new Vuex.Store({
     discoverList: [],  //发现歌单
     likedList: [],  //喜欢歌单
     likedListStore:{  //喜欢歌单存储到localStorage
-      appVersion: "1.3.0",
+      apiVersion: "1.3.0",
       likedList: []
     },
     markList: [],   //收藏歌单
     markListIndex: 0,
     markListStore:{  //收藏歌单存储到localStorage
-      appVersion: "1.3.0",
+      apiVersion: "1.3.0",
       markList: []
     },
     playList: [], 
@@ -46,7 +46,7 @@ export default new Vuex.Store({
       settingRouter: '/Appearance/Background',
     },
     setting: {        //记录用户的设置信息
-      appVersion: '1.3.0',
+      appVersion: '1.4.0',
       appearance: {
         background: {
           text: '变色龙',
@@ -75,7 +75,7 @@ export default new Vuex.Store({
         let likedListStore = JSON.parse(localStorage.getItem('likedListStore'))
         //如果有，再检查历史数据的版本是否与此app为同一版本
         //高版本app可能无法使用低版本的历史数据
-        if(likedListStore.appVersion === state.appVersion) {
+        if(likedListStore.appVersion === '1.3.0' || likedListStore.apiVersion === '1.3.0') {
           state.likedList = likedListStore.likedList
         }else {
           //做一些不同版本兼容性工作
@@ -88,7 +88,7 @@ export default new Vuex.Store({
         let markListStore = JSON.parse(localStorage.getItem('markListStore'))
         //如果有，再检查历史数据的版本是否与此app为同一版本
         //高版本app可能无法使用低版本的历史数据
-        if(markListStore.appVersion === state.appVersion) {
+        if(markListStore.appVersion === '1.3.0' || markListStore.apiVersion === '1.3.0') {
           state.markList = markListStore.markList
         }else {
           //做一些不同版本兼容性工作

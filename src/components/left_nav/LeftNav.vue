@@ -1,6 +1,6 @@
 <template>
   <div class="left-nav">
-    <logo/>
+    <login/>
     <nav-buttons/>
     <album-img/>
     <song-info/>
@@ -8,14 +8,14 @@
 </template>
 
 <script>
-import Logo from './logo/Logo.vue';
+import Login from './login/Login.vue';
 import NavButtons from './nav_buttons/NavButtons.vue'
 import AlbumImg from "./album_img/AlbumImg.vue";
 import SongInfo from "./song_info/SongInfo.vue";
 
 export default {
   name: "left-nav",
-  components: { AlbumImg, Logo, NavButtons, SongInfo},
+  components: { AlbumImg, Login, NavButtons, SongInfo},
 };
 </script>
 
