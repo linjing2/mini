@@ -319,7 +319,7 @@ export default {
   flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
-  margin-left: 10px;
+  margin-left: 5px;
   margin-top: 4px;
   border-radius: 8px;
   background-color: rgba(197, 181, 240, 0.3);
@@ -425,7 +425,7 @@ export default {
 
 .nav-mark-add-item {
   height: 30px;
-  margin-left: 10px;
+  margin-left: 5px;
   margin-top: 4px;
   margin-bottom: 5px;
   display: flex;

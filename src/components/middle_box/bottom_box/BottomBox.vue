@@ -5,7 +5,7 @@
         <div
           class="progressed"
           :style="{
-            width: duration === null ? 0 : (currentTime / duration) * 760 + 'px',
+            width: duration === null ? 0 : (currentTime / duration) * 752 + 8 + 'px',
           }"
         ></div>
       </div>
@@ -13,7 +13,7 @@
         class="slider-dot"
         :style="{
           'margin-left':
-            (duration === null ? -6 : (currentTime / duration) * 760 - 6) + 'px',
+            (duration === null ? 0 : (currentTime / duration) * 744 ) + 'px',
         }"
         @mousedown="songDotDown"
         @mousemove="songDotMove"
@@ -94,19 +94,19 @@
     <div class="volume-box">
       <img :src="volumeStateImgUrl" width="24px" @click="mute" />
       <div class="volume-percentage">
-        {{ parseInt((volumeDotX / 120) * 100) + "%" }}
+        {{ parseInt(volume * 100) + "%" }}
       </div>
       <div class="volume-adjust-box" @click="setVolumeDot" ref="volumeAdjustBox">
         <div class="volume-adjust-bar">
-          <div class="volume-progressed" :style="{ width: volumeDotX + 'px' }"></div>
+          <div class="volume-progressed" :style="{ width: volume * 114 + 6 + 'px' }"></div>
         </div>
         <div
-          class="slider-dot"
-          :style="{ 'margin-left': volumeDotX - 6 + 'px' }"
+          class="volume-adjust-dot"
+          :style="{ 'margin-left': volume * 108 + 'px' }"
           @mousedown="volumeDotDown"
           @mousemove="volumeDotMove"
         >
-          <div class="volume-dot"></div>
+          <div class="volume-inner-dot"></div>
         </div>
       </div>
     </div>
@@ -127,7 +127,8 @@ export default {
       isSongDotMovable: false,
       isVolumeDotMovable: false,
       songDotX: null,
-      volumeDotX: 24,
+      volume: 0.2,
+      lastVolume: 0.2,
       playStateImgUrl: require("@/assets/paused.svg"),
       playingImgUrl: require("@/assets/playing.svg"),
       pausedImgUrl: require("@/assets/paused.svg"),
@@ -246,14 +247,14 @@ export default {
   },
   mounted() {
     //获取历史音量值
-    if (localStorage.hasOwnProperty("volumeDotX")) {
-      this.volumeDotX = parseInt(localStorage.getItem("volumeDotX"));
+    if (localStorage.hasOwnProperty("volume")) {
+      this.volume = parseInt(localStorage.getItem("volume"));
     }
 
     //初始化audio
     let audio = document.querySelector("#audio");
     this.audio = audio;
-    this.audio.volume = this.volumeDotX / 120;
+    this.audio.volume = this.volume;
     this.audio.playbackRate = this.playSpeed;
 
     //添加监听
@@ -303,23 +304,23 @@ export default {
 
         //方向上键为音量加10%
         case "ArrowUp":
-          if (this.volumeDotX < 120) {
-            this.volumeDotX += 12;
-            if (this.volumeDotX > 120) {
-              this.volumeDotX = 120;
+          if (this.volume < 1) {
+            this.volume += 0.1;
+            if (this.volume > 1) {
+              this.volume = 1;
             }
-            this.audio.volume = this.volumeDotX / 120;
+            this.audio.volume = this.volume;
           }
           break;
 
         //方向下键为音量减10%
         case "ArrowDown":
-          if (this.volumeDotX > 0) {
-            this.volumeDotX -= 12;
-            if (this.volumeDotX < 0) {
-              this.volumeDotX = 0;
+          if (this.volume > 0) {
+            this.volume -= 0.1;
+            if (this.volume < 0) {
+              this.volume = 0;
             }
-            this.audio.volume = this.volumeDotX / 120;
+            this.audio.volume = this.volume
           }
           break;
       }
@@ -328,10 +329,10 @@ export default {
     mouseUp() {
       this.isSongDotMovable = false;
       this.isVolumeDotMovable = false;
-      this.audio.volume = this.volumeDotX / 120;
+      this.audio.volume = this.volume;
 
       //保存音量到本地
-      localStorage.setItem("volumeDotX", this.volumeDotX.toString());
+      localStorage.setItem("volume", this.volume.toString());
     },
 
     getDuration() {
@@ -541,38 +542,40 @@ export default {
     volumeDotMove(e) {
       if (this.isVolumeDotMovable) {
         //音量坐标等于移动后坐标减去volume-adjust-box左侧的坐标
-        this.volumeDotX = e.x - this.$refs.volumeAdjustBox.getBoundingClientRect().left;
-        if (this.volumeDotX < 0) {
-          this.volumeDotX = 0;
+        let volumeDotX = e.x - this.$refs.volumeAdjustBox.getBoundingClientRect().left;
+        if (volumeDotX < 0) {
+          volumeDotX = 0;
         }
-        if (this.volumeDotX > 120) {
-          this.volumeDotX = 120;
+        if (volumeDotX > 120) {
+          volumeDotX = 120;
         }
-        this.audio.volume = this.volumeDotX / 120;
+        this.audio.volume = volumeDotX / 120;
+        this.volume = volumeDotX / 120;
       }
     },
 
     setVolumeDot(e) {
-      this.volumeDotX = e.x - this.$refs.volumeAdjustBox.getBoundingClientRect().left;
-      if (this.volumeDotX < 0) {
-        this.volumeDotX = 0;
+      let volumeDotX = e.x - this.$refs.volumeAdjustBox.getBoundingClientRect().left;
+      if (volumeDotX < 0) {
+        volumeDotX = 0;
       }
-      if (this.volumeDotX > 120) {
-        this.volumeDotX = 120;
+      if (volumeDotX > 120) {
+        volumeDotX = 120;
       }
-      this.audio.volume = this.volumeDotX / 120;
+      this.audio.volume = volumeDotX / 120;
+      this.volume = volumeDotX / 120;
     },
 
     mute() {
       if (this.isMuteNow == false) {
         this.audio.volume = 0;
-        this.lastVolumeDotX = this.volumeDotX;
-        this.volumeDotX = 0;
+        this.lastVolume = this.volume;
+        this.volume = 0;
         this.isMuteNow = true;
         this.volumeStateImgUrl = this.volumeMuteImgUrl;
       } else {
-        this.volumeDotX = this.lastVolumeDotX;
-        this.audio.volume = this.volumeDotX / 120;
+        this.volume = this.lastVolume;
+        this.audio.volume = this.volume;
         this.isMuteNow = false;
         this.volumeStateImgUrl = this.volumeImgUrl;
       }
@@ -589,8 +592,9 @@ export default {
 
 .progress-box {
   width: 100%;
-  height: 12px;
-  margin-top: 10px;
+  height: 16px;
+  padding-top: 10px;
+  padding-bottom: 2px;
   position: relative;
 }
 
@@ -600,24 +604,27 @@ export default {
 
 .progress-bar {
   width: 100%;
-  height: 2px;
-  margin-top: 5px;
+  height: 16px;
   position: absolute;
+  border-radius: 10px;
   background-color: var(--progress-bar-color);
 }
 
 .progressed {
   height: 100%;
-  background-color: #c5b5f0;
+  border-radius: 10px;
+  background-color: var(--progressed-color);
 }
 
 .slider-dot {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   border-radius: 50%;
   background-color: white;
-  box-shadow: 0 0 10px var(--highlight-deep-color);
 }
 
 .slider-dot:hover {
@@ -629,12 +636,10 @@ export default {
 }
 
 .breath-dot {
-  width: 6px;
-  height: 6px;
-  margin-top: 3px;
-  margin-left: 3px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background-color: var(--highlight-deep-color);
+  background-color: #c5b5f0;
 }
 
 @keyframes breath {
@@ -884,6 +889,9 @@ export default {
   width: 124px;
   height: 50px;
   float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-left: 80px;
 }
 
@@ -912,7 +920,7 @@ export default {
 
 .palying-or-paused:hover {
   cursor: pointer;
-  transform: scale(1.2);
+  transform: scale(1.1);
 }
 
 .palying-or-paused:active {
@@ -969,6 +977,7 @@ export default {
   height: 12px;
   float: right;
   margin-top: 19px;
+  border-radius: 6px;
 }
 
 .volume-adjust-box {
@@ -977,23 +986,33 @@ export default {
 
 .volume-adjust-bar {
   width: 120px;
-  height: 2px;
-  margin-top: 5px;
+  height: 12px;
+  border-radius: 6px;
   position: absolute;
   background-color: var(--progress-bar-color);
 }
 
 .volume-progressed {
   height: 100%;
-  background-color: #c5b5f0;
+  border-radius: 6px;
+  background-color: var(--progressed-color);
 }
 
-.volume-dot {
+.volume-adjust-dot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.volume-inner-dot {
   width: 6px;
   height: 6px;
-  margin-top: 3px;
-  margin-left: 3px;
   border-radius: 50%;
-  background-color: var(--highlight-deep-color);
+  background-color: var(--highlight-color);
 }
 </style>

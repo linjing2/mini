@@ -92,6 +92,7 @@ export default {
   --lyric-font-weight: normal;
   --background-color: #fdfdfd;
   --progress-bar-color: rgba(255, 255, 255, 0.1);
+  --progressed-color: rgba(255, 255, 255, 0.4);
 }
 
 @font-face {
@@ -231,16 +232,16 @@ body {
 
 /* 下面修改全局滚动条样式 */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 ::-webkit-scrollbar-track {
-  border-radius: 5px;
+  border-radius: 3px;
   background-color: rgba(255, 255, 255, 0.1);
 }
 </style>

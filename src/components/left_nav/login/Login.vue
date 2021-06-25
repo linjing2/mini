@@ -3,7 +3,7 @@
     <div class="logo" @click="showLogin">
       <img :src="showLogoImg" width="50px" />
     </div>
-    <div class="app-name">{{ showLogoText }}</div>
+    <div class="app-name" @click="testAPI">{{ showLogoText }}</div>
     <div id="login-box" v-show="isShowLogin">
       <div class="login-title">gitee账户登录</div>
       <div class="login-input-box">
@@ -51,6 +51,8 @@ import getUserInfo from "@/network/gitee_api/login/getUserInfo.js";
 
 import uploadData from "@/network/gitee_api/upload";
 import downloadData from "@/network/gitee_api/download";
+
+import getComments from '@/network/music_api/getComments.js'
 
 export default {
   name: "login",
@@ -126,6 +128,9 @@ export default {
     },
   },
   methods: {
+    async testAPI() {
+      let res = await getComments()
+    },
     showLogin() {
       // 延迟一下，避开点击showLogin时的点击监听
       setTimeout(() => {
