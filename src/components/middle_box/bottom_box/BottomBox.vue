@@ -737,6 +737,7 @@ export default {
   line-height: 20px;
   text-align: center;
   border-radius: 5px;
+  font-size: 14px;
 }
 
 .speed-option:first-child {

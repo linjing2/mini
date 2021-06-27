@@ -24,12 +24,17 @@ export default {
     };
   },
   computed: {
-    ...mapState(["lyric", "currentTime"]),
+    ...mapState(["lyric", "currentTime", "currentListIndex"]),
   },
   watch: {
+    // 播放新歌歌词回到顶部
+    currentListIndex() {
+      this.$refs.lyricPage.scrollTop = 0;
+    },
+
     //将正在唱的歌词滚动到中间位置
     currentLyricIndex() {
-      this.$refs.lyricPage.scrollTop = 0;
+      // this.$refs.lyricPage.scrollTop = 0;
       if (this.currentLyricIndex > 7) {
         this.$refs.lyricPage.scrollTop = 40 * (this.currentLyricIndex - 7);
       }
@@ -76,5 +81,6 @@ export default {
   font-size: var(--lyric-font-size);
   font-weight: var(--lyric-font-weight);
   font-family: var(--lyric-font-family);
+  transition: transform 0.1s;
 }
 </style>

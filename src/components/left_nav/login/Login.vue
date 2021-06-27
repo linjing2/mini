@@ -26,7 +26,7 @@
           />
         </div>
       </div>
-      <div class="sync-box" v-if="userInfo.access_token != ''">
+      <div class="sync-box" :class="{'sync-box-out':isShowSyncAnimation}" v-show="userInfo.access_token != ''">
         <div class="upload-data" :class="{ disable: uploadDataDisable }">
           <img src="@/assets/cloud-arrow-up.svg" @click="handleUploadData" />
         </div>
@@ -70,6 +70,7 @@ export default {
         refresh_token: "",
       },
       isShowLogin: false,
+      isShowSyncAnimation: false,
       logoImgUrl: require("@/assets/logo.svg"),
       logoText: "迷你音乐",
       uploadDataDisable: false,
@@ -161,6 +162,10 @@ export default {
 
         localStorage.setItem("userInfo", JSON.stringify(this.userInfo));
 
+        this.isShowSyncAnimation = true
+        setTimeout(() => {
+          this.isShowSyncAnimation = false
+        }, 2000)
       }
     },
 
@@ -349,6 +354,20 @@ export default {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  
+}
+
+.sync-box-out{
+  animation: syncBoxOut 0.5s ease-in;
+}
+
+@keyframes syncBoxOut {
+  from {
+    height: 0px;
+  }
+  to{
+    height: 40px;
+  }
 }
 
 .disable {
