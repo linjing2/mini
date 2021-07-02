@@ -81,6 +81,6 @@ export default {
   font-size: var(--lyric-font-size);
   font-weight: var(--lyric-font-weight);
   font-family: var(--lyric-font-family);
-  transition: transform 0.1s;
+  transition: transform 0.2s;
 }
 </style>

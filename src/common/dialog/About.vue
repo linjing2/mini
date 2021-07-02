@@ -23,7 +23,11 @@
       <div class="programDescription">
         <div class="descriptionHeader">提示：</div>
         <div class="descriptionBody">
-          此app为无边框应用，右侧宽40px的区域为拖动区，按住左键进行窗口拖动。
+          <ul>
+            <li>此app为无边框应用，右侧宽40px的区域为拖动区，按住左键进行窗口拖动。</li>
+            <br />
+            <li>点击左上角logo图标可登录gitee账号，同步歌曲数据至gitee仓库。</li>
+          </ul>
         </div>
       </div>
       <div class="thanks">
@@ -31,7 +35,7 @@
         <div class="thanksItem">
           <div class="Link" @click="openLink1">Vue.js</div>
           <div class="Link" @click="openLink2">electron</div>
-          <div class="Link" @click="openLink4">node-music-api</div>
+          <div class="Link" @click="openLink4">CoCoMusic</div>
           <div class="Link" @click="openLink5">
             vue-cli-plugin-electron-builder
           </div>
@@ -64,7 +68,7 @@ export default {
       shell.openExternal("https://www.electronjs.org/");
     },
     openLink4() {
-      shell.openExternal("https://github.com/lunhui1994/node-music-api");
+      shell.openExternal("https://github.com/xtuJSer/CoCoMusic");
     },
     openLink5() {
       shell.openExternal(
@@ -143,7 +147,7 @@ export default {
 .descriptionBody {
   margin-top: 10px;
   font-size: 14px;
-  text-indent: 2em;
+  padding-left: 10px;
   line-height: 18px;
 }
 

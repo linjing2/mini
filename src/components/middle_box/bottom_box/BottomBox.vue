@@ -248,7 +248,7 @@ export default {
   mounted() {
     //获取历史音量值
     if (localStorage.hasOwnProperty("volume")) {
-      this.volume = parseInt(localStorage.getItem("volume"));
+      this.volume = Number(localStorage.getItem("volume")).toFixed(2);
     }
 
     //初始化audio
