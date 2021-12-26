@@ -1,0 +1,31 @@
+.DS_Store
+node_modules
+
+# 过滤无需上传的文件
+/resource
+/fonts
+/font
+*.zip
+
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+#Electron-builder output
+/dist_electron

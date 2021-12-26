@@ -1,0 +1,152 @@
+<template>
+  <div class="setting-panel">
+    <background-color></background-color>
+    <div class="setting-option-box">
+      <router-link to="/Appearance" class="setting-option">外观</router-link>
+      <router-link to="/About" class="setting-option">关于</router-link>
+    </div>
+    <keep-alive>
+      <router-view name="settingView" class="setting-view"></router-view>
+    </keep-alive>
+    <div class="setting-panel-right-bar">
+      <div class="setting-close-button-box">
+        <div class="setting-close-button-cover" @click="hideSettingPanel"></div>
+        <div class="setting-close-button">
+          <img src="@/assets/arrow-right.svg" />
+        </div>
+      </div>
+      <div class="setting-panel-drag-bar"></div>
+    </div>
+  </div>
+</template>
+
+<script>
+import BackgroundColor from "@/common/background_color/BackgroundColor.vue";
+export default {
+  components: { BackgroundColor },
+  name: "setting",
+  data() {
+    return {};
+  },
+  mounted() {
+    this.$router.push({ path: "Appearance/Background" });
+  },
+  methods: {
+    hideSettingPanel() {
+      this.$store.commit("hideSettingPanel");
+
+      //记录离开时的设置路由路径
+      let payload = {
+        router: "setting",
+        path: this.$router.currentRoute.path,
+      };
+      this.$store.commit("setRouterHistory", payload);
+
+      //回到主页面后重新回到上次离开时的路由位置
+      this.$router.push(this.$store.state.routerHistory.navRouter);
+    },
+  },
+};
+</script>
+
+<style>
+.setting-panel {
+  position: relative;
+  width: 1000px;
+  height: 800px;
+  display: flex;
+  flex-direction: row;
+  margin-left: 15px;
+  margin-top: 15px;
+  position: absolute;
+  transform: rotateY(90deg);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.3);
+}
+
+.setting-option-box {
+  width: 200px;
+  height: 100%;
+  z-index: 999;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 20px 0 0 20px;
+}
+
+.setting-option {
+  width: 160px;
+  height: 30px;
+  margin-top: 10px;
+  display: block;
+  box-sizing: border-box;
+  text-align: center;
+  line-height: 30px;
+  font-size: var(--font-size);
+  color: var(--color);
+  text-decoration: none;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 10px var(--progress-bar-color);
+}
+
+.setting-option:first-child {
+  margin-top: 40px;
+}
+
+.setting-view {
+  z-index: 999;
+  width: 560px;
+  height: 100%;
+}
+
+.setting-panel-right-bar {
+  position: relative;
+  z-index: 999;
+  width: 40px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.setting-close-button-box {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.setting-close-button-cover {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  overflow: hidden;
+  border-radius: 50%;
+  background-color: red;
+}
+
+.setting-close-button-cover:hover {
+  background-color: transparent;
+  box-shadow: 0 0 15px #7e57c2;
+  cursor: pointer;
+}
+
+.setting-close-button {
+  width: 20px;
+  height: 20px;
+}
+
+.setting-close-button > img {
+  width: 100%;
+  height: 100%;
+}
+
+.setting-panel-drag-bar {
+  flex: 1;
+  /* -webkit-app-region: drag; */
+}
+</style>
