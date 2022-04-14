@@ -13,7 +13,10 @@
       </div>
       <div class="singer-introduction">
         <div class="singer-page-singer-name">{{ singerInfo.singerName }}</div>
-        <div class="singer-description" :style="{ height: descriptionHeight + 'px' }">
+        <div
+          class="singer-description"
+          :style="{ height: descriptionHeight + 'px' }"
+        >
           {{ singerInfo.singerDescription }}
         </div>
       </div>
@@ -34,11 +37,18 @@
         >
           专辑
         </div>
-        <div class="singer-tab" @click="getMV" :class="{ active: activatedTab === 'MV' }">
+        <div
+          class="singer-tab"
+          @click="getMV"
+          :class="{ active: activatedTab === 'MV' }"
+        >
           MV
         </div>
       </div>
-      <div class="singer-list-box" :style="{ height: songListBoxHeight + 'px' }">
+      <div
+        class="singer-list-box"
+        :style="{ height: songListBoxHeight + 'px' }"
+      >
         <div class="singer-list-item" v-show="isShowSingerSong">
           <loading :isLoading="isSongLoading"></loading>
           <song-list
@@ -95,6 +105,8 @@ import {
 } from "@/network/spider";
 import standardizeAPI from "@/network/standardizeAPI.js";
 
+import searchSong from "@/network/music_api/searchSong.js";
+
 export default {
   name: "singer-page",
   data() {
@@ -103,7 +115,7 @@ export default {
       isShowSingerAlbum: false,
       isShowSingerMV: false,
       songList: [],
-      songListPage: 0,
+      songListPage: 1,
       songLoadMoreText: "加载更多",
       albumList: [],
       albumListPage: 0,
@@ -121,19 +133,18 @@ export default {
       descriptionHeight: 100,
       songListBoxHeight: 440,
       lastScrollPos: 0,
+      lastScrollPos_Song: 0,
+      lastScrollPos_Album: 0,
+      lastScrollPos_MV: 0,
+      scrollDownFlag: 0,
+      scrollUpFlag: 0,
+      isSingerImgExpend: true
     };
   },
   components: {
     SongList,
     GridList,
     Loading,
-  },
-  activated() {
-    this.imgWidth = 200;
-    this.imgHeight = 200;
-    this.imgBorderRadius = 20;
-    this.descriptionHeight = 100;
-    this.songListBoxHeight = 440;
   },
   computed: {
     ...mapState(["singerInfo"]),
@@ -144,8 +155,29 @@ export default {
       this.albumList = [];
       this.MVList = [];
       this.getSong();
-      console.log("singerInfo change", this.singerInfo);
     },
+    
+    // 向下滑动歌手图片缩小
+    scrollDownFlag(newValue) {
+      if(newValue == 1 && this.isSingerImgExpend == true){
+        this.imgWidth = 100
+        this.imgHeight = 100
+        this.imgBorderRadius = 50
+        this.isSingerImgExpend = false
+        console.log("收起")
+      }
+    },
+    
+    // 向上滑动歌手图片变大
+    scrollUpFlag(newValue) {
+      if(newValue == 1 && this.isSingerImgExpend == false){
+        this.imgWidth = 200
+        this.imgHeight = 200
+        this.imgBorderRadius = 20
+        this.isSingerImgExpend = true
+        console.log("撑开")
+      }
+    }
   },
   mounted() {
     //一进入就展示歌手的单曲
@@ -155,66 +187,48 @@ export default {
     // 监听滚动，缩放上方歌手信息
     scroll(e) {
       let scrollPos = e.target.scrollTop;
+
+      if(this.isShowSingerSong == true){
+        this.lastScrollPos = this.lastScrollPos_Song
+      }
+      if(this.isShowSingerAlbum == true){
+        this.lastScrollPos = this.lastScrollPos_Album
+      }
+      if(this.isShowSingerMV == true){
+        this.lastScrollPos = this.lastScrollPos_MV
+      }
+
       let scrollDirection = scrollPos - this.lastScrollPos > 0 ? "down" : "up";
 
       // 向下滚动，缩小上方歌手信息
-      if (scrollDirection == "down") {
-        if (this.imgWidth > 100) {
-          this.imgWidth -= 5;
-          this.imgHeight = this.imgWidth;
-        } else {
-          this.imgWidth = 100;
-          this.imgHeight = this.imgWidth;
-        }
+      if (scrollDirection == "down" && scrollPos > 200) {
 
-        if (this.songListBoxHeight < 540) {
-          this.songListBoxHeight += 5;
-        } else {
-          this.songListBoxHeight = 540;
-        }
-
-        if (this.imgBorderRadius < 50) {
-          this.imgBorderRadius += 2;
-        } else {
-          this.imgBorderRadius = 50;
-        }
-
-        if (this.descriptionHeight > 50) {
-          this.descriptionHeight -= 5;
-        } else {
-          this.descriptionHeight = 50;
-        }
+          this.scrollDownFlag += 1
+          this.scrollUpFlag = 0
+          // console.log("down")
+          console.log("scrollDownFlag",this.scrollDownFlag)
+          console.log("scrollUpFlag",this.scrollUpFlag)
 
         // 向上滚动，放大上方歌手信息
-      } else if (scrollDirection == "up" && scrollPos >= 0 && scrollPos <= 200) {
-        if (this.imgWidth < 200) {
-          this.imgWidth += 10;
-          this.imgHeight = this.imgWidth;
-        } else {
-          this.imgWidth = 200;
-          this.imgHeight = this.imgWidth;
-        }
+      } else if (scrollDirection == "up" && scrollPos < 200) {
 
-        if (this.songListBoxHeight > 440) {
-          this.songListBoxHeight -= 10;
-        } else {
-          this.songListBoxHeight = 440;
-        }
-
-        if (this.imgBorderRadius > 20) {
-          this.imgBorderRadius -= 5;
-        } else {
-          this.imgBorderRadius = 20;
-        }
-
-        if (this.descriptionHeight < 100) {
-          this.descriptionHeight += 10;
-        } else {
-          this.descriptionHeight = 100;
-        }
+          this.scrollUpFlag += 1
+          this.scrollDownFlag = 0
+          // console.log("up")
+          console.log("scrollDownFlag",this.scrollDownFlag)
+          console.log("scrollUpFlag",this.scrollUpFlag)
       }
 
-      this.lastScrollPos = scrollPos;
+      if(this.isShowSingerSong == true){
+        this.lastScrollPos_Song = scrollPos
+      }
+      if(this.isShowSingerAlbum == true){
+        this.lastScrollPos_Album = scrollPos
+      }
+      if(this.isShowSingerMV == true){
+        this.lastScrollPos_MV = scrollPos
+      }
+
     },
     //请求歌手的单曲
     async getSong() {
@@ -232,10 +246,7 @@ export default {
         this.isSongLoading = true;
 
         try {
-          songListData = await getSingerMusicList({
-            page: 0,
-            singerMid: this.singerInfo.singerMid,
-          });
+          songListData = await searchSong(this.singerInfo.singerName, 1);
         } catch (err) {
           this.$message.showMessage({
             type: "error",
@@ -247,7 +258,17 @@ export default {
 
         this.isSongLoading = false;
 
-        this.songList = standardizeAPI(songListData.list);
+        this.songList = songListData.filter((item) => {
+          let IDs = [];
+          item.singer.forEach((each) => {
+            IDs.push(each.ID);
+          });
+          if (IDs.includes(this.singerInfo.singerMid)) {
+            return true;
+          }
+        });
+
+        console.log("this.songList", this.songList);
       }
     },
 
@@ -392,10 +413,10 @@ export default {
 
         let songListData;
         try {
-          songListData = await getSingerMusicList({
-            page: this.songListPage,
-            singerMid: this.singerInfo.singerMid,
-          });
+          songListData = await searchSong(
+            this.singerInfo.singerName,
+            this.songListPage
+          );
         } catch (err) {
           this.$message.showMessage({
             type: "error",
@@ -406,10 +427,20 @@ export default {
         console.log("songListData", songListData);
         this.isSongLoading = false;
 
-        if (songListData.list.length < 30) {
+        let moreSongs = songListData.filter((item) => {
+          let IDs = [];
+          item.singer.forEach((each) => {
+            IDs.push(each.ID);
+          });
+          if (IDs.includes(this.singerInfo.singerMid)) {
+            return true;
+          }
+        });
+
+        if (moreSongs.length == 0) {
           this.songLoadMoreText = "已经到底啦o((>ω< ))o";
         }
-        this.songList.push(...standardizeAPI(songListData.list));
+        this.songList.push(...moreSongs);
       }
     },
 
@@ -477,6 +508,7 @@ export default {
   align-items: center;
   flex-shrink: 0;
   overflow: hidden;
+  transition: 0.5s;
 }
 
 .singer-img > img {

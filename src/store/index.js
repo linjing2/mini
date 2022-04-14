@@ -271,6 +271,7 @@ export default new Vuex.Store({
 
     sendSelectedSong(state, selectedSong) {
       state.selectedSong = selectedSong
+      console.log(state.selectedSong)
     },
 
     sendRemoveMarkListIndex(state, removeMarkListIndex) {

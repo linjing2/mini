@@ -650,15 +650,23 @@ export default {
 @keyframes breath {
   0% {
     background-color: #28ca42;
+    opacity: 0;
   }
-  49% {
+  20% {
     background-color: #28ca42;
+    opacity: 1;
   }
-  50% {
-    background-color: #fff;
+  40% {
+    background-color: #28ca42;
+    opacity: 1;
+  }
+  80% {
+    background-color: #28ca42;
+    opacity: 0;
   }
   100% {
-    background-color: #fff;
+    background-color: #28ca42;
+    opacity: 0;
   }
 }
 

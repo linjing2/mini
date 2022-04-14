@@ -1,9 +1,9 @@
 <template>
   <div class="logo-box">
     <div class="logo" @click="showLogin">
-      <img :src="showLogoImg" width="50px" />
+      <img :src="imgSrc" width="50px" />
     </div>
-    <div class="app-name" @click="testAPI">{{ showLogoText }}</div>
+    <div class="app-name" @click="testAPI">{{ logoText }}</div>
     <div id="login-box" v-show="isShowLogin">
       <div class="login-title">gitee账户登录</div>
       <div class="login-input-box">
@@ -60,6 +60,8 @@ import getmac from "getmac";
 import encrypt from "@/utils/security/encrypt.js";
 import decrypt from "@/utils/security/decrypt.js";
 
+import { getSingerMusicList } from "@/network/spider";
+
 export default {
   name: "login",
   data() {
@@ -77,6 +79,7 @@ export default {
       },
       isShowLogin: false,
       isShowSyncAnimation: false,
+      imgSrc: require("@/assets/logo.svg"),
       logoImgUrl: require("@/assets/logo.svg"),
       logoText: "迷你音乐",
       uploadDataDisable: false,
@@ -119,27 +122,27 @@ export default {
       }
     });
   },
-  computed: {
-    showLogoImg() {
-      if (this.userInfo.avatar_url == "") {
-        return this.logoImgUrl;
+  watch: {
+    // 登陆后显示Gitee用户头像和用户名
+    userInfo() {
+      if (this.userInfo.avatar_url != "") {
+        this.imgSrc = this.userInfo.avatar_url;
       } else {
-        return this.userInfo.avatar_url;
+        this.imgSrc = this.logoImgUrl;
       }
-    },
 
-    showLogoText() {
-      if (this.userInfo.name == "") {
-        return this.logoText;
+      if (this.userInfo.name != "") {
+        this.logoText = this.userInfo.name;
       } else {
-        return this.userInfo.name;
+        this.logoText = "迷你音乐";
       }
     },
   },
+
   methods: {
     async testAPI() {
-      // this.$store.commit("setCurrentSongUrl","C:/Users/cgp/Downloads/早期/猜疑.mp3");
-      console.log(Date.now());
+      let res = await getSingerMusicList(1, "0017fyG340LMVq");
+      console.log("res", res);
     },
     showLogin() {
       // 延迟一下，避开点击showLogin时的点击监听
@@ -294,12 +297,27 @@ export default {
 }
 
 .logo {
+  position: relative;
   width: 50px;
   height: 50px;
   float: left;
   border-radius: 50%;
   overflow: hidden;
   background-color: rgba(255, 255, 255, 0.3);
+}
+
+.logo > img::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("../../../assets/logo.svg") no-repeat;
+  background-size: 100%;
+  background-color: var(--background-color);
 }
 
 .app-name {

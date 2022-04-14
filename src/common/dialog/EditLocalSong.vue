@@ -64,6 +64,7 @@ export default {
 
     closeDialog() {
       this.$store.commit("hideDialog");
+      this.$store.commit("sendSelectedSong", {});
     },
 
     saveSongName() {

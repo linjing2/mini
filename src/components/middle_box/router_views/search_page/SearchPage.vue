@@ -18,6 +18,8 @@ import { getSearch } from "@/network/spider";
 import SongList from "@/common/list/song/SongList.vue";
 import Loading from "@/common/loading/Loading.vue";
 
+import searchSong from "@/network/music_api/searchSong.js";
+
 export default {
   name: "search-page",
   data() {
@@ -37,17 +39,17 @@ export default {
     ...mapState(["searchText"]),
   },
   mounted() {
-    if(this.searchText != '') {
-      this.searchSong()
+    if (this.searchText != "") {
+      this.search();
     }
   },
   watch: {
     searchText(newValue) {
-      this.searchSong();
+      this.search();
     },
   },
   methods: {
-    async searchSong() {
+    async search() {
       let searchText = this.searchText;
       this.currentPage = 1;
       this.isLoading = true;
@@ -55,10 +57,7 @@ export default {
 
       let searchListData;
       try {
-        searchListData = await getSearch({
-          keyword: searchText,
-          page: 1,
-        });
+        searchListData = await searchSong(searchText, 1);
       } catch (err) {
         this.$message.showMessage({
           type: "error",
@@ -66,11 +65,10 @@ export default {
         });
         this.isLoading = false;
       }
-      console.log("searchListData", searchListData);
+
       this.isLoading = false;
 
-      let searchList = standardizeAPI(searchListData.songList);
-      this.searchList = searchList;
+      this.searchList = searchListData;
     },
     async loadMoreSearchSong() {
       this.currentPage += 1;
@@ -80,10 +78,8 @@ export default {
 
       let searchListData;
       try {
-        searchListData = await getSearch({
-          keyword: searchText,
-          page: this.currentPage,
-        });
+        searchListData = await searchSong(searchText, this.currentPage);
+        this.searchList.push(...searchListData);
       } catch (err) {
         this.$message.showMessage({
           type: "error",
@@ -91,12 +87,8 @@ export default {
         });
         this.loadMoreText = "加载更多";
       }
-      console.log("searchListData", searchListData);
 
-      let searchList = standardizeAPI(searchListData.songList);
-      this.searchList.push(...searchList);
-
-      if (searchList.length < 50) {
+      if (searchListData.length < 50) {
         this.loadMoreText = "没有更多了q(≧▽≦q)";
       } else {
         this.loadMoreText = "加载更多";

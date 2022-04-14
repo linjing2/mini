@@ -71,18 +71,18 @@ export default {
     isShowSettingPanel: function (newValue) {
       if (newValue === true) {
         this.appStyle = {
-          animation: "Flip_0-90 0.3s linear forwards",
+          animation: "Flip_0-90 0.3s ease-in forwards",
         };
         this.settingPanelStyle = {
-          animation: "Flip_90-180 0.3s linear 0.3s forwards",
+          animation: "Flip_90-180 0.3s ease-out 0.3s forwards",
         };
       } else {
         this.settingPanelStyle = {
-          animation: "Flip_180-90 0.3s linear forwards",
+          animation: "Flip_180-90 0.3s ease-in forwards",
         };
         this.appStyle = {
           transform: "rotateY(90deg)",
-          animation: "Flip_90-0 0.3s linear 0.3s forwards",
+          animation: "Flip_90-0 0.3s ease-out 0.3s forwards",
         };
       }
     },

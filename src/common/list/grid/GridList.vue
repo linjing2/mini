@@ -167,10 +167,27 @@ export default {
 }
 
 .grid-item > img {
+  position: relative;
   width: 160px;
   height: 160px;
   border-radius: 20px;
+  overflow: hidden;
   box-shadow: 0 0 15px grey;
+}
+
+/* 图片加载失败时显示默认图片 */
+.grid-item > img::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("../../../assets/default-album-img.svg") no-repeat;
+  background-size: 100%;
+  background-color: var(--background-color);
 }
 
 .grid-item > img:hover {

@@ -36,13 +36,7 @@
         v-for="(item, index) in list"
         @click.right="mouseRightClick($event, item, index)"
         :key="item.songID"
-        :style="
-          (currentList.length === 0
-            ? ''
-            : currentList[currentListIndex].songID === item.songID
-            ? playingSongStyle
-            : '') || (selectSongIndex === index ? selectSongStyle : '')
-        "
+        :style=songItemStyle(item)
       >
         <div class="mark-img" v-if="isShowMarkImg">
           <img :src="setMarkImgUrl(item)" @click="removeMarkSong(index)" width="18px" />
@@ -135,6 +129,14 @@ export default {
       "selectedSong",
     ]),
 
+    currentSongID() {
+      if (this.list.length > 0 && this.currentListIndex != null) {
+        return this.currentList[this.currentListIndex].songID
+      }else {
+        return null
+      }
+    },
+
     //将list的第一个item的id作为list的id
     listId() {
       if (this.list.length > 0) {
@@ -184,6 +186,9 @@ export default {
       //将用户点击的歌曲index连带歌单一起发送至vuex
       this.$store.commit("sendCurrentIndex", payload);
       this.$store.dispatch("playCurrentSong");
+
+      // 消除右键选中歌曲样式
+      this.$store.commit("sendSelectedSong", {});
     },
 
     async showSinger(item) {
@@ -315,6 +320,19 @@ export default {
     editLocalSong() {
       console.log(this.selectedSong);
       this.$store.commit("showDialog", "edit-local-song");
+    },
+
+    songItemStyle(item) {
+      let style = ""
+      if(this.currentSongID == item.songID) {
+        style = this.playingSongStyle
+        return style
+      }else if(this.selectedSong.songID == item.songID) {
+        style = this.selectSongStyle
+        return style
+      }else {
+        return style
+      }
     },
 
     loadMore() {

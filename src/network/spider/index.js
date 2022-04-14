@@ -53,19 +53,12 @@
    /* eslint-disable */
  }
  // page 从 0 开始
- export async function getSingerMusicList ({page, singerMid}) {
+ export async function getSingerMusicList (page, singerMid) {
+   console.log("请求歌手单曲")
    let url = `http://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg?&singermid=${singerMid}&order=listen&begin=${page*30}&num=30`
-   let {data: {list, total}} = (await baseRequest(url)).data
-   return {
-     total: Math.floor(total / 30),
-     list: list.map(
-       ({musicData: {
-         songmid, strMediaMid, songname, albumname, albummid, singer, type, pay: { payplay }}}) =>
-         new Music(songname, songmid, strMediaMid,
-           new Album(albumname, albummid),
-           singer.map(({mid, name}) => new Singer(name, mid))
-           , type, payplay))
-   }
+   let res = await baseRequest(url)
+   console.log("res",res)
+  
  }
  
  export async function getSingerInfo ({singerMid}) {
@@ -99,7 +92,7 @@
        resolve({
          info: parseUserInfo(basic[0].item),
          desc: desc && desc[0],
-         other: parseUserInfo(other[0].item)
+        //  other: parseUserInfo(other[0].item)
        })
      })
    })
@@ -196,27 +189,10 @@
  // 从 1 开始
  export async function getSearch ({keyword, page}) {
    let url = `http://c.y.qq.com/soso/fcgi-bin/client_search_cp?new_json=1&t=0&aggr=1&cr=1&catZhida=1&lossless=0&flag_qc=0&p=${page}&n=50&w=${encodeURIComponent(keyword)}&needNewCode=0`
-   let {zhida, song: {list, totalnum, curpage}} = JSON.parse((await baseRequest(url)).data.slice(9, -1)).data // zhida ？ 直达 api 里面有中文 
-   console.log(JSON.parse((await baseRequest(url)).data.slice(9, -1)).data)
-   let direct
-   switch (zhida.type) {
-     case 1:
-       direct = new Singer(zhida.zhida_singer.singerName, zhida.zhida_singer.singerMID, zhida.zhida_singer.singerPic)
-       break;
-     case 2:
-       direct = new Album(zhida.zhida_album.albumName, zhida.zhida_album.albumMID)
-       break;
-   }
-   return {direct, totalPage: Math.ceil(totalnum / 50),
-     songList: list.map(
-       ({name, mid, file: {media_mid}, singer, album, type, pay: {pay_play}}) =>
-         new Music(
-           name, mid, media_mid,
-           new Album(album.name, album.mid),
-           singer.map(singerItem =>
-               new Singer(singerItem.name, singerItem.mid)),
-           type, pay_play))
-   }
+   let searchData = JSON.parse((await baseRequest(url)).data.slice(9, -1)).data // zhida ？ 直达 api 里面有中文 
+   console.log(searchData)
+   
+   return searchData
  }
  
  export async function getLyric (songMid) {
