@@ -38,24 +38,49 @@ export default {
       imgHeight: 200,
       imgBorderRadius: 20,
       descriptionHeight: 460,
+      scrollDownFlag: 0,
+      scrollUpFlag: 0,
     };
+  },
+  watch:{
+    // 向下滑动专辑图片缩小
+    scrollDownFlag(newValue) {
+      if(newValue == 1){
+        this.imgWidth = 100
+        this.imgHeight = 100
+        this.imgBorderRadius = 50
+      }
+    },
+    
+    // 向上滑动专辑图片变大
+    scrollUpFlag(newValue) {
+      if(newValue == 1){
+        this.imgWidth = 200
+        this.imgHeight = 200
+        this.imgBorderRadius = 20
+      }
+    }
   },
   activated() {
     this.imgWidth = 200;
-    this.imgHeight = this.imgWidth;
+    this.imgHeight = 200;
     this.imgBorderRadius = 20;
-    this.descriptionHeight = 460;
   },
   methods: {
     // 滚动时缩放图片
     scroll(e) {
       let scrollPos = e.target.scrollTop;
-      if (scrollPos >= 0 && scrollPos <= 200) {
-        this.imgWidth = 200 - (scrollPos / 200) * 120;
-        this.imgHeight = this.imgWidth;
-        this.imgBorderRadius = 20 + (scrollPos / 200) * 30;
-        this.descriptionHeight = 460 + (scrollPos / 200) * 120;
+
+      if(scrollPos > 200){
+        this.scrollDownFlag += 1
+        this.scrollUpFlag = 0
       }
+
+      if(scrollPos < 200){
+        this.scrollUpFlag += 1
+        this.scrollDownFlag = 0
+      }
+
     },
   },
 };
@@ -65,6 +90,8 @@ export default {
 .album-page {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .album-header {
@@ -76,6 +103,7 @@ export default {
 
 .album-page-album-img {
   overflow: hidden;
+  transition: 0.5s;
 }
 
 .album-page-album-img > img {
@@ -89,5 +117,6 @@ export default {
 
 .album-list-box {
   width: 100%;
+  flex: 1;
 }
 </style>

@@ -29,7 +29,6 @@ export default async function searchSong(keyword, page) {
     searchList.push(songItem)
   });
 
-  console.log("searchList",searchList)
   
   return searchList
 }

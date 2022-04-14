@@ -69,6 +69,7 @@ export default {
       this.isLoading = false;
 
       this.searchList = searchListData;
+      console.log("searchListData",searchListData)
     },
     async loadMoreSearchSong() {
       this.currentPage += 1;

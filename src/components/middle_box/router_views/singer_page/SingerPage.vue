@@ -138,7 +138,7 @@ export default {
       lastScrollPos_MV: 0,
       scrollDownFlag: 0,
       scrollUpFlag: 0,
-      isSingerImgExpend: true
+      isSingerImgExpend: true,
     };
   },
   components: {
@@ -156,79 +156,73 @@ export default {
       this.MVList = [];
       this.getSong();
     },
-    
+
     // 向下滑动歌手图片缩小
     scrollDownFlag(newValue) {
-      if(newValue == 1 && this.isSingerImgExpend == true){
-        this.imgWidth = 100
-        this.imgHeight = 100
-        this.imgBorderRadius = 50
-        this.isSingerImgExpend = false
-        console.log("收起")
+      if (newValue == 1 && this.isSingerImgExpend == true) {
+        this.imgWidth = 100;
+        this.imgHeight = 100;
+        this.imgBorderRadius = 50;
+        this.isSingerImgExpend = false;
       }
     },
-    
+
     // 向上滑动歌手图片变大
     scrollUpFlag(newValue) {
-      if(newValue == 1 && this.isSingerImgExpend == false){
-        this.imgWidth = 200
-        this.imgHeight = 200
-        this.imgBorderRadius = 20
-        this.isSingerImgExpend = true
-        console.log("撑开")
+      if (newValue == 1 && this.isSingerImgExpend == false) {
+        this.imgWidth = 200;
+        this.imgHeight = 200;
+        this.imgBorderRadius = 20;
+        this.isSingerImgExpend = true;
       }
-    }
+    },
   },
   mounted() {
     //一进入就展示歌手的单曲
     this.getSong();
+  },
+  activated() {
+    this.imgWidth = 200;
+    this.imgHeight = 200;
+    this.imgBorderRadius = 20;
   },
   methods: {
     // 监听滚动，缩放上方歌手信息
     scroll(e) {
       let scrollPos = e.target.scrollTop;
 
-      if(this.isShowSingerSong == true){
-        this.lastScrollPos = this.lastScrollPos_Song
+      if (this.isShowSingerSong == true) {
+        this.lastScrollPos = this.lastScrollPos_Song;
       }
-      if(this.isShowSingerAlbum == true){
-        this.lastScrollPos = this.lastScrollPos_Album
+      if (this.isShowSingerAlbum == true) {
+        this.lastScrollPos = this.lastScrollPos_Album;
       }
-      if(this.isShowSingerMV == true){
-        this.lastScrollPos = this.lastScrollPos_MV
+      if (this.isShowSingerMV == true) {
+        this.lastScrollPos = this.lastScrollPos_MV;
       }
 
       let scrollDirection = scrollPos - this.lastScrollPos > 0 ? "down" : "up";
 
       // 向下滚动，缩小上方歌手信息
       if (scrollDirection == "down" && scrollPos > 200) {
-
-          this.scrollDownFlag += 1
-          this.scrollUpFlag = 0
-          // console.log("down")
-          console.log("scrollDownFlag",this.scrollDownFlag)
-          console.log("scrollUpFlag",this.scrollUpFlag)
+        this.scrollDownFlag += 1;
+        this.scrollUpFlag = 0;
 
         // 向上滚动，放大上方歌手信息
       } else if (scrollDirection == "up" && scrollPos < 200) {
-
-          this.scrollUpFlag += 1
-          this.scrollDownFlag = 0
-          // console.log("up")
-          console.log("scrollDownFlag",this.scrollDownFlag)
-          console.log("scrollUpFlag",this.scrollUpFlag)
+        this.scrollUpFlag += 1;
+        this.scrollDownFlag = 0;
       }
 
-      if(this.isShowSingerSong == true){
-        this.lastScrollPos_Song = scrollPos
+      if (this.isShowSingerSong == true) {
+        this.lastScrollPos_Song = scrollPos;
       }
-      if(this.isShowSingerAlbum == true){
-        this.lastScrollPos_Album = scrollPos
+      if (this.isShowSingerAlbum == true) {
+        this.lastScrollPos_Album = scrollPos;
       }
-      if(this.isShowSingerMV == true){
-        this.lastScrollPos_MV = scrollPos
+      if (this.isShowSingerMV == true) {
+        this.lastScrollPos_MV = scrollPos;
       }
-
     },
     //请求歌手的单曲
     async getSong() {
@@ -239,7 +233,6 @@ export default {
       this.songListPage = 0;
       this.songLoadMoreText = "加载更多";
 
-      console.log(this.singerInfo);
       let songListData = [];
 
       if (this.songList.length == 0) {
@@ -254,7 +247,6 @@ export default {
           });
           this.isSongLoading = false;
         }
-        console.log("songListData", songListData);
 
         this.isSongLoading = false;
 
@@ -268,7 +260,8 @@ export default {
           }
         });
 
-        console.log("this.songList", this.songList);
+        console.log("songList",this.songList)
+
       }
     },
 
@@ -494,6 +487,7 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .singer-header {
@@ -529,16 +523,20 @@ export default {
 
 .singer-description {
   width: 100%;
-  margin-top: 10px;
   font-size: 14px;
   text-indent: 2em;
   text-align: justify;
   overflow-y: scroll;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .singer-body {
   width: 100%;
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .singer-tab-box {
@@ -570,6 +568,7 @@ export default {
 
 .singer-list-box {
   width: 100%;
+  flex: 1;
 }
 
 .singer-list-item {
