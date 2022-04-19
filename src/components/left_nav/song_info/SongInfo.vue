@@ -1,9 +1,7 @@
 <template>
   <div class="playing-song-info">
     <div class="playing-song-name">
-      {{
-        currentList.length === 0 ? "" : currentList[currentListIndex].songName
-      }}
+      {{ currentList.length === 0 ? "" : currentList[currentListIndex].songName }}
     </div>
     <div class="playing-singer-name">
       {{ currentList.length == 0 ? "" : showSingerName }}
@@ -36,7 +34,6 @@ export default {
 .playing-song-info {
   width: 200px;
   height: 50px;
-  margin-top: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;

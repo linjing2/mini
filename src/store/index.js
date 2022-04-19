@@ -10,9 +10,19 @@ import getSongUrl from "@/network/music_api/getSongUrl.js";
 import getAppVersion from '@/network/gitee_api/version/getAppVersion';
 import getCurrentTime from '@/utils/time/getCurrentTime';
 import timeToNumber from '@/utils/time/timeToNumber';
+import getmac from "getmac";
+import decrypt from "@/utils/security/decrypt.js";
+import encrypt from "@/utils/security/encrypt.js";
 
 export default new Vuex.Store({
   state: {
+    userInfo: {
+      name: null,
+      owner: null,
+      avatar_url: null,
+      access_token: null,
+      refresh_token: null
+    },
     appVersion: "1.5.0",
     lastCheckUpdateTime: "2021-07-09 17:48:00",
     checkUpdateData: {},
@@ -126,6 +136,20 @@ export default new Vuex.Store({
         state.isAutoCheckUpdate = isAutoCheckUpdate
       }
 
+      // 获取用户历史用户信息
+      if (localStorage.hasOwnProperty("userInfo")) {
+        let userInfoStr = localStorage.getItem("userInfo");
+        let userInfo = JSON.parse(userInfoStr);
+        let key = getmac()
+        state.userInfo = {
+          name: decrypt(userInfo.name, key),
+          owner: decrypt(userInfo.owner, key),
+          avatar_url: decrypt(userInfo.avatar_url, key),
+          access_token: decrypt(userInfo.access_token, key),
+          refresh_token: decrypt(userInfo.refresh_token, key),
+        };
+      }
+
       this.commit('initApp')
     },
 
@@ -166,6 +190,32 @@ export default new Vuex.Store({
           document.body.style.setProperty("--background-color", "white");
           break;
       }
+    },
+
+    setUserInfo(state, userInfo) {
+      state.userInfo = userInfo
+      let key = getmac()
+      // 加密用户信息
+      let userInfoStore = {
+        avatar_url: encrypt(userInfo.avatar_url, key),
+        owner: encrypt(userInfo.owner, key),
+        name: encrypt(userInfo.name, key),
+        access_token: encrypt(userInfo.access_token, key),
+        refresh_token: encrypt(userInfo.refresh_token, key),
+      };
+      localStorage.setItem('userInfo', JSON.stringify(userInfoStore))
+    },
+
+    removeUserInfo(state) {
+      state.userInfo = {
+        name: null,
+        owner: null,
+        avatar_url: null,
+        access_token: null,
+        refresh_token: null
+      }
+
+      localStorage.removeItem("userInfo")
     },
 
     setState(state, payload) {
@@ -448,7 +498,7 @@ export default new Vuex.Store({
 
       let appVersion = await getAppVersion()
       console.log("appVersion", appVersion)
-      
+
       let checkUpdateData
       switch (process.platform) {
         case "win32":
@@ -519,6 +569,8 @@ export default new Vuex.Store({
       console.log(currentSong)
       if (currentSong.type == 'local') {
         commit('setCurrentSongUrl', currentSong.songUrl)
+      } else if (currentSong.type == 'cloud') {
+
       } else {
         // 请求歌曲播放链接
         let songUrl = await getSongUrl(currentSong)

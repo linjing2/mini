@@ -56,8 +56,6 @@ export default function decrypt(text, key) {
     decryptedText += String.fromCodePoint(item)
   })
 
-  console.log(decryptedText)
-
   return decryptedText
 
 }

@@ -13,10 +13,7 @@
       </div>
       <div class="singer-introduction">
         <div class="singer-page-singer-name">{{ singerInfo.singerName }}</div>
-        <div
-          class="singer-description"
-          :style="{ height: descriptionHeight + 'px' }"
-        >
+        <div class="singer-description" :style="{ height: descriptionHeight + 'px' }">
           {{ singerInfo.singerDescription }}
         </div>
       </div>
@@ -37,18 +34,11 @@
         >
           专辑
         </div>
-        <div
-          class="singer-tab"
-          @click="getMV"
-          :class="{ active: activatedTab === 'MV' }"
-        >
+        <div class="singer-tab" @click="getMV" :class="{ active: activatedTab === 'MV' }">
           MV
         </div>
       </div>
-      <div
-        class="singer-list-box"
-        :style="{ height: songListBoxHeight + 'px' }"
-      >
+      <div class="singer-list-box" :style="{ height: songListBoxHeight + 'px' }">
         <div class="singer-list-item" v-show="isShowSingerSong">
           <loading :isLoading="isSongLoading"></loading>
           <song-list
@@ -260,8 +250,7 @@ export default {
           }
         });
 
-        console.log("songList",this.songList)
-
+        console.log("songList", this.songList);
       }
     },
 
@@ -406,10 +395,7 @@ export default {
 
         let songListData;
         try {
-          songListData = await searchSong(
-            this.singerInfo.singerName,
-            this.songListPage
-          );
+          songListData = await searchSong(this.singerInfo.singerName, this.songListPage);
         } catch (err) {
           this.$message.showMessage({
             type: "error",
@@ -512,6 +498,11 @@ export default {
 
 .singer-introduction {
   flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
   box-sizing: border-box;
   padding: 0 10px;
 }
@@ -526,10 +517,10 @@ export default {
   font-size: 14px;
   text-indent: 2em;
   text-align: justify;
+  line-height: 1.5em;
   overflow-y: scroll;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  box-sizing: border-box;
+  padding: 5px 10px;
 }
 
 .singer-body {

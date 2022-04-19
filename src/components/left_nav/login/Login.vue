@@ -29,13 +29,16 @@
       <div
         class="sync-box"
         :class="{ 'sync-box-out': isShowSyncAnimation }"
-        v-show="userInfo.access_token != ''"
+        v-show="userInfo.access_token != null"
       >
         <div class="upload-data" :class="{ disable: uploadDataDisable }">
           <img src="@/assets/cloud-arrow-up.svg" @click="handleUploadData" />
         </div>
         <div class="download-data" :class="{ disable: downloadDataDisable }">
-          <img src="@/assets/cloud-arrow-down.svg" @click="handleDownloadData" />
+          <img
+            src="@/assets/cloud-arrow-down.svg"
+            @click="handleDownloadData"
+          />
         </div>
       </div>
       <div class="login-confirm-box">
@@ -47,6 +50,9 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import checkDatabase from "@/network/gitee_api/login/checkDatabase.js";
+import createDatabase from "@/network/gitee_api/login/createDatabase.js";
 import getAccessToken from "@/network/gitee_api/login/getAccessToken.js";
 import getUserInfo from "@/network/gitee_api/login/getUserInfo.js";
 
@@ -61,6 +67,10 @@ import encrypt from "@/utils/security/encrypt.js";
 import decrypt from "@/utils/security/decrypt.js";
 
 import { getSingerMusicList } from "@/network/spider";
+import getCloudMusicList from "@/network/gitee_api/cloud/getCloudMusicList.js";
+import downloadCloudSong from "@/network/gitee_api/cloud/downloadCloudSong.js";
+
+import axios from "axios";
 
 export default {
   name: "login",
@@ -70,21 +80,32 @@ export default {
         email: "",
         password: "",
       },
-      userInfo: {
-        name: "",
-        owner: "",
-        avatar_url: "",
-        access_token: "",
-        refresh_token: "",
-      },
       isShowLogin: false,
       isShowSyncAnimation: false,
-      imgSrc: require("@/assets/logo.svg"),
       logoImgUrl: require("@/assets/logo.svg"),
-      logoText: "迷你音乐",
       uploadDataDisable: false,
       downloadDataDisable: false,
     };
+  },
+  computed: {
+    ...mapState(["userInfo"]),
+    // logo图标或用户头像
+    imgSrc() {
+      if (this.userInfo.avatar_url != null) {
+        return this.userInfo.avatar_url;
+      } else {
+        return this.logoImgUrl;
+      }
+    },
+
+    // 应用名称或用户名称
+    logoText() {
+      if (this.userInfo.name != null) {
+        return this.userInfo.name;
+      } else {
+        return "迷你音乐";
+      }
+    },
   },
   mounted() {
     // 获取当前设备MAC地址作为密钥
@@ -100,12 +121,6 @@ export default {
       };
     }
 
-    // 获取用户历史用户信息
-    if (localStorage.hasOwnProperty("userInfo")) {
-      let userInfo = localStorage.getItem("userInfo");
-      this.userInfo = JSON.parse(userInfo);
-    }
-
     // 监听点击事件，点击位置不在登录框内则登录框隐藏
     document.addEventListener("click", (e) => {
       let loginDOM = document.getElementById("login-box");
@@ -117,34 +132,29 @@ export default {
       let click_x = e.pageX;
       let click_y = e.pageY;
 
-      if (click_x < left || click_x > right || click_y < top || click_y > bottom) {
+      if (
+        click_x < left ||
+        click_x > right ||
+        click_y < top ||
+        click_y > bottom
+      ) {
         this.isShowLogin = false;
       }
     });
   },
-  watch: {
-    // 登陆后显示Gitee用户头像和用户名
-    userInfo() {
-      if (this.userInfo.avatar_url != "") {
-        this.imgSrc = this.userInfo.avatar_url;
-      } else {
-        this.imgSrc = this.logoImgUrl;
-      }
-
-      if (this.userInfo.name != "") {
-        this.logoText = this.userInfo.name;
-      } else {
-        this.logoText = "迷你音乐";
-      }
-    },
-  },
-
   methods: {
     async testAPI() {
-      let res = await getSingerMusicList(1, "0017fyG340LMVq");
-      console.log("res", res);
+      // console.log(this.userInfo.access_token)
+      // console.log(this.userInfo.owner)
+      // getCloudMusicList({
+      //   access_token: this.userInfo.access_token,
+      //   owner: this.userInfo.owner
+      // }).then(res => {
+      //   console.log(res)
+      // })
     },
     showLogin() {
+      console.log("login");
       // 延迟一下，避开点击showLogin时的点击监听
       setTimeout(() => {
         this.isShowLogin = true;
@@ -172,16 +182,31 @@ export default {
         password,
       });
 
+      console.log("access_token", access_token);
+
       if (access_token) {
         let getUserInfoRes = await getUserInfo(access_token);
 
-        this.userInfo = {
-          ...getUserInfoRes,
+        // 加密用户信息
+        let userInfo = {
+          avatar_url: getUserInfoRes.avatar_url,
+          owner: getUserInfoRes.owner,
+          name: getUserInfoRes.name,
           access_token,
           refresh_token,
         };
 
-        localStorage.setItem("userInfo", JSON.stringify(this.userInfo));
+        this.$store.commit("setUserInfo", userInfo);
+        
+        // 登录后检查有没有创建数据库，没有就创建好数据库
+        try {
+          let checkDatabaseRes = await checkDatabase({
+            access_token,
+            owner: userInfo.owner,
+          });
+        } catch (err) {
+          createDatabase({access_token})
+        }
 
         this.isShowSyncAnimation = true;
         setTimeout(() => {
@@ -191,15 +216,8 @@ export default {
     },
 
     logout() {
-      this.userInfo = {
-        name: "",
-        owner: "",
-        avatar_url: "",
-        access_token: "",
-        refresh_token: "",
-      };
-
-      localStorage.removeItem("userInfo");
+      
+      this.$store.commit("removeUserInfo");
 
       this.isShowLogin = false;
     },

@@ -38,7 +38,6 @@ export default function encrypt(text, key) {
     for(let j = 1; j < diffLength; j++) {
       keyNumArr.push(...keyNumArrCopy)
     }
-    console.log(keyNumArr)
   }
 
   // 将文本数值与密钥数值一一相加，从而形成加密
@@ -66,8 +65,6 @@ export default function encrypt(text, key) {
     
     encryptedText += hex
   })
-
-  console.log(encryptedText)
 
   return encryptedText
 

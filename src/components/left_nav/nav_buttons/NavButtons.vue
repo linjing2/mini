@@ -242,8 +242,7 @@ export default {
 <style>
 .router-button-box {
   width: 100%;
-  height: 470px;
-  overflow: hidden;
+  height: 453px;
 }
 
 .nav-item {
@@ -310,6 +309,7 @@ export default {
   border-radius: 10px;
   background-color: var(--background-color);
   box-shadow: 0 0 6px var(--highlight-deep-color);
+  z-index: 999;
 }
 
 .active {

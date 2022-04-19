@@ -121,7 +121,7 @@ export default {
   height: 180px;
   overflow: hidden;
   border-radius: 50%;
-  box-shadow: 0 0 10px var(--highlight-deep-color);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .album-img > img {

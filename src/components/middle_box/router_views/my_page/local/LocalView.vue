@@ -145,7 +145,6 @@ export default {
 }
 
 .local-song-list {
-  /* flex: 1; */
   height: 620px;
   overflow-y: scroll;
 }
