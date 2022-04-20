@@ -14,6 +14,8 @@ import getmac from "getmac";
 import decrypt from "@/utils/security/decrypt.js";
 import encrypt from "@/utils/security/encrypt.js";
 
+import downloadCloudSong from "@/network/gitee_api/cloud/downloadCloudSong.js";
+
 export default new Vuex.Store({
   state: {
     userInfo: {
@@ -44,6 +46,7 @@ export default new Vuex.Store({
       apiVersion: "1.3.0",
       markList: []
     },
+    cloudList: [],
     playList: [],
     singerInfo: {},
     albumInfo: {},
@@ -148,6 +151,11 @@ export default new Vuex.Store({
           access_token: decrypt(userInfo.access_token, key),
           refresh_token: decrypt(userInfo.refresh_token, key),
         };
+      }
+
+      // 获取云端歌曲列表本地历史记录
+      if (localStorage.hasOwnProperty('cloudList')) {
+        state.cloudList = JSON.parse(localStorage.getItem('cloudList'))
       }
 
       this.commit('initApp')
@@ -277,6 +285,22 @@ export default new Vuex.Store({
 
     setSearchPage(state, searchPage) {
       state.searchPage = searchPage
+    },
+
+    setCloudList(state, cloudList){
+      state.cloudList = cloudList
+      localStorage.setItem("cloudList", JSON.stringify(state.cloudList))
+    },
+
+    setCloudSongDownload(state, cloudSong){
+      let songIndex = -1
+      state.cloudList.forEach((item, index) => {
+        if(item.songID == cloudSong.songID){
+          songIndex = index
+        }
+      })
+      state.cloudList[songIndex].isDownload = true
+      localStorage.setItem("cloudList", JSON.stringify(state.cloudList))
     },
 
     setPlayList(state, playList) {
@@ -567,9 +591,23 @@ export default new Vuex.Store({
 
       let currentSong = state.currentList[state.currentListIndex]
       console.log(currentSong)
+
+      // 如果播放的歌曲为本地歌曲
       if (currentSong.type == 'local') {
         commit('setCurrentSongUrl', currentSong.songUrl)
       } else if (currentSong.type == 'cloud') {
+        // 如果播放的歌曲为云端歌曲
+        if(currentSong.isDownload == false){
+          console.log("currentSong",currentSong)
+          let isDownload = await downloadCloudSong(currentSong)
+          console.log("isDownload", isDownload)
+          if(isDownload == true){
+            commit('setCloudSongDownload', currentSong)
+            commit('setCurrentSongUrl', currentSong.songUrl)
+          }
+        }else {
+          commit('setCurrentSongUrl', currentSong.songUrl)
+        }
 
       } else {
         // 请求歌曲播放链接

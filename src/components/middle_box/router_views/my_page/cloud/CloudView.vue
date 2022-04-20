@@ -98,6 +98,7 @@ export default {
                 songID: each.name.split(".")[0] + "-cloud-" + item.id,
                 songName: each.name.split(".")[0],
                 songUrl: storePath + "\\" + each.name,
+                fileName: each.name,
                 lyric: null,
                 downloadUrl: each.browser_download_url,
                 isDownload: false,
@@ -107,9 +108,12 @@ export default {
             }
           });
         });
+
+        this.$store.commit("setCloudList", this.cloudSongs)
+
       }
 
-      console.log(this.cloudSongs);
+      console.log("cloudList",this.cloudSongs);
     },
     async browseFile(e) {
       let files = e.target.files;
@@ -236,7 +240,7 @@ export default {
       if (this.userInfo.access_token != "") {
         let owner = this.userInfo.owner;
         shell.openExternal(
-          `https://gitee.com/${owner}/MiniMusicDatabase/releases`
+          `https://gitee.com/${owner}/MiniMusicCloud/releases`
         );
       }
     },

@@ -52,7 +52,9 @@
 <script>
 import { mapState } from "vuex";
 import checkDatabase from "@/network/gitee_api/login/checkDatabase.js";
+import checkCloud from "@/network/gitee_api/login/checkCloud.js";
 import createDatabase from "@/network/gitee_api/login/createDatabase.js";
+import createCloud from "@/network/gitee_api/login/createCloud.js";
 import getAccessToken from "@/network/gitee_api/login/getAccessToken.js";
 import getUserInfo from "@/network/gitee_api/login/getUserInfo.js";
 
@@ -144,14 +146,20 @@ export default {
   },
   methods: {
     async testAPI() {
-      // console.log(this.userInfo.access_token)
-      // console.log(this.userInfo.owner)
-      // getCloudMusicList({
-      //   access_token: this.userInfo.access_token,
-      //   owner: this.userInfo.owner
-      // }).then(res => {
-      //   console.log(res)
-      // })
+      axios({
+        method: "get",
+        url: "https://gitee.com/cgper/MiniMusicDatabase/attach_files/1036825/download/%E5%B0%98%E4%B8%96%E7%BE%8E.mp3",
+        headers:{
+          "Cookie": "oschina_new_user=false",
+          "Referer": "https://gitee.com/cgper/MiniMusicDatabase/releases"
+        }
+        // responseType:"stream"
+        // params: {
+      // access_token: this.userInfo.access_token
+    // }
+      }).then(res => {
+        console.log(res)
+      })
     },
     showLogin() {
       console.log("login");
@@ -206,6 +214,16 @@ export default {
           });
         } catch (err) {
           createDatabase({access_token})
+        }
+
+        // 登录后检查有没有创建云端歌曲仓库，没有就创建好仓库
+        try {
+          let checkCloudRes = await checkCloud({
+            access_token,
+            owner: userInfo.owner,
+          });
+        } catch (err) {
+          createCloud({access_token})
         }
 
         this.isShowSyncAnimation = true;

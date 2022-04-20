@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default function getCloudMusicList(config) {
   const {access_token, owner} = config
-  let repo = "MiniMusicDatabase" 
+  let repo = "MiniMusicCloud" 
 
   return axios({
     method: 'GET',
