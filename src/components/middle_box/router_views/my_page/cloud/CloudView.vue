@@ -64,12 +64,12 @@ export default {
 
       if(this.userInfo.access_token == null) return 
 
-      let storePath = getPath() + "\\resource";
+      let storePath = path.resolve(getPath() , "./resource") ;
       if (!fs.existsSync(storePath)) {
         fs.mkdirSync(storePath);
       }
 
-      let cloudPath = storePath + "\\cloud"
+      let cloudPath = path.resolve(storePath , "./cloud")
       if (!fs.existsSync(cloudPath)) {
         fs.mkdirSync(cloudPath);
       }
@@ -103,7 +103,7 @@ export default {
                 singer: [],
                 songID: each.name.split(".")[0] + "-cloud-" + item.id,
                 songName: each.name.split(".")[0],
-                songUrl: storePath + "\\" + each.name,
+                songUrl: path.resolve(cloudPath, each.name),
                 fileName: each.name,
                 lyric: null,
                 downloadUrl: each.browser_download_url,
@@ -115,6 +115,9 @@ export default {
             }
           });
         });
+        
+        console.log("cloudSongs",cloudSongs);
+
 
         this.cloudList.forEach((item, index) => {
           if(item.songID = cloudSongs[index].songID && item.isDownload == true){

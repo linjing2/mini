@@ -22,6 +22,7 @@
 import {mapState} from "vuex"
 
 import fs from "fs";
+import path from "path";
 import getPath from "@/utils/path/getPath.js";
 import SongList from "@/common/list/song/SongList.vue";
 export default {
@@ -42,15 +43,15 @@ export default {
       let files = e.target.files;
       console.log(files);
       
-      let storePath = getPath() + "\\resource";
+      let storePath = path.resolve(getPath() , "./resource")
       console.log(storePath);
       if (!fs.existsSync(storePath)) {
         fs.mkdirSync(storePath);
       }
 
-      let cloudPath = storePath + "\\local"
-      if (!fs.existsSync(cloudPath)) {
-        fs.mkdirSync(cloudPath);
+      let localPath = path.resolve(storePath , "./local") 
+      if (!fs.existsSync(localPath)) {
+        fs.mkdirSync(localPath);
       }
 
       let filesArr = Array.from(files);
@@ -62,7 +63,7 @@ export default {
 
       filesArr.forEach((item) => {
         let file = fs.createReadStream(item.path);
-        let copyFile = fs.createWriteStream(storePath + "/" + item.name);
+        let copyFile = fs.createWriteStream( path.resolve(localPath , item.name));
         file.pipe(copyFile);
 
         let song = {
@@ -72,7 +73,7 @@ export default {
           singer: [],
           songID: item.name.split(".")[0] + "local",
           songName: item.name.split(".")[0],
-          songUrl: storePath + "\\" + item.name,
+          songUrl: path.resolve(localPath, item.name),
           lyric: null,
           type: "local",
           tag: []
