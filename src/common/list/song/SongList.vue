@@ -17,12 +17,52 @@
         </div>
         <div class="right-click-text">收藏</div>
       </div>
-      <div class="right-click-item" @click="editLocalSong" v-if="showEdit">
+      <div class="right-click-item" @click="editLocalSong" v-if="false">
         <div class="right-click-icon">
           <img src="@/assets/edit.svg" />
         </div>
         <div class="right-click-text">编辑</div>
       </div>
+      <div
+        class="right-click-item"
+        @click="removeLocalSong"
+        v-if="isShowRemove"
+      >
+        <div class="right-click-icon">
+          <img src="@/assets/delete.svg" />
+        </div>
+        <div class="right-click-text">移除</div>
+      </div>
+      <div
+        class="right-click-item"
+        @click="refreshCloudList"
+        v-if="isShowRefresh"
+      >
+        <div class="right-click-icon">
+          <img src="@/assets/arrow-repeat.svg" />
+        </div>
+        <div class="right-click-text">刷新</div>
+      </div>
+      <div
+        class="right-click-item"
+        @click="downloadSong"
+        v-if="isCloud"
+      >
+        <div class="right-click-icon">
+          <img src="@/assets/arrow-down.svg" />
+        </div>
+        <div class="right-click-text">重新下载</div>
+      </div>
+      <!-- <div
+        class="right-click-item"
+        @click="downloadAllSong"
+        v-if="isCloud"
+      >
+        <div class="right-click-icon">
+          <img src="@/assets/download.svg" />
+        </div>
+        <div class="right-click-text">下载所有</div>
+      </div> -->
     </div>
     <div class="song-list-title">
       <div></div>
@@ -36,18 +76,32 @@
         v-for="(item, index) in list"
         @click.right="mouseRightClick($event, item, index)"
         :key="item.songID"
-        :style=songItemStyle(item)
+        :style="songItemStyle(item)"
       >
         <div class="mark-img" v-if="isShowMarkImg">
-          <img :src="setMarkImgUrl(item)" @click="removeMarkSong(index)" width="18px" />
+          <img
+            :src="setMarkImgUrl(item)"
+            @click="removeMarkSong(index)"
+            width="18px"
+          />
         </div>
         <div class="like-img" v-else>
-          <img :src="setLikeImgUrl(item)" @click="likeSong(item)" width="18px" />
+          <img
+            :src="setLikeImgUrl(item)"
+            @click="likeSong(item)"
+            width="18px"
+          />
         </div>
         <div class="song-list-song-name" @click="playThisSong(item, index)">
           <div class="song-name-text">{{ item.songName }}</div>
           <div class="local-song-icon" v-if="item.type == 'local'">
             <img src="@/assets/local-song.svg" />
+          </div>
+          <div class="local-song-icon" v-if="item.type == 'cloud' && item.isDownload == false">
+            <img src="@/assets/cloud.svg" />
+          </div>
+          <div class="local-song-icon" v-if="item.type == 'cloud' && item.isDownload == true">
+            <img src="@/assets/cloud-check.svg" />
           </div>
         </div>
         <div class="song-list-singer-name" @click="playThisSong(item, index)">
@@ -128,13 +182,14 @@ export default {
       "likedList",
       "markList",
       "selectedSong",
+      "isRefreshCloudList"
     ]),
 
     currentSongID() {
       if (this.list.length > 0 && this.currentListIndex != null) {
-        return this.currentList[this.currentListIndex].songID
-      }else {
-        return null
+        return this.currentList[this.currentListIndex].songID;
+      } else {
+        return null;
       }
     },
 
@@ -155,7 +210,6 @@ export default {
     },
 
     showEdit() {
-      console.log("selectedSong", this.selectedSong);
       if (this.selectedSong.hasOwnProperty("type")) {
         if (this.selectedSong.type == "local") {
           return true;
@@ -164,6 +218,36 @@ export default {
         return false;
       }
     },
+
+    isShowRemove() {
+      if (this.selectedSong.hasOwnProperty("type")) {
+        if (this.selectedSong.type == "local") {
+          return true;
+        }
+      } else {
+        return false;
+      }
+    },
+
+    isShowRefresh() {
+      if (this.selectedSong.hasOwnProperty("type")) {
+        if (this.selectedSong.type == "cloud") {
+          return true;
+        }
+      } else {
+        return false;
+      }
+    },
+
+    isCloud(){
+      if (this.selectedSong.hasOwnProperty("type")) {
+        if (this.selectedSong.type == "cloud") {
+          return true;
+        }
+      } else {
+        return false;
+      }
+    }
   },
   watch: {
     //如果list的id变化则自动回到顶端
@@ -201,7 +285,9 @@ export default {
       } else {
         let singerDescription = "";
         try {
-          let singerInfoData = await getSingerInfo({ singerMid: item.singer[0].ID });
+          let singerInfoData = await getSingerInfo({
+            singerMid: item.singer[0].ID,
+          });
           singerDescription = singerInfoData.desc;
         } catch (err) {
           console.log(err);
@@ -296,6 +382,7 @@ export default {
     mouseRightClick(e, item, index) {
       this.selectSongIndex = index;
       this.$store.commit("sendSelectedSong", item);
+      console.log("selectedSong", item)
 
       setTimeout(() => {
         this.$refs.RightClickBoxDiv.focus();
@@ -323,16 +410,38 @@ export default {
       this.$store.commit("showDialog", "edit-local-song");
     },
 
+    removeLocalSong() {
+      this.$store.commit("removeLocalSong", this.selectedSong);
+      this.hideRightClickBox();
+    },
+
+    refreshCloudList() {
+      let payload = {
+        "isRefreshCloudList": !this.isRefreshCloudList
+      }
+      this.$store.commit("setState", payload);
+      this.hideRightClickBox()
+    },
+
+    downloadSong(){
+      this.$store.dispatch("downloadSong", this.selectedSong)
+      this.hideRightClickBox()
+    },
+
+    downloadAllSong(){
+      
+    },
+
     songItemStyle(item) {
-      let style = ""
-      if(this.currentSongID == item.songID) {
-        style = this.playingSongStyle
-        return style
-      }else if(this.selectedSong.songID == item.songID) {
-        style = this.selectSongStyle
-        return style
-      }else {
-        return style
+      let style = "";
+      if (this.currentSongID == item.songID) {
+        style = this.playingSongStyle;
+        return style;
+      } else if (this.selectedSong.songID == item.songID) {
+        style = this.selectSongStyle;
+        return style;
+      } else {
+        return style;
       }
     },
 
@@ -373,18 +482,12 @@ export default {
 
 .right-click-box {
   position: absolute;
-  width: 70px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
   padding: 2px 5px;
-  left: 45px;
-  right: 10px;
   border-radius: 10px;
   overflow: hidden;
   background-color: var(--background-color);
   box-shadow: 0 0 10px var(--highlight-deep-color);
+  z-index: 999;
 }
 
 .right-click-box:focus {
@@ -392,7 +495,6 @@ export default {
 }
 
 .right-click-item {
-  width: 60px;
   margin-top: 5px;
   padding: 1px 2px;
   display: flex;
@@ -426,6 +528,7 @@ export default {
 .right-click-text {
   height: 20px;
   margin-left: 2px;
+  margin-right: 2px;
   font-size: 12px;
   display: flex;
   justify-content: center;

@@ -1,24 +1,26 @@
 <template>
-  <div class="local-view" @drop="fileDrop">
-    <div class="local-view-tool">
-      <div class="add-song-icon">
-        <input
-          class="add-song-input"
-          type="file"
-          multiple="multiple"
-          @change="browseFile"
-          accept=".mp3,"
-        />
-        <img src="@/assets/add-song.svg" alt="" />
-      </div>
-    </div>
+  <div class="local-view">
     <div class="local-song-list">
-      <song-list :list="localSongs"></song-list>
+      <song-list :list="localList">
+        <div class="add-song-box"  @mouseenter="showLocalText" @mouseleave="hideLocalText">
+          <img src="@/assets/add.svg" v-show="!isShowLocalText"/>
+          <input
+            class="add-song-input"
+            type="file"
+            multiple="multiple"
+            @change="browseFile"
+            accept=".mp3, .wav"
+          />
+          <div class="add-local-song-text" v-show="isShowLocalText">导入本地歌曲</div>
+        </div>
+      </song-list>
     </div>
   </div>
 </template>
 
 <script>
+import {mapState} from "vuex"
+
 import fs from "fs";
 import getPath from "@/utils/path/getPath.js";
 import SongList from "@/common/list/song/SongList.vue";
@@ -29,20 +31,17 @@ export default {
   },
   data() {
     return {
-      localSongs: [],
+      isShowLocalText: false,
     };
   },
-  mounted() {
-    if (localStorage.hasOwnProperty("localSongs")) {
-      let localSongs = JSON.parse(localStorage.getItem("localSongs"));
-      this.localSongs = localSongs;
-    }
+  computed:{
+    ...mapState(["localList"])
   },
   methods: {
     async browseFile(e) {
       let files = e.target.files;
       console.log(files);
-      let storePath = getPath() + "\\resource";
+      let storePath = getPath() + "\\resource\\local";
       console.log(storePath);
       if (!fs.existsSync(storePath)) {
         fs.mkdirSync(storePath);
@@ -51,6 +50,9 @@ export default {
       let filesArr = Array.from(files);
 
       filesArr = filesArr.filter((item) => item.type == "audio/mpeg");
+      console.log("filesArr",filesArr)
+
+      let localList = []
 
       filesArr.forEach((item) => {
         let file = fs.createReadStream(item.path);
@@ -62,26 +64,25 @@ export default {
           albumImgUrl: null,
           albumNmae: null,
           singer: [],
-          songID: item.name.split(".")[0],
+          songID: item.name.split(".")[0] + "local",
           songName: item.name.split(".")[0],
           songUrl: storePath + "\\" + item.name,
           lyric: null,
           type: "local",
+          tag: []
         };
-        this.localSongs.push(song);
+        localList.push(song);
       });
-      console.log(this.localSongs);
-      localStorage.setItem("localSongs", JSON.stringify(this.localSongs));
+      console.log("localList",localList);
+      this.$store.commit("addLocalList", localList)
     },
 
-    refreshDir() {},
+    showLocalText(){
+      this.isShowLocalText = true
+    },
 
-    fileDrop(e) {
-      console.log("drop");
-
-      e.preventDefault();
-
-      console.log(e);
+    hideLocalText(){
+      this.isShowLocalText = false
     },
 
     playSong(item, index) {
@@ -105,48 +106,8 @@ export default {
   flex-direction: column;
 }
 
-.local-view-tool {
-  width: 100%;
-  height: 20px;
-  display: flex;
-  align-items: center;
-}
-
-.add-song-icon {
-  position: relative;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-.add-song-icon > img {
-  width: 16px;
-  height: 16px;
-}
-
-.add-song-icon:hover {
-  transform: scale(1.1);
-}
-
-.add-song-icon:active {
-  transform: scale(1.2);
-}
-
-.add-song-input {
-  position: absolute;
-  opacity: 0;
-}
-
-.add-song-input:hover {
-  cursor: pointer;
-}
-
 .local-song-list {
   height: 620px;
-  overflow-y: scroll;
 }
 
 .local-song-item {
@@ -154,5 +115,33 @@ export default {
   height: 30px;
   display: flex;
   align-items: center;
+}
+
+.add-song-box {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.add-song-box > input {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  position: absolute;
+}
+
+.add-song-box > img {
+  position: absolute;
+  width: 80%;
+  height: 80%;
+}
+
+add-local-song-text{
+  position: absolute;
 }
 </style>

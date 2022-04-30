@@ -1,9 +1,8 @@
 import axios from "axios";
 import fs from "fs";
 import { Promise } from "core-js";
-import getPath from "@/utils/path/getPath.js";
 
-export default async function downloadCloudSong(song) {
+export default async function downloadCloudSong(song, listenProgress, state) {
 
   return new Promise(async (resolve,reject) => {
     let res = await axios({
@@ -11,7 +10,6 @@ export default async function downloadCloudSong(song) {
       url: song.downloadUrl,
       responseType: "stream",
     })
-    console.log(res)
   
     let data = res.data;
     let ws = fs.createWriteStream(song.songUrl);
@@ -21,17 +19,24 @@ export default async function downloadCloudSong(song) {
   
     //下载云端歌曲
     data.pipe(ws)
-  
+
+    state.downloadSongPause = () => {
+      data.pause()
+    }
+
     // 监听下载进度
     data.on("data", (chunk) => {
       loaded += chunk.length;
       progress = loaded / total;
-      console.log((progress * 100).toFixed(2) + "%");
+      listenProgress((progress * 100).toFixed(2))
+      if((progress * 100).toFixed(2) == 100.00){
+        resolve(true)
+      }
     });
-  
-    data.on("end", async () => {
-      console.log("歌曲下载完成");
-      resolve(true)
+
+    data.on("error", async () => {
+      console.log("歌曲下载出错");
+      reject(false)
     });
 
   })

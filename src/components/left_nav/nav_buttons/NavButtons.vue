@@ -31,7 +31,7 @@
       <div class="nav-text" @click="markBox">收藏</div>
       <img
         class="nav-arrow-down-icon"
-        src="@/assets/arrow-down.svg"
+        src="@/assets/chevron-compact-down.svg"
         @click="markBox"
         :style="arrowStytle"
       />

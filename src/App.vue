@@ -3,6 +3,9 @@
     <!-- 展示需要显示的对话框 -->
     <component v-if="isShowDialog" :is="dialog"></component>
 
+    <!-- 展示需要显示的通知 -->
+    <component v-if="true" :is="'download-progress'"></component>
+
     <div class="app-background" :style="appStyle">
       <background-color></background-color>
     </div>
@@ -35,6 +38,9 @@ import ChooseSinger from "@/common/dialog/ChooseSinger.vue";
 import CheckUpdate from "@/common/dialog/CheckUpdate.vue";
 import EditLocalSong from "@/common/dialog/EditLocalSong.vue";
 
+// 通知组件
+import DownloadProgress from "@/common/notification/DownloadProgress.vue";
+
 export default {
   name: "app",
   components: {
@@ -50,6 +56,7 @@ export default {
     EditLocalSong,
     Setting,
     BackgroundColor,
+    DownloadProgress
   },
   data() {
     return {
@@ -61,6 +68,8 @@ export default {
     ...mapState([
       "dialog",
       "isShowDialog",
+      "notification",
+      "isShowNotification",
       "isShowSettingPanel",
       "backgroundTheme",
       "isDownloadedFont",

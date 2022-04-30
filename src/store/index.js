@@ -46,7 +46,13 @@ export default new Vuex.Store({
       apiVersion: "1.3.0",
       markList: []
     },
+    localList: [],
     cloudList: [],
+    isRefreshCloudList: false,
+    downloadingSong: {},
+    downloadSongProgress: '0.00',
+    isShowDownloadProgress: false,
+    downloadSongPause: null,
     playList: [],
     singerInfo: {},
     albumInfo: {},
@@ -153,7 +159,12 @@ export default new Vuex.Store({
         };
       }
 
-      // 获取云端歌曲列表本地历史记录
+      // 获取本地歌曲列表历史记录
+      if (localStorage.hasOwnProperty('localList')) {
+        state.localList = JSON.parse(localStorage.getItem('localList'))
+      }
+
+      // 获取云端歌曲列表历史记录
       if (localStorage.hasOwnProperty('cloudList')) {
         state.cloudList = JSON.parse(localStorage.getItem('cloudList'))
       }
@@ -226,15 +237,15 @@ export default new Vuex.Store({
       localStorage.removeItem("userInfo")
     },
 
+    // 各组件使用commit修改state中的数据，数组深拷贝，其他直接按属性名称赋值
     setState(state, payload) {
-      let key = payload.key
-      let value = payload.value
-      console.log(key)
-      console.log(value)
-      console.log(value instanceof Array)
-      if (value instanceof Array) {
-        state[key] = [...value]
-        console.log(state[key])
+      let keys = Object.keys(payload)
+      let key = keys[0]
+      if (keys.length == 1 && (payload[key] instanceof Array)) {
+        state[key] = [...payload[key]]
+      } else {
+        state[key] = payload[key]
+        console.log(key, state[key])
       }
     },
 
@@ -287,20 +298,53 @@ export default new Vuex.Store({
       state.searchPage = searchPage
     },
 
-    setCloudList(state, cloudList){
+    setCloudList(state, cloudList) {
       state.cloudList = cloudList
       localStorage.setItem("cloudList", JSON.stringify(state.cloudList))
     },
 
-    setCloudSongDownload(state, cloudSong){
+    setCloudSongDownload(state, cloudSong) {
       let songIndex = -1
       state.cloudList.forEach((item, index) => {
-        if(item.songID == cloudSong.songID){
+        if (item.songID == cloudSong.songID) {
           songIndex = index
         }
       })
+      console.log("songIndex", songIndex)
       state.cloudList[songIndex].isDownload = true
+      console.log("cloudList", state.cloudList)
       localStorage.setItem("cloudList", JSON.stringify(state.cloudList))
+    },
+
+    setCloudSongNotDownload(state, cloudSong) {
+      let songIndex = -1
+      state.cloudList.forEach((item, index) => {
+        if (item.songID == cloudSong.songID) {
+          songIndex = index
+        }
+      })
+      console.log("songIndex", songIndex)
+      state.cloudList[songIndex].isDownload = false
+      console.log("cloudList", state.cloudList)
+      localStorage.setItem("cloudList", JSON.stringify(state.cloudList))
+    },
+
+    addLocalList(state, localList) {
+      state.localList.unshift(...localList)
+      localStorage.setItem("localList", JSON.stringify(state.localList))
+    },
+
+    removeLocalSong(state, selectedSong) {
+      let removeIndex = null
+      state.localList.forEach((item, index) => {
+        if (item.songID == selectedSong.songID) {
+          removeIndex = index
+        }
+      })
+      if (removeIndex != null) {
+        state.localList.splice(removeIndex, 1)
+      }
+      localStorage.setItem("localList", JSON.stringify(state.localList))
     },
 
     setPlayList(state, playList) {
@@ -579,7 +623,60 @@ export default new Vuex.Store({
       }
     },
 
-    async playCurrentSong({ state, commit }) {
+    async downloadSong({ state, commit }, song) {
+
+      let payload = {
+        isShowDownloadProgress: true
+      }
+      commit("setState", payload)
+
+      // 一次只能下载一首歌，防止同时下载多首歌曲
+      if (state.downloadSongProgress != ("0.00" || "100.00")) {
+        console.log("return", state.downloadSongProgress)
+
+        return
+      }
+
+      // 储存正在下载的歌曲
+      let payload2 = {
+        downloadingSong: song
+      }
+      commit("setState", payload2)
+
+      // 歌曲下载进度监听函数
+      let listenProgress = (downloadProgress) => {
+        let payload = {
+          downloadSongProgress: downloadProgress
+        }
+        commit("setState", payload)
+      }
+      let isDownload = await downloadCloudSong(song, listenProgress, state)
+      if (isDownload == true) {
+        commit('setCloudSongDownload', song)
+
+        // 清空正在下载的歌曲
+        let payload3 = {
+          downloadingSong: {}
+        }
+        commit("setState", payload3)
+      }
+    },
+
+    // 终止歌曲下载
+    async cancelDownloadSong({state, commit}) {
+      state.downloadSongPause()
+      commit("setCloudSongNotDownload",state.downloadingSong)
+      commit("setState",{downloadSongProgress: "0.00"})
+      let payload = {
+        isShowDownloadProgress: false
+      }
+      
+      setTimeout(() => {
+        commit("setState",payload)
+      },500)
+    },
+
+    async playCurrentSong({ state, commit, dispatch }) {
 
       // 清除上一首歌曲播放链接
       commit('setCurrentSongUrl', '')
@@ -597,15 +694,10 @@ export default new Vuex.Store({
         commit('setCurrentSongUrl', currentSong.songUrl)
       } else if (currentSong.type == 'cloud') {
         // 如果播放的歌曲为云端歌曲
-        if(currentSong.isDownload == false){
-          console.log("currentSong",currentSong)
-          let isDownload = await downloadCloudSong(currentSong)
-          console.log("isDownload", isDownload)
-          if(isDownload == true){
-            commit('setCloudSongDownload', currentSong)
-            commit('setCurrentSongUrl', currentSong.songUrl)
-          }
-        }else {
+        if (currentSong.isDownload == false) {
+          await dispatch("downloadSong", currentSong)
+        } else {
+          console.log("已下载")
           commit('setCurrentSongUrl', currentSong.songUrl)
         }
 
