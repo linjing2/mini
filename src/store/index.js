@@ -347,6 +347,11 @@ export default new Vuex.Store({
       localStorage.setItem("localList", JSON.stringify(state.localList))
     },
 
+    removeAllLocalSong(state) {
+      state.localList = []
+      localStorage.setItem("localList", JSON.stringify(state.localList))
+    },
+
     setPlayList(state, playList) {
       state.playList = playList
     },

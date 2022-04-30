@@ -41,10 +41,16 @@ export default {
     async browseFile(e) {
       let files = e.target.files;
       console.log(files);
-      let storePath = getPath() + "\\resource\\local";
+      
+      let storePath = getPath() + "\\resource";
       console.log(storePath);
       if (!fs.existsSync(storePath)) {
         fs.mkdirSync(storePath);
+      }
+
+      let cloudPath = storePath + "\\local"
+      if (!fs.existsSync(cloudPath)) {
+        fs.mkdirSync(cloudPath);
       }
 
       let filesArr = Array.from(files);

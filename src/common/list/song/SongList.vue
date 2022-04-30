@@ -26,7 +26,7 @@
       <div
         class="right-click-item"
         @click="removeLocalSong"
-        v-if="isShowRemove"
+        v-if="isLocal"
       >
         <div class="right-click-icon">
           <img src="@/assets/delete.svg" />
@@ -35,8 +35,18 @@
       </div>
       <div
         class="right-click-item"
+        @click="removeAllLocalSong"
+        v-if="isLocal"
+      >
+        <div class="right-click-icon">
+          <img src="@/assets/close.svg" />
+        </div>
+        <div class="right-click-text">删除所有</div>
+      </div>
+      <div
+        class="right-click-item"
         @click="refreshCloudList"
-        v-if="isShowRefresh"
+        v-if="isCloud"
       >
         <div class="right-click-icon">
           <img src="@/assets/arrow-repeat.svg" />
@@ -209,29 +219,9 @@ export default {
       return rightClickBoxStyle;
     },
 
-    showEdit() {
+    isLocal(){
       if (this.selectedSong.hasOwnProperty("type")) {
         if (this.selectedSong.type == "local") {
-          return true;
-        }
-      } else {
-        return false;
-      }
-    },
-
-    isShowRemove() {
-      if (this.selectedSong.hasOwnProperty("type")) {
-        if (this.selectedSong.type == "local") {
-          return true;
-        }
-      } else {
-        return false;
-      }
-    },
-
-    isShowRefresh() {
-      if (this.selectedSong.hasOwnProperty("type")) {
-        if (this.selectedSong.type == "cloud") {
           return true;
         }
       } else {
@@ -412,6 +402,11 @@ export default {
 
     removeLocalSong() {
       this.$store.commit("removeLocalSong", this.selectedSong);
+      this.hideRightClickBox();
+    },
+
+    removeAllLocalSong() {
+      this.$store.commit("removeAllLocalSong");
       this.hideRightClickBox();
     },
 

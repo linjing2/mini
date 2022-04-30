@@ -64,9 +64,14 @@ export default {
 
       if(this.userInfo.access_token == null) return 
 
-      let storePath = getPath() + "\\resource\\cloud";
+      let storePath = getPath() + "\\resource";
       if (!fs.existsSync(storePath)) {
         fs.mkdirSync(storePath);
+      }
+
+      let cloudPath = storePath + "\\cloud"
+      if (!fs.existsSync(cloudPath)) {
+        fs.mkdirSync(cloudPath);
       }
 
       let releaseData = await getCloudMusicList({
