@@ -195,20 +195,20 @@ export default {
 .download-progress-middle-box {
   width: 140px;
   height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  box-align: center;
   backdrop-filter: blur(40px);
 }
 
 .download-progress-text {
-  width: 100%;
-  height: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .download-progress-song-name {
-  width: 100%;
-  height: 50%;
   display: flex;
   justify-content: center;
   align-items: center;

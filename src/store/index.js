@@ -26,7 +26,7 @@ export default new Vuex.Store({
       refresh_token: null
     },
     appVersion: "1.5.0",
-    lastCheckUpdateTime: "2021-07-09 17:48:00",
+    lastCheckUpdateTime: "2022-05-01 16:04:00",
     checkUpdateData: {},
     isAutoCheckUpdate: true, // 是否自动检查更新
     isShowThemeAnimation: false,
@@ -658,12 +658,7 @@ export default new Vuex.Store({
       let isDownload = await downloadCloudSong(song, listenProgress, state)
       if (isDownload == true) {
         commit('setCloudSongDownload', song)
-
-        // 清空正在下载的歌曲
-        let payload3 = {
-          downloadingSong: {}
-        }
-        commit("setState", payload3)
+        commit('setState', {isShowDownloadProgress: false})
       }
     },
 
