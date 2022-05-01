@@ -370,7 +370,7 @@ export default {
 
     error(e) {
       console.log("error", e);
-      this.pause();
+      // this.pause();
     },
 
     changeCurrentTime(value) {

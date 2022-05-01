@@ -118,7 +118,6 @@ export default {
         
         console.log("cloudSongs",cloudSongs);
 
-
         let downloadIndex = []
         cloudSongs.forEach((item, index) => {
           this.cloudList.forEach(each => {

@@ -692,6 +692,7 @@ export default new Vuex.Store({
       // 如果播放的歌曲为本地歌曲
       if (currentSong.type == 'local') {
         commit('setCurrentSongUrl', currentSong.songUrl)
+        console.log("currentSongUrl",currentSong.songUrl)
       } else if (currentSong.type == 'cloud') {
         // 如果播放的歌曲为云端歌曲
         if (currentSong.isDownload == false) {
