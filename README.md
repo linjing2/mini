@@ -29,7 +29,7 @@ andriod 扫码下载：
 ![歌手](https://images.gitee.com/uploads/images/2021/0705/160127_5ce75584_2020534.png "歌手")
 ![暗黑模式](https://images.gitee.com/uploads/images/2021/0704/150955_b8e971cb_2020534.png "暗黑模式")
 ![登录](https://images.gitee.com/uploads/images/2021/0704/151036_a49df517_2020534.png "登录")
-
+![右键](screenshot/Snipaste_2022-05-01_16-50-19.png)
 #### 移动版
 ![](https://images.gitee.com/uploads/images/2020/1125/161948_c0653461_2020534.png "截图.png")
 
