@@ -9,9 +9,9 @@
 所有歌曲数据均来源于网络，本项目几乎与你打开浏览器在线听音乐无异，仅仅只是节省了你打开网站搜索的时间而已。这里参考借鉴~~Ctrl CV~~了xtuJSer的项目[CoCoMusic](https://github.com/xtuJSer/CoCoMusic)中的数据接口。顺便提醒，数据接口随时可能失效，请提前做好心理准备。
 
 ### 安装包
-Windows：    [mini-music-Setup-1.4.0.exe](https://gitee.com/cgper/miniMusic/attach_files/761502/download/mini-music%20Setup%201.4.0.exe)
+Windows：    [mini-music-Setup-1.5.0.exe](https://gitee.com/cgper/miniMusic/attach_files/1048544/download/%E8%BF%B7%E4%BD%A0%E9%9F%B3%E4%B9%90%20Setup%201.5.0.exe)
 
-Mac:         [mini-music-1.4.0.dmg(github)](https://github.com/CGPer/miniMusic/releases/download/v1.4.0/mini-music-1.4.0.dmg)
+Mac:         [mini-music-1.5.0.dmg](https://gitee.com/cgper/miniMusic/attach_files/1048542/download/%E8%BF%B7%E4%BD%A0%E9%9F%B3%E4%B9%90-1.5.0.dmg)
 
 Linux:       [mini-music_1.4.0_amd64.deb](https://gitee.com/cgper/miniMusic/attach_files/761654/download/mini-music_1.4.0_amd64.deb)
 
@@ -34,16 +34,16 @@ andriod 扫码下载：
 ![](https://images.gitee.com/uploads/images/2020/1125/161948_c0653461_2020534.png "截图.png")
 
 ### 隐私
-为了防止用户退出应用后丢失历史数据，本应用会记录你的一些使用习惯（包括历史搜索、mark的歌曲、音量大小）。但所有数据均会保存到本地浏览器（或app)的localStorage中储存，不会发送到网络而造成隐私泄漏。同步数据上传至gitee私有仓库，没有第三方能获取用户云端数据。
+为了防止用户退出应用后丢失历史数据，本应用会记录你的一些使用习惯（包括历史搜索、mark的歌曲、音量大小）。但所有数据均会保存到本地浏览器（或app)的localStorage中储存，不会发送到网络而造成隐私泄漏。
+
+若用户使用云端功能，歌单数据同步上传至用户gitee私有仓库，云端歌曲上传至用户gitee公共仓库。用户的账号等敏感数据会均会被加密储存，并且具备设备锁功能，即使知道密文也很难在其他电脑设备上解密。即使如此，仍需对用户进行风险告知：建议gitee账号上有重要的闭源或私有商业项目的用户谨慎使用云端功能。gitee账号权限较大，账号一旦泄漏，即使在不登陆gitee官网的情况下仍可以对账号所有仓库进行任意读写操作。
+
+用户所有数据仅有用户自己和gitee能获取，没有任何其他第三方（包括此项目作者）能获取用户数据。用户可审查src/components/left_nav/login和src/network/gitee_api中的数据同步代码,或了解其中的工作原理。同时请务必保管好自己的gitee账户和密码。
 
 ### 提示
 
 #### 数据同步
-点击app左上角logo图标，登录gitee账号，可同步喜欢歌单和收藏歌单数据。首次上传数据会在用户gitee创建一个MiniMusicDatabase的私有仓库，作为一个简单的云端数据库用于储存数据。为不给gitee服务器造成负担，并未采用实时数据云同步。用户需手动同步数据，故请一定注意上传数据到云端和下载云端数据到本地的逻辑先后顺序，以免造成“悲剧”（云端数据可通过gitee仓库提交记录找回）。
-
-同时提醒，请仅在不同设备同步app数据时才使用同步功能，不要频繁使用数据云同步功能，也不要滥用gitee的API或做出对gitee的API发起攻击的危险举动。以免gitee锁定账户后无法使用云同步功能。
-
-用户所有数据仅有用户自己和gitee能获取，没有任何其他第三方（包括此项目作者）能获取用户数据。用户可审查src/components/left_nav/login和src/network/gitee_api中的数据同步代码,或了解其中的工作原理。同时请务必保管好自己的gitee账户和密码。
+点击app左上角logo图标，登录gitee账号，可同步歌单和上传云端歌曲。首次登录会在用户gitee创建一个MiniMusicDatabase的私有仓库作为一个数据储存库和一个MiniMusicCloud的公共仓库作为云端音乐储存库。为不给gitee服务器造成负担，并未采用实时数据云同步。用户需手动同步歌单数据，故请一定注意上传数据到云端和下载云端数据到本地的逻辑先后顺序，以免造成“悲剧”（云端数据可通过gitee仓库提交记录找回）。由于gitee并未开放附件上传接口，故需用户前往release页面创建发行版后将歌曲作为附件上传。应用会自动扫描上传的云端歌曲。
 
 #### 快捷键
 | 空格键   | ↑键  | ↓键 | ←键 | →键 |
@@ -57,6 +57,7 @@ andriod 扫码下载：
 
 
 #### Tips
+- 本地音乐和云端音乐列表右键会显示更多隐藏的操作。
 - 搜索列表右键可添加收藏，取消收藏需进入收藏页面点击歌曲前面的五角星。
 - 歌曲列表点击歌手名，可进入歌手主页。
 
@@ -72,13 +73,13 @@ andriod 扫码下载：
 #### 移动版
 移动版和desktop版有着些许差别，请前往[迷你音乐移动版](https://gitee.com/cgper/mini-music-mobile)
 
-### 更新v1.4.0
-- 新增歌单数据云同步功能，不同设备app可轻易同步歌单数据。
-- 调整slider样式
-- 调整歌词样式
+### 更新v1.5.0
+- 新增本地音乐和云端音乐
+- 修复部分接口
+- 优化UI
 
 ### 说明
-- Mac版安装包大太无法上传，安装包链接为github链接
+- Mac版由于安全限制缺失部分功能
 - Linux版由于electron有bug，有些微差别
 
 ### 致谢
