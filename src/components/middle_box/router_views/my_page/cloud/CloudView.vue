@@ -118,11 +118,16 @@ export default {
         
         console.log("cloudSongs",cloudSongs);
 
-
-        this.cloudList.forEach((item, index) => {
-          if(item.songID = cloudSongs[index].songID && item.isDownload == true){
-            cloudSongs[index].isDownload = true
-          }
+        let downloadIndex = []
+        cloudSongs.forEach((item, index) => {
+          this.cloudList.forEach(each => {
+            if(item.songID == each.songID && each.isDownload == true){
+              downloadIndex.push(index)
+            }
+          })
+        })
+        downloadIndex.forEach(item=> {
+          cloudSongs[item].isDownload = true
         })
 
         this.$store.commit("setCloudList", cloudSongs.reverse())

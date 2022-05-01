@@ -257,6 +257,7 @@ export default {
         index: index,
         list: this.list,
       };
+      console.log("songItem",item)
 
       //将用户点击的歌曲index连带歌单一起发送至vuex
       this.$store.commit("sendCurrentIndex", payload);
